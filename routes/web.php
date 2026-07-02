@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\StockEntryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\Customer\ProfileCustomerController;
 
 
 // Authentication Routes
@@ -39,6 +41,18 @@ Route::get('/', function () {
     return view('welcome', compact('products', 'faqs', 'beritas'));
 })->name('welcome');
 
+Route::middleware('auth')->group(function () {
+
+    Route::get('/profil-saya',
+        [ProfileCustomerController::class,'index'])
+        ->name('customer.profile');
+
+    Route::put('/profil-saya',
+        [ProfileCustomerController::class,'update'])
+        ->name('customer.profile.update');
+
+});
+
 Route::get('/produk-makanan', [ProductController::class, 'produkMakanan'])->name('produk.makanan');
 Route::get('/tentang-kami', [PegawaiController::class, 'publicIndex'])->name('tentang-kami');
 Route::get('/album-kegiatan', [DokumentasiController::class, 'publicAlbum'])->name('album.public');
@@ -50,8 +64,6 @@ Route::get('/berita/public', function () {
         $beritas = Berita::latest()->get();
         return view('view-berita', compact('beritas'));
     })->name('berita.public');
-
-Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.show');
 
 // Route Diagnosa Email (Hapus setelah berhasil)
 Route::get('/test-email', function() {

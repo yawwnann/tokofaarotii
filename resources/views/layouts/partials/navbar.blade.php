@@ -260,6 +260,7 @@
         .navbar-toggler { display: flex; }
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Search Overlay -->
 <div id="searchOv">
@@ -383,25 +384,91 @@
                </a>
 
                <div class="d-flex align-items-center gap-2 ms-lg-2 flex-shrink-0">
-                  @auth
-                     @if(in_array(auth()->user()->role, ['admin_master', 'pemilik']))
-                        <a href="{{ url('/dashboard') }}" class="btn btn-outline-dark fw-semibold px-3 py-2 rounded-3 btn-sm">
-                           Dashboard
+
+                @auth
+
+                    @if(in_array(auth()->user()->role, ['admin_master', 'pemilik']))
+
+                        <a href="{{ url('/dashboard') }}"
+                        class="btn btn-outline-primary rounded-pill px-3">
+                            <i class="bi bi-speedometer2 me-1"></i>
+                            Dashboard
                         </a>
-                     @else
-                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-dark fw-semibold px-3 py-2 rounded-3 btn-sm">
-                           {{ auth()->user()->name }}
-                        </a>
-                     @endif
-                  @else
-                     <a href="{{ route('login') }}" class="text-decoration-none fw-semibold px-2 text-secondary hover-dark" style="font-size: 0.95rem;">
+
+                    @else
+
+                        <div class="dropdown">
+
+                            <a class="btn btn-light border rounded-pill dropdown-toggle d-flex align-items-center gap-2"
+                            href="#"
+                            id="profileDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                                <i class="bi bi-person-circle fs-5"></i>
+                                <span>{{ Auth::user()->name }}</span>
+
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow"
+                                aria-labelledby="profileDropdown">
+
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('customer.profile') }}">
+                                        <i class="bi bi-person me-2"></i>
+                                        Profil Saya
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-geo-alt me-2"></i>
+                                        Alamat Saya
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-bag me-2"></i>
+                                        Pesanan Saya
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right me-2"></i>
+                                            Keluar
+                                        </button>
+                                    </form>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    @endif
+
+                @else
+
+                    <a href="{{ route('login') }}"
+                    class="text-decoration-none fw-semibold px-2 text-secondary">
                         Masuk
-                     </a>
-                     <a href="{{ route('register') }}" class="btn text-white fw-semibold px-3 py-2 btn-sm shadow-sm" style="background-color: var(--orange); font-size: 0.95rem; border-radius: 10px !important;">
+                    </a>
+
+                    <a href="{{ route('register') }}"
+                    class="btn text-white fw-semibold px-3 py-2 btn-sm shadow-sm"
+                    style="background-color: var(--orange); border-radius:10px;">
                         Daftar
-                     </a>
-                  @endauth
-               </div>
+                    </a>
+
+                @endauth
+
+            </div>
 
             </div>
          </div>

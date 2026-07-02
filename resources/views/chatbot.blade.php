@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const loadingDiv = addMessage(
             '<div class="d-flex align-items-center gap-2">' +
                 '<span class="typing-dots d-flex gap-1"><span></span><span></span><span></span></span>' +
-                '<em class="text-muted" style="font-size:0.85rem;">FAA AI sedang mengetik...</em>' +
+                '<em class="text-muted" style="font-size:0.85rem;">FAA AI Chatbot sedang mengetik...</em>' +
             '</div>',
             'ai',
             true
@@ -188,11 +188,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 let formattedResponse = parseMarkdown(data.response.replace(/\n/g, '<br>'));
                 addMessage(formattedResponse, response.ok ? 'ai' : 'error', true);
             } else {
-                addMessage('Maaf, terjadi kesalahan saat memproses jawaban.', 'error');
+                addMessage('Maaf, terjadi kesalahan saat memproses jawaban, harap login terlebih dahulu.', 'error');
             }
         } catch (error) {
             loadingDiv.remove();
-            addMessage('Maaf, FAA AI Assistant sedang beristirahat sejenak. Silakan tanya kembali beberapa saat lagi. 🕒', 'error');
+            addMessage('Maaf, FAA AI Chatbot sedang beristirahat sejenak. Silakan tanya kembali beberapa saat lagi.', 'error');
             console.error('Koneksi Error:', error);
         } finally {
             setSending(false);
