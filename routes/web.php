@@ -320,3 +320,4 @@ Route::middleware(['auth', 'role:admin_master,pemilik,kasir'])->group(function (
         Route::get('/', [ProfileController::class, 'edit'])->name('edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('update');
     });
+});

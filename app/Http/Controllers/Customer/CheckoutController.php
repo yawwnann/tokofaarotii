@@ -9,6 +9,7 @@ use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
@@ -64,33 +65,61 @@ class CheckoutController extends Controller
         $orderStatus = $request->payment_method === 'cod' ? 'menunggu_diproses' : 'menunggu_pembayaran';
         $paymentStatus = 'pending';
 
-        // 1. Buat Order
-        $order = Order::create([
-            'invoice' => $invoice,
-            'user_id' => Auth::id(),
-            'user_address_id' => $request->address_id,
-            'subtotal' => $subtotal,
-            'shipping_cost' => $shippingCost,
-            'total' => $total,
-            'payment_method' => $request->payment_method,
-            'payment_status' => $paymentStatus,
-            'order_status' => $orderStatus,
-        ]);
+        // Gunakan DB Transaction untuk mencegah Race Condition
+        try {
+            DB::beginTransaction();
 
-        // 2. Buat Order Items
-        foreach ($cart as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['id'],
-                'product_name' => $item['name'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'subtotal' => $item['price'] * $item['quantity'],
+            $productIds = array_column($cart, 'id');
+            // Pessimistic Locking: Kunci baris produk ini agar transaksi lain tidak bisa memodifikasi/membaca stoknya sampai transaksi ini selesai
+            $products = \App\Models\Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
+
+            // 0. Validasi Stok Real-Time
+            foreach ($cart as $item) {
+                $product = $products->get($item['id']);
+                
+                if (!$product) {
+                    throw new \Exception('Produk "' . $item['name'] . '" tidak ditemukan.');
+                }
+                
+                // Ambil stok real-time (telah memperhitungkan OrderItem lain karena transaksi mereka sudah di-commit sebelum lock ini dilepas)
+                if ($product->total_stok < $item['quantity']) {
+                    throw new \Exception('Stok produk "' . $product->name . '" tidak mencukupi. Sisa stok: ' . $product->total_stok);
+                }
+            }
+
+            // 1. Buat Order
+            $order = Order::create([
+                'invoice' => $invoice,
+                'user_id' => Auth::id(),
+                'user_address_id' => $request->address_id,
+                'subtotal' => $subtotal,
+                'shipping_cost' => $shippingCost,
+                'total' => $total,
+                'payment_method' => $request->payment_method,
+                'payment_status' => $paymentStatus,
+                'order_status' => $orderStatus,
             ]);
-        }
 
-        // 3. Hapus Keranjang
-        Session::forget('cart');
+            // 2. Buat Order Items
+            foreach ($cart as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'product_name' => $item['name'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'subtotal' => $item['price'] * $item['quantity'],
+                ]);
+            }
+
+            // 3. Hapus Keranjang
+            Session::forget('cart');
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('checkout.index')->withErrors(['checkout' => $e->getMessage()]);
+        }
 
         // Jika COD, langsung sukses
         if ($request->payment_method === 'cod') {

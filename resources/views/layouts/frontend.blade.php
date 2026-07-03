@@ -20,8 +20,8 @@
         rel="stylesheet">
 
     {{-- CSS sendiri --}}
-    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('template-sarab/css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('template-sarab/css/footer.css') }}">
 
     @vite(['resources/css/app.css','resources/js/app.js'])
 

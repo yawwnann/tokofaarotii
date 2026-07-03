@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         // Panggil ProductSeeder yang berisi logika pembuatan kategori dan produk lengkap
         $this->call([
             ProductSeeder::class,
+            UserSeeder::class,
+            DummyDataSeeder::class,
         ]);
     }
 }

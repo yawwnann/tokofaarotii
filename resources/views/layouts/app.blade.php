@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko FAA - @yield('title', 'Admin Master')</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,14 +15,14 @@
             ROOT VARIABLES
         ========================================= */
         :root {
-            --sidebar-width: 260px;
-            --topbar-height: 60px;
+            --sidebar-width: 280px;
+            --topbar-height: 70px;
             --color-primary:    #f97316; /* orange brand */
             --color-primary-bg: #fff7ed;
             --color-primary-lt: #ffedd5;
             --sidebar-bg:       #ffffff;
-            --sidebar-border:   #f1f5f9;
-            --body-bg:          #f8fafc;
+            --sidebar-border:   rgba(0, 0, 0, 0.04);
+            --body-bg:          #f4f7fe; /* Slightly cooler grey for premium feel */
             --text-main:        #1e293b;
             --text-muted:       #64748b;
             --text-soft:        #94a3b8;
@@ -30,7 +31,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--body-bg);
             color: var(--text-main);
         }
@@ -62,6 +63,7 @@
             flex-direction: column;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.02);
             transition: left 0.3s cubic-bezier(.4,0,.2,1);
         }
 
@@ -69,94 +71,99 @@
         .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1.125rem 1.25rem;
+            gap: 0.85rem;
+            padding: 1.5rem;
             border-bottom: 1px solid var(--sidebar-border);
             flex-shrink: 0;
         }
         .sidebar-brand-icon {
-            width: 36px;
-            height: 36px;
+            width: 42px;
+            height: 42px;
             background: linear-gradient(135deg, #f97316, #ea580c);
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(249,115,22,.35);
+            box-shadow: 0 4px 14px rgba(249,115,22,.35);
         }
-        .sidebar-brand-icon i { color: #fff; font-size: 0.875rem; }
+        .sidebar-brand-icon i { color: #fff; font-size: 1rem; }
         .sidebar-brand-name {
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 1.05rem;
+            font-weight: 800;
             color: var(--text-main);
             line-height: 1.2;
+            letter-spacing: -0.01em;
         }
         .sidebar-brand-role {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--text-soft);
-            margin-top: 1px;
+            margin-top: 2px;
+            font-weight: 500;
         }
 
         /* Scrollable nav */
         .sidebar-nav-scroll {
             flex: 1;
             overflow-y: auto;
-            padding: 0.75rem;
+            padding: 1rem 0;
             scrollbar-width: thin;
             scrollbar-color: #e2e8f0 transparent;
         }
-        .sidebar-nav-scroll::-webkit-scrollbar { width: 3px; }
+        .sidebar-nav-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-nav-scroll::-webkit-scrollbar-thumb {
-            background-color: #e2e8f0;
+            background-color: #cbd5e1;
             border-radius: 99px;
         }
 
         /* Section label */
         .nav-section-label {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--text-soft);
-            padding: 1rem 0.5rem 0.35rem;
+            padding: 1.25rem 1.5rem 0.5rem;
         }
-        .nav-section-label:first-child { padding-top: 0.25rem; }
+        .nav-section-label:first-child { padding-top: 0.5rem; }
 
         /* Nav link */
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 0.625rem;
-            padding: 0.5625rem 0.75rem;
-            border-radius: 0.5rem;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            margin: 0.2rem 1rem;
+            border-radius: 0.75rem;
             color: var(--text-muted);
-            font-size: 0.825rem;
+            font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
-            margin-bottom: 1px;
-            transition: background-color 0.18s ease, color 0.18s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: none;
             background: transparent;
-            width: 100%;
+            width: calc(100% - 2rem);
             text-align: left;
         }
         .nav-link:hover {
             background-color: #f1f5f9;
             color: var(--text-main);
+            transform: translateX(4px);
         }
         .nav-link i {
-            width: 1.125rem;
+            width: 1.25rem;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 1rem;
             flex-shrink: 0;
+            transition: color 0.2s ease;
         }
-        /* Active state — orange brand */
+        /* Active state — premium pill */
         .nav-link.active {
-            background-color: var(--color-primary-lt);
+            background-color: var(--color-primary-bg);
             color: var(--color-primary);
             font-weight: 600;
+            box-shadow: inset 3px 0 0 var(--color-primary);
         }
         .nav-link.active i { color: var(--color-primary); }
 
@@ -181,39 +188,44 @@
         .submenu {
             overflow: hidden;
             max-height: 0;
-            transition: max-height 0.28s ease;
+            transition: max-height 0.3s ease-in-out;
         }
-        .submenu.open { max-height: 260px; }
+        .submenu.open { max-height: 300px; }
         .submenu-item {
             display: flex;
             align-items: center;
-            padding: 0.45rem 0.75rem 0.45rem 2.625rem;
+            padding: 0.5rem 1rem 0.5rem 3rem;
+            margin: 0.15rem 1rem;
             border-radius: 0.5rem;
-            font-size: 0.775rem;
+            font-size: 0.85rem;
             font-weight: 500;
             color: #94a3b8;
             text-decoration: none;
-            margin-bottom: 1px;
-            transition: background-color 0.15s ease, color 0.15s ease;
+            transition: all 0.2s ease;
             position: relative;
         }
         .submenu-item::before {
             content: '';
             position: absolute;
-            left: 1.625rem;
-            width: 5px;
-            height: 5px;
+            left: 1.75rem;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background-color: currentColor;
-            opacity: 0.5;
+            opacity: 0.4;
+            transition: opacity 0.2s;
         }
-        .submenu-item:hover { background-color: #f1f5f9; color: #475569; }
+        .submenu-item:hover { 
+            background-color: #f8fafc; 
+            color: #475569; 
+            transform: translateX(4px);
+        }
         .submenu-item.active {
             color: var(--color-primary);
-            background-color: var(--color-primary-lt);
+            background-color: #fff;
             font-weight: 600;
         }
-        .submenu-item.active::before { opacity: 1; }
+        .submenu-item.active::before { opacity: 1; transform: scale(1.2); }
 
         /* Logout */
         .nav-link-danger { color: #f43f5e !important; }
@@ -225,19 +237,23 @@
 
         /* Sidebar footer */
         .sidebar-footer {
-            padding: 0.875rem 1.25rem;
+            padding: 1.25rem;
             border-top: 1px solid var(--sidebar-border);
             flex-shrink: 0;
-            background-color: #fafafa;
+            background-color: #fff;
         }
         .sidebar-footer-inner {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.7rem;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
             color: var(--text-soft);
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
         }
-        .sidebar-footer-inner i { color: #cbd5e1; }
+        .sidebar-footer-inner i { color: #94a3b8; font-size: 1.1rem; }
 
         /* =========================================
             TOPBAR
@@ -558,7 +574,7 @@
                 </a>
 
                 <a href="{{ route('pegawai.index') }}"                   
-                   class="nav-link {{ request()->requestIs('pegawai*') ? 'active' : '' }}">
+                   class="nav-link {{ request()->is('pegawai*') ? 'active' : '' }}">
                     <i class="fas fa-users-cog"></i>
                     <span>Kelola Pegawai</span>
                 </a>
@@ -614,13 +630,13 @@
                     <span>Pengaturan</span>
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form id="logoutFormSidebar" method="POST" action="{{ route('logout') }}" style="display: none;">
                     @csrf
-                    <button type="submit" class="nav-link nav-link-danger">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </button>
                 </form>
+                <button type="button" class="nav-link nav-link-danger" style="width: 100%; border: none; text-align: left; cursor: pointer; background: transparent;" onclick="confirmLogout('logoutFormSidebar')">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Keluar</span>
+                </button>
 
             </nav>
         </div>
@@ -737,13 +753,13 @@
                                 <span>Pengaturan</span>
                             </a>
                             <div style="border-top:1px solid #f1f5f9;margin:0.25rem 0;"></div>
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form id="logoutFormDropdown" method="POST" action="{{ route('logout') }}" style="display: none;">
                                 @csrf
-                                <button type="submit" class="dropdown-panel-item" style="border:none;background:none;width:100%;cursor:pointer;color:#f43f5e;">
-                                    <i class="fas fa-sign-out-alt" style="color:#f43f5e;"></i>
-                                    <span>Keluar</span>
-                                </button>
                             </form>
+                            <button type="button" class="dropdown-panel-item" style="border:none;background:none;width:100%;cursor:pointer;color:#f43f5e;text-align:left;" onclick="confirmLogout('logoutFormDropdown')">
+                                <i class="fas fa-sign-out-alt" style="color:#f43f5e;"></i>
+                                <span>Keluar</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -756,6 +772,54 @@
         </main>
 
     </div>
+
+    {{-- Logout Confirmation Modal --}}
+    <div class="modal-overlay" id="logoutModalOverlay">
+        <div class="modal-box">
+            <div class="modal-icon text-red-500">
+                <i class="fas fa-sign-out-alt fa-2x"></i>
+            </div>
+            <h3 class="modal-title">Konfirmasi Keluar</h3>
+            <p class="modal-text">Apakah Anda yakin ingin keluar dari sistem Toko FAA?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Batal</button>
+                <button type="button" class="btn-confirm-danger" onclick="submitLogout()">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-box {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            width: 90%; max-width: 400px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.show .modal-box { transform: translateY(0) scale(1); }
+        .modal-icon { width: 64px; height: 64px; border-radius: 50%; background: #fef2f2; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0 0 0.5rem; }
+        .modal-text { font-size: 0.9rem; color: #475569; margin: 0 0 1.5rem; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 1rem; }
+        .modal-actions button { flex: 1; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-cancel { background: #f1f5f9; color: #475569; }
+        .btn-cancel:hover { background: #e2e8f0; }
+        .btn-confirm-danger { background: #ef4444; color: #ffffff; }
+        .btn-confirm-danger:hover { background: #dc2626; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+    </style>
 
     <script>
         // ── Sidebar mobile toggle ───────────────────────────
@@ -820,6 +884,24 @@
             document.querySelectorAll('.dropdown-panel.open')
                     .forEach(p => p.classList.remove('open'));
         });
+
+        // ── Logout Modal Logic ──────────────────────────────
+        let currentLogoutFormId = null;
+        function confirmLogout(formId) {
+            currentLogoutFormId = formId;
+            document.getElementById('logoutModalOverlay').classList.add('show');
+            // Close dropdowns if open
+            document.querySelectorAll('.dropdown-panel.open').forEach(p => p.classList.remove('open'));
+        }
+        function closeLogoutModal() {
+            document.getElementById('logoutModalOverlay').classList.remove('show');
+            currentLogoutFormId = null;
+        }
+        function submitLogout() {
+            if (currentLogoutFormId) {
+                document.getElementById(currentLogoutFormId).submit();
+            }
+        }
     </script>
 
     @stack('scripts')

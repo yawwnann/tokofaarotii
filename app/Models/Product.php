@@ -31,8 +31,15 @@ class Product extends Model
     {
         // Gunakan logika yang lebih aman agar tidak lambat saat data banyak
         $masuk = $this->stockEntries()->sum('quantity');
-        $keluar = $this->sales()->sum('quantity_sold');
+        $keluarOffline = $this->sales()->sum('quantity_sold');
+        
+        // Menghitung barang keluar dari pesanan online (kecuali yang dibatalkan)
+        $keluarOnline = OrderItem::where('product_id', $this->id)
+            ->whereHas('order', function ($query) {
+                $query->where('order_status', '!=', 'dibatalkan');
+            })
+            ->sum('quantity');
 
-        return $masuk - $keluar;
+        return $masuk - $keluarOffline - $keluarOnline;
     }
 }

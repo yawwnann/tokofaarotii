@@ -13,20 +13,44 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Data bawaan kamu (TIDAK DIUBAH)
-        User::create([
-            'name' => 'Admin Toko FAA',
-            'email' => 'admin@faa.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin_master',
-        ]);
+        // 1. Akun Admin Master
+        User::updateOrCreate(
+            ['email' => 'admin@faa.com'],
+            [
+                'name' => 'Admin Master Toko FAA',
+                'password' => Hash::make('password123'),
+                'role' => 'admin_master',
+            ]
+        );
 
-        // TAMBAHAN: Akun Pemilik Toko
-        User::create([
-            'name' => 'Pemilik Toko FAA',
-            'email' => 'pemilik@faa.com',
-            'password' => Hash::make('pemilik123'), // Silakan ganti password-nya di sini
-            'role' => 'pemilik', // Menyesuaikan dengan role pemilik toko Anda
-        ]);
+        // 2. Akun Pemilik Toko
+        User::updateOrCreate(
+            ['email' => 'pemilik@faa.com'],
+            [
+                'name' => 'Pemilik Toko FAA',
+                'password' => Hash::make('password123'),
+                'role' => 'pemilik',
+            ]
+        );
+
+        // 3. Akun Kasir
+        User::updateOrCreate(
+            ['email' => 'kasir@faa.com'],
+            [
+                'name' => 'Kasir Toko FAA',
+                'password' => Hash::make('password123'),
+                'role' => 'kasir',
+            ]
+        );
+
+        // 4. Akun Customer / Pelanggan Umum
+        User::updateOrCreate(
+            ['email' => 'customer@faa.com'],
+            [
+                'name' => 'Pelanggan Toko FAA',
+                'password' => Hash::make('password123'),
+                'role' => 'customer',
+            ]
+        );
     }
 }
