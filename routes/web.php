@@ -31,8 +31,8 @@ use App\Models\Faq;
 
 // PUBLIC ROUTES (Bisa diakses tanpa login)
 Route::get('/', function () {
-    // Jika login sebagai admin/pemilik, arahkan ke dashboard
-    if (Auth::check() && in_array(Auth::user()->role, ['admin_master', 'pemilik'])) {
+    // Jika login sebagai admin/pemilik/kasir, arahkan ke dashboard
+    if (Auth::check() && in_array(Auth::user()->role, ['admin_master', 'pemilik', 'kasir'])) {
         return redirect()->route('dashboard');
     }
     
@@ -55,11 +55,21 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/alamat-saya', [AddressCustomerController::class, 'index'])->name('customer.address');
+    Route::post('/alamat-saya', [AddressCustomerController::class, 'store'])->name('customer.address.store');
+    Route::put('/alamat-saya/{address}', [AddressCustomerController::class, 'update'])->name('customer.address.update');
+    Route::delete('/alamat-saya/{address}', [AddressCustomerController::class, 'destroy'])->name('customer.address.destroy');
+    Route::post('/alamat-saya/{address}/default', [AddressCustomerController::class, 'setAsDefault'])->name('customer.address.default');
 
-    Route::get('/alamat-saya',
-        [AddressCustomerController::class,'index'])
-        ->name('customer.address');
+    Route::get('/checkout', [\App\Http\Controllers\Customer\CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/process', [\App\Http\Controllers\Customer\CheckoutController::class, 'process'])->name('checkout.process');
 
+    Route::get('/payment/{order}', [\App\Http\Controllers\Customer\PaymentController::class, 'show'])->name('payment.show');
+
+    // Riwayat Pesanan Customer
+    Route::get('/pesanan-saya', [\App\Http\Controllers\Customer\OrderController::class, 'index'])->name('customer.orders.index');
+    Route::get('/pesanan-saya/{order}', [\App\Http\Controllers\Customer\OrderController::class, 'show'])->name('customer.orders.show');
+    Route::post('/pesanan-saya/{order}/confirm', [\App\Http\Controllers\Customer\OrderController::class, 'confirm'])->name('customer.orders.confirm');
 });
 
 Route::get('/produk-makanan', [ProductController::class, 'produkMakanan'])->name('produk.makanan');
@@ -192,20 +202,43 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// PROTECTED ROUTES (Harus Login DAN ber-role 'admin_master' atau 'pemilik')
-Route::middleware(['auth', 'role:admin_master,pemilik'])->group(function () {
+// ==========================================
+// PROTECTED ROUTES (DASBOR)
+// ==========================================
 
-    // Dashboard Routes
+// 1. Dashboard (Akses: Semua Role Backend)
+Route::middleware(['auth', 'role:admin_master,pemilik,kasir'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/analytics', [DashboardController::class, 'analytics'])->name('dashboard.analytics');
     Route::get('/dashboard/export/monthly-sales', [DashboardController::class, 'exportMonthlySales'])->name('dashboard.export.monthly');
+});
 
-    // Kelola User Routes
-    Route::prefix('kelola-user')->name('kelola-user.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::post('/', [UserController::class, 'store'])->name('store');
-        Route::put('/{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+// 2. Transaksi & Operasional (Akses: Admin & Kasir)
+Route::middleware(['auth', 'role:admin_master,kasir'])->group(function () {
+    // Stock Routes
+    Route::prefix('stock')->name('stock.')->group(function () {
+        Route::get('/', function () { return redirect()->route('stock-entries.index'); })->name('index');
+    });
+    Route::resource('stock-entries', StockEntryController::class);
+
+    // Sales / POS Routes
+    Route::prefix('sales')->name('sales.')->group(function () {
+        Route::get('/', [SaleController::class, 'index'])->name('index');
+        Route::get('/create', [SaleController::class, 'create'])->name('create');
+        Route::post('/', [SaleController::class, 'store'])->name('store');
+        Route::get('/{sale}/edit', [SaleController::class, 'edit'])->name('edit');
+        Route::put('/{sale}', [SaleController::class, 'update'])->name('update');
+        Route::delete('/{sale}', [SaleController::class, 'destroy'])->name('destroy');
+        Route::get('/{sale}', [SaleController::class, 'show'])->name('show');
+        Route::post('/pos/store', [SaleController::class, 'storePos'])->name('pos.store');
+        Route::post('/{sale}/confirm', [SaleController::class, 'confirm'])->name('confirm');
+    });
+
+    // Orders Management Routes (Online Orders)
+    Route::prefix('admin/orders')->name('admin.orders.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
+        Route::put('/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'update'])->name('update');
     });
 
     // Products Management Routes
@@ -229,29 +262,10 @@ Route::middleware(['auth', 'role:admin_master,pemilik'])->group(function () {
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
         Route::get('/{category}', [CategoryController::class, 'show'])->name('show');
     });
+});
 
-    // Stock Routes
-    Route::prefix('stock')->name('stock.')->group(function () {
-        Route::get('/', function () {
-            return redirect()->route('stock-entries.index');
-        })->name('index');
-    });
-    Route::resource('stock-entries', StockEntryController::class);
-
-    // Sales Routes
-    Route::prefix('sales')->name('sales.')->group(function () {
-        Route::get('/', [SaleController::class, 'index'])->name('index');
-        Route::get('/create', [SaleController::class, 'create'])->name('create');
-        Route::post('/', [SaleController::class, 'store'])->name('store');
-        Route::get('/{sale}/edit', [SaleController::class, 'edit'])->name('edit');
-        Route::put('/{sale}', [SaleController::class, 'update'])->name('update');
-        Route::delete('/{sale}', [SaleController::class, 'destroy'])->name('destroy');
-        Route::get('/{sale}', [SaleController::class, 'show'])->name('show');
-        Route::post('/pos/store', [SaleController::class, 'storePos'])->name('pos.store');
-        Route::post('/{sale}/confirm', [SaleController::class, 'confirm'])->name('confirm');
-    });
-
-    // Reports Routes
+// 3. Laporan (Akses: Admin & Pemilik)
+Route::middleware(['auth', 'role:admin_master,pemilik'])->group(function () {
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/sales', function() { return redirect()->route('reports.index'); })->name('sales');
@@ -259,59 +273,50 @@ Route::middleware(['auth', 'role:admin_master,pemilik'])->group(function () {
         Route::get('/export', [ReportController::class, 'export'])->name('export');
     });
 
-    // Resource Masing-masing Menu
-    Route::resource('pegawai', PegawaiController::class);
     Route::resource('berita', BeritaController::class);
     
-    // FAQ Routes
     Route::get('faq/export/excel', [FaqController::class, 'exportExcel'])->name('faq.export.excel');
     Route::get('faq/export/pdf',   [FaqController::class, 'exportPdf'])->name('faq.export.pdf');
     Route::resource('faq', FaqController::class);
 
-    // Dokumentasi Routes
     Route::prefix('dokumentasi')->name('dokumentasi.')->group(function () {
         Route::get('/album', [DokumentasiController::class, 'album'])->name('album');
         Route::post('/album', [DokumentasiController::class, 'storeAlbum'])->name('album.store');
         Route::put('/album/{album}', [DokumentasiController::class, 'updateAlbum'])->name('album.update');
         Route::delete('/album/{album}', [DokumentasiController::class, 'destroyAlbum'])->name('album.destroy');
-        
         Route::get('/infografis', [DokumentasiController::class, 'infografis'])->name('infografis');
         Route::post('/infografis', [DokumentasiController::class, 'storeInfografis'])->name('infografis.store');
         Route::put('/infografis/{infografis}', [DokumentasiController::class, 'updateInfografis'])->name('infografis.update');
         Route::delete('/infografis/{infografis}', [DokumentasiController::class, 'destroyInfografis'])->name('infografis.destroy');
-        
         Route::get('/video', [DokumentasiController::class, 'video'])->name('video');
         Route::post('/video', [DokumentasiController::class, 'storeVideo'])->name('video.store');
         Route::put('/video/{video}', [DokumentasiController::class, 'updateVideo'])->name('video.update');
         Route::delete('/video/{video}', [DokumentasiController::class, 'destroyVideo'])->name('video.destroy');
     });
+});
 
-    // ==========================================
-    // MANAGEMENT SETTINGS TOKO (PENGATURAN)
-    // ==========================================
-    Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(function () {
-        // Halaman utama pengaturan toko
+// 4. Manajemen Master Data & Konten (Akses: HANYA Admin Master)
+Route::middleware(['auth', 'role:admin_master'])->group(function () {
+    Route::prefix('kelola-user')->name('kelola-user.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::resource('pegawai', PegawaiController::class);
+});
+
+// ==========================================
+// PROFIL & SETTINGS (Akses: Semua Role Backend)
+// ==========================================
+Route::middleware(['auth', 'role:admin_master,pemilik,kasir'])->group(function () {
+    Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
-        
-        // Memproses simpan/update data pengaturan toko
         Route::put('/update', [SettingController::class, 'update'])->name('update');
     });
 
-    // ==========================================
-    // MANAGEMENT PROFIL MANDIRI ADMIN/USER
-    // ==========================================
-    Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
-        // Halaman edit profil mandiri (Tab Switcher)
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        
-        // Memproses simpan/update profil & password mandiri
-        Route::put('/update', [ProfileController::class, 'update'])->name('update');
-    });
-
-    // Profile Group
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('update');
     });
-    
-});

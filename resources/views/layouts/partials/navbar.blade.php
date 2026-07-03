@@ -126,7 +126,7 @@
 
                 @auth
 
-                    @if(in_array(auth()->user()->role, ['admin_master', 'pemilik']))
+                    @if(in_array(auth()->user()->role, ['admin_master', 'pemilik', 'kasir']))
 
                         <a href="{{ url('/dashboard') }}"
                         class="btn btn-outline-primary rounded-pill px-3">
@@ -169,7 +169,7 @@
                                 </li>
 
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{ route('customer.orders.index') }}">
                                         <i class="bi bi-bag me-2"></i>
                                         Pesanan Saya
                                     </a>

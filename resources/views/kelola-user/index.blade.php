@@ -70,7 +70,10 @@
                                 <span class="role-badge badge-red">ADMIN MASTER</span>
                                 @break
                             @case('pemilik')
-                                <span class="role-badge badge-orange">PEMILIK</span>
+                                <span class="role-badge badge-orange">PEMILIK TOKO</span>
+                                @break
+                            @case('kasir')
+                                <span class="role-badge badge-orange" style="background:#fef3c7; color:#d97706;">KASIR</span>
                                 @break
                             @default
                                 <span class="role-badge badge-gray">PELANGGAN</span>
@@ -134,7 +137,8 @@
                 <label>Role / Hak Akses</label>
                 <select name="role" required class="form-input">
                     <option value="pengguna">Pelanggan</option>
-                    <option value="pemilik">Pemilik</option>
+                    <option value="pemilik">Pemilik Toko</option>
+                    <option value="kasir">Kasir</option>
                     <option value="admin_master">Admin Master</option>
                 </select>
             </div>
@@ -178,7 +182,8 @@
                 <label>Role / Hak Akses</label>
                 <select name="role" id="edit-role" required class="form-input">
                     <option value="pengguna">Pelanggan</option>
-                    <option value="pemilik">Pemilik</option>
+                    <option value="pemilik">Pemilik Toko</option>
+                    <option value="kasir">Kasir</option>
                     <option value="admin_master">Admin Master</option>
                 </select>
                 <p id="edit-role-warning" class="hidden" style="font-size: 0.75rem; color: #ef4444; margin-top: 4px;">

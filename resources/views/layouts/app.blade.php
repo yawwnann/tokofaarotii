@@ -508,6 +508,7 @@
                     <span>Beranda</span>
                 </a>
 
+                @if(in_array(auth()->user()?->role, ['admin_master', 'kasir']))
                 <a href="{{ route('products.index') }}"
                    class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                     <i class="fas fa-box"></i>
@@ -529,31 +530,42 @@
                 <a href="{{ route('sales.index') }}"
                    class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}">
                     <i class="fas fa-shopping-cart"></i>
-                    <span>Penjualan</span>
+                    <span>Penjualan Offline</span>
                 </a>
 
+                <a href="{{ route('admin.orders.index') }}"
+                   class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                    <i class="fas fa-truck-fast"></i>
+                    <span>Pesanan Online</span>
+                </a>
+                @endif
+
+                @if(in_array(auth()->user()?->role, ['admin_master', 'pemilik']))
                 <a href="{{ route('reports.index') }}"
                    class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
                     <span>Laporan</span>
                 </a>
-
-                <p class="nav-section-label">Manajemen</p>
-
-                {{-- FIX: Menggunakan strtolower untuk mengatasi ketidakcocokan huruf kapital di database --}}
-                @if(in_array(strtolower(auth()->user()?->role), ['admin_master', 'pemilik']))
-                    <a href="{{ route('kelola-user.index') }}"
-                       class="nav-link {{ request()->routeIs('kelola-user.*') ? 'active' : '' }}">
-                        <i class="fas fa-user-shield"></i>
-                        <span>Kelola User</span>
-                    </a>
                 @endif
 
+                @if(auth()->user()?->role == 'admin_master')
+                <p class="nav-section-label">Manajemen Sistem</p>
+
+                <a href="{{ route('kelola-user.index') }}"
+                   class="nav-link {{ request()->routeIs('kelola-user.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Kelola User</span>
+                </a>
+
                 <a href="{{ route('pegawai.index') }}"                   
-                   class="nav-link {{ request()->routeIs('pegawai.*') ? 'active' : '' }}">
+                   class="nav-link {{ request()->requestIs('pegawai*') ? 'active' : '' }}">
                     <i class="fas fa-users-cog"></i>
                     <span>Kelola Pegawai</span>
                 </a>
+                @endif
+
+                @if(in_array(auth()->user()?->role, ['admin_master', 'pemilik']))
+                <p class="nav-section-label">Manajemen Konten</p>
 
                 {{-- Dokumentasi Collapsible --}}
                 <button type="button"
@@ -592,6 +604,7 @@
                     <i class="fas fa-question-circle"></i>
                     <span>FAQ</span>
                 </a>
+                @endif
 
                 <p class="nav-section-label">Sistem</p>
 
@@ -704,11 +717,11 @@
                                 <div class="dropdown-panel-role">
                                     @php
                                         $roles = [
-                                            'admin_master' => 'Admin Utama',
-                                            'admin_toko' => 'Admin Toko',
-                                            'pegawai' => 'Pegawai'
+                                            'admin_master' => 'Admin Master',
+                                            'pemilik' => 'Pemilik Toko',
+                                            'kasir' => 'Kasir'
                                         ];
-                                        $userRole = Auth::user()->role ?? 'pegawai';
+                                        $userRole = Auth::user()->role ?? 'customer';
                                     @endphp
                                     {{ $roles[$userRole] ?? ucwords(str_replace('_', ' ', $userRole)) }}
                                 </div>

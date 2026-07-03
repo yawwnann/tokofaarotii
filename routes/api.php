@@ -12,3 +12,5 @@ Route::name('api.')->group(function () {
     Route::apiResource('stock-entries', StockEntryController::class);
     Route::apiResource('sales', SaleController::class);
 });
+
+Route::post('/midtrans/callback', [\App\Http\Controllers\Webhook\MidtransController::class, 'handle']);

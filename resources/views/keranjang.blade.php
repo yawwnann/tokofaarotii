@@ -47,7 +47,7 @@
 
                 <div class="mt-4 text-end">
                     <h4 class="fw-bold">Total: Rp <span id="cartTotal">{{ number_format(collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']), 0, ',', '.') }}</span></h4>
-                    <button class="btn btn-warning btn-lg mt-3 px-5 text-white fw-bold" style="border-radius: 50px; background-color: #f97316; border: none;">Checkout Sekarang</button>
+                    <a href="{{ route('checkout.index') }}" class="btn btn-warning btn-lg mt-3 px-5 text-white fw-bold" style="border-radius: 50px; background-color: #f97316; border: none;">Checkout Sekarang</a>
                 </div>
             @else
                 <div class="text-center py-5">
