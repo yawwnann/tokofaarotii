@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\UserAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,7 +56,7 @@ class User extends Authenticatable
     /**
      * Relasi ke alamat pengguna.
      */
-    public function addresses(): HasMany
+    public function addresses()
     {
         return $this->hasMany(UserAddress::class);
     }

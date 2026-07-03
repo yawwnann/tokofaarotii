@@ -1,0 +1,55 @@
+/* footer.css */
+footer{
+background:#fff;
+color:#1e293b;
+margin-top:80px;
+border-top:3px solid #004aad;
+}
+.fnm{font-size:32px;font-weight:800;color:#004aad}
+.fnm span{display:block;font-size:11px;color:#f97316;letter-spacing:2px}
+.fdesc{color:#64748b;line-height:1.8}
+.fsoc{display:flex;gap:12px;margin-top:20px}
+.fsoc a{
+width:42px;height:42px;border-radius:10px;
+display:flex;align-items:center;justify-content:center;
+border:1px solid #e2e8f0;color:#004aad;
+text-decoration:none;transition:.3s;
+}
+.fsoc a:hover{background:#004aad;color:#fff;transform:translateY(-3px)}
+.ftit{font-weight:700;margin-bottom:20px;position:relative}
+.ftit:after{
+content:"";position:absolute;left:0;bottom:-8px;
+width:45px;height:3px;background:#004aad;
+}
+.flinks{list-style:none;padding:0}
+.flinks li{margin-bottom:12px}
+.flinks a{text-decoration:none;color:#64748b}
+.flinks a:hover{color:#004aad;padding-left:6px}
+.fci{display:flex;gap:12px;margin-bottom:18px}
+.fciico{
+width:42px;height:42px;background:#eef5ff;color:#004aad;
+display:flex;align-items:center;justify-content:center;
+border-radius:10px;
+}
+.fbot{
+margin-top:30px;
+padding:18px 0;
+border-top:1px solid #e2e8f0;
+background:#f8fafc;
+text-align:center;
+color:#64748b;
+}
+#btt{
+position:fixed;
+bottom:25px;
+right:25px;
+width:45px;
+height:45px;
+border:none;
+border-radius:10px;
+background:#004aad;
+color:#fff;
+display:none;
+cursor:pointer;
+}
+#btt.show{display:block;}

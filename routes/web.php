@@ -18,6 +18,7 @@ use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Customer\ProfileCustomerController;
+use App\Http\Controllers\Customer\AddressCustomerController;
 
 
 // Authentication Routes
@@ -50,6 +51,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil-saya',
         [ProfileCustomerController::class,'update'])
         ->name('customer.profile.update');
+
+});
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/alamat-saya',
+        [AddressCustomerController::class,'index'])
+        ->name('customer.address');
 
 });
 

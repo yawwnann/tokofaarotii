@@ -1,0 +1,141 @@
+/* navbar.css
+   FAA Navbar Styles
+   Paste/replace as needed. */
+
+:root{
+ --blue:#004aad;
+ --blue-dark:#003580;
+ --orange:#f97316;
+ --orange-soft:#fff7ed;
+ --dark:#1e293b;
+ --gray:#64748b;
+ --light:#f8fafc;
+ --white:#fff;
+ --border:#e2e8f0;
+}
+
+body{padding-top:85px;font-family:Poppins,sans-serif;}
+html{scroll-padding-top:95px;}
+
+.navbar{
+ background:rgba(255,255,255,.95);
+ backdrop-filter:blur(10px);
+ border-bottom:3px solid var(--blue);
+ box-shadow:0 4px 20px rgba(0,74,173,.1);
+ z-index:1030;
+}
+
+.brand-text{font-weight:800;color:var(--blue);font-size:20px}
+.nav-links{display:flex;gap:4px;list-style:none;padding:0;margin:0}
+.nav-links a{
+ text-decoration:none;
+ color:#334155;
+ padding:8px 15px;
+ border-radius:8px;
+ font-size:13px;
+ transition:.25s;
+}
+.nav-links a:hover{background:var(--orange-soft);color:var(--orange)}
+.nav-links a.active{color:var(--blue);font-weight:600}
+
+.nav-link.dropdown-toggle-custom{
+ color:#334155!important;
+ font-weight:600;
+ border-radius:8px;
+ padding:8px 15px;
+}
+.nav-link.dropdown-toggle-custom:hover{
+ background:var(--orange-soft);
+ color:var(--orange)!important;
+}
+
+.dropdown-menu{
+ border:none;
+ border-radius:12px;
+ box-shadow:0 10px 35px rgba(0,0,0,.12);
+ padding:.75rem;
+}
+
+.dropdown-item-icon{
+ width:35px;height:35px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:10px;
+ background:var(--orange-soft);
+ color:var(--orange);
+}
+
+.nav-actions{display:flex;align-items:center;gap:10px}
+
+/* SEARCH OVERLAY */
+#searchOv{
+ position:fixed;
+ inset:0;
+ display:none;
+ justify-content:center;
+ align-items:center;
+ background:rgba(0,0,0,.6);
+ z-index:9999;
+}
+#searchOv.active{display:flex}
+
+.sovbox{
+ width:min(900px,95%);
+ background:#fff;
+ border-radius:18px;
+ padding:30px;
+}
+.sovclose{
+ position:absolute;
+ top:25px;
+ right:25px;
+ width:45px;
+ height:45px;
+ border:none;
+ border-radius:50%;
+ background:#fff;
+ cursor:pointer;
+}
+.sovcats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:20px;
+ margin-top:20px;
+}
+.sovcat{text-align:center;cursor:pointer}
+.sovcat img{
+ width:90px;
+ height:90px;
+ object-fit:cover;
+ border-radius:12px;
+}
+.sovtrend{margin-top:25px}
+.ttag{
+ display:inline-block;
+ margin:4px;
+ padding:8px 14px;
+ background:#f1f5f9;
+ border-radius:999px;
+}
+
+@media(max-width:991px){
+ .navbar-collapse{
+  background:#fff;
+  padding:1rem;
+  border-radius:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+ }
+ .nav-links{
+  flex-direction:column;
+  align-items:flex-start;
+ }
+ .sovcats{
+  grid-template-columns:repeat(2,1fr);
+ }
+}
+
+@media(max-width:576px){
+ .sovcats{grid-template-columns:1fr}
+ .sovbox{padding:20px}
+}
