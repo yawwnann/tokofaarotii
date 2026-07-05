@@ -170,25 +170,39 @@
         /* Collapse toggle */
         .nav-collapse-toggle {
             justify-content: space-between;
+            user-select: none;
+        }
+        .nav-collapse-toggle:hover {
+            background-color: #eef2ff !important;
+            color: #4f46e5 !important;
+            transform: translateX(4px);
+        }
+        .nav-collapse-toggle:hover .collapse-arrow {
+            color: #4f46e5;
         }
         .nav-collapse-toggle .nc-left {
             display: flex;
             align-items: center;
             gap: 0.625rem;
+            pointer-events: none;
+        }
+        .nav-collapse-toggle .collapse-arrow {
+            pointer-events: none;
         }
         .collapse-arrow {
-            font-size: 0.6rem;
-            color: #cbd5e1;
-            transition: transform 0.22s ease;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            transition: transform 0.22s ease, color 0.2s ease;
             flex-shrink: 0;
         }
         .collapse-arrow.open { transform: rotate(90deg); }
+        .nav-collapse-toggle.active .collapse-arrow { color: #f97316; }
 
         /* Submenu */
         .submenu {
             overflow: hidden;
             max-height: 0;
-            transition: max-height 0.3s ease-in-out;
+            transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
         }
         .submenu.open { max-height: 300px; }
         .submenu-item {
@@ -585,8 +599,8 @@
                     <span>Kelola Toko</span>
                 </a>
 
-                <a href="{{ route('shipping-rates.index') }}"
-                   class="nav-link {{ request()->routeIs('shipping-rates.*') ? 'active' : '' }}">
+                <a href="{{ route('shipping-zones.index') }}"
+                   class="nav-link {{ request()->routeIs('shipping-zones.*') ? 'active' : '' }}">
                     <i class="fas fa-truck"></i>
                     <span>Tarif Ongkir</span>
                 </a>
@@ -800,8 +814,8 @@
         </div>
     </div>
 
-    <style>
-        .modal-overlay {
+        <style>
+        #logoutModalOverlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(4px);
@@ -810,7 +824,7 @@
             opacity: 0; visibility: hidden;
             transition: all 0.3s ease;
         }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
+        #logoutModalOverlay.show { opacity: 1; visibility: visible; }
         .modal-box {
             background: #ffffff;
             border-radius: 1.25rem;

@@ -68,29 +68,25 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function admin_can_access_pos_create_page()
+    public function test_admin_can_access_pos_create_page()
     {
         $response = $this->actingAs($this->admin)->get(route('sales.create'));
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function kasir_can_access_pos_create_page()
+    public function test_kasir_can_access_pos_create_page()
     {
         $response = $this->actingAs($this->kasir)->get(route('sales.create'));
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function unauthenticated_user_cannot_access_pos()
+    public function test_unauthenticated_user_cannot_access_pos()
     {
         $response = $this->get(route('sales.create'));
         $response->assertRedirect(route('login'));
     }
 
-    /** @test */
-    public function kasir_only_sees_products_from_their_store()
+    public function test_kasir_only_sees_products_from_their_store()
     {
         $otherStore = Store::create([
             'name' => 'Toko Lain',
@@ -115,8 +111,7 @@ class PosSaleTest extends TestCase
         $response->assertDontSee($otherProduct->name);
     }
 
-    /** @test */
-    public function admin_sees_all_products_at_pos()
+    public function test_admin_sees_all_products_at_pos()
     {
         $otherStore = Store::create([
             'name' => 'Toko Lain',
@@ -141,8 +136,7 @@ class PosSaleTest extends TestCase
         $response->assertSee($otherProduct->name);
     }
 
-    /** @test */
-    public function pos_store_creates_sale_with_completed_status_for_cash()
+    public function test_pos_store_creates_sale_with_completed_status_for_cash()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -166,8 +160,7 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function pos_store_creates_sale_with_pending_status_for_transfer()
+    public function test_pos_store_creates_sale_with_pending_status_for_transfer()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -190,8 +183,7 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function pos_store_fails_with_insufficient_stock()
+    public function test_pos_store_fails_with_insufficient_stock()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -204,8 +196,7 @@ class PosSaleTest extends TestCase
         $this->assertStringContainsString('Stok produk', $response->json('message'));
     }
 
-    /** @test */
-    public function pos_store_fails_with_empty_cart()
+    public function test_pos_store_fails_with_empty_cart()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [],
@@ -215,8 +206,7 @@ class PosSaleTest extends TestCase
         $response->assertJson(['success' => false, 'message' => 'Keranjang kosong']);
     }
 
-    /** @test */
-    public function pos_store_returns_transaction_id()
+    public function test_pos_store_returns_transaction_id()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -229,8 +219,7 @@ class PosSaleTest extends TestCase
         $this->assertNotNull($response->json('transaction_id'));
     }
 
-    /** @test */
-    public function pos_store_sets_store_id_from_authenticated_user()
+    public function test_pos_store_sets_store_id_from_authenticated_user()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -247,8 +236,7 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function confirm_route_updates_sale_status_to_completed()
+    public function test_confirm_route_updates_sale_status_to_completed()
     {
         $sale = Sale::create([
             'product_id' => $this->product->id,
@@ -271,8 +259,7 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function sale_store_web_route_creates_sale()
+    public function test_sale_store_web_route_creates_sale()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.store'), [
             'product_id' => $this->product->id,
@@ -293,8 +280,7 @@ class PosSaleTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function sale_store_route_validates_stock_before_creating()
+    public function test_sale_store_route_validates_stock_before_creating()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.store'), [
             'product_id' => $this->product->id,
@@ -307,8 +293,7 @@ class PosSaleTest extends TestCase
         $response->assertSessionHasErrors('quantity_sold');
     }
 
-    /** @test */
-    public function sale_index_page_accessible_by_admin()
+    public function test_sale_index_page_accessible_by_admin()
     {
         Sale::create([
             'product_id' => $this->product->id,
@@ -326,8 +311,7 @@ class PosSaleTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function pos_store_returns_snap_token_for_midtrans_payment()
+    public function test_pos_store_returns_snap_token_for_midtrans_payment()
     {
         $response = $this->actingAs($this->kasir)->post(route('sales.pos.store'), [
             'items' => [
@@ -340,8 +324,7 @@ class PosSaleTest extends TestCase
         $response->assertJson(['success' => true, 'is_transfer' => true]);
     }
 
-    /** @test */
-    public function sale_destroy_handles_legacy_and_transaction_group_ids()
+    public function test_sale_destroy_handles_legacy_and_transaction_group_ids()
     {
         $sale = Sale::create([
             'product_id' => $this->product->id,

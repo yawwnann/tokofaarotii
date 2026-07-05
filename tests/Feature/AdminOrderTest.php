@@ -40,8 +40,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function admin_can_view_orders_list()
+    public function test_admin_can_view_orders_list()
     {
         $this->createOrder('menunggu_diproses');
 
@@ -49,8 +48,7 @@ class AdminOrderTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function admin_can_view_single_order()
+    public function test_admin_can_view_single_order()
     {
         $order = $this->createOrder('menunggu_diproses');
 
@@ -58,8 +56,7 @@ class AdminOrderTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function admin_can_update_order_status_to_valid_next_state()
+    public function test_admin_can_update_order_status_to_valid_next_state()
     {
         $order = $this->createOrder('menunggu_diproses');
 
@@ -75,8 +72,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function admin_cannot_update_order_status_to_invalid_state()
+    public function test_admin_cannot_update_order_status_to_invalid_state()
     {
         $order = $this->createOrder('menunggu_diproses');
 
@@ -92,8 +88,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function full_happy_path_transition_chain()
+    public function test_full_happy_path_transition_chain()
     {
         $order = $this->createOrder('menunggu_pembayaran', 'midtrans');
 
@@ -116,8 +111,7 @@ class AdminOrderTest extends TestCase
         }
     }
 
-    /** @test */
-    public function cancellation_chain_from_any_active_state()
+    public function test_cancellation_chain_from_any_active_state()
     {
         $activeStatuses = ['menunggu_pembayaran', 'menunggu_diproses', 'diproses'];
 
@@ -136,8 +130,7 @@ class AdminOrderTest extends TestCase
         }
     }
 
-    /** @test */
-    public function cannot_cancel_order_after_shipped()
+    public function test_cannot_cancel_order_after_shipped()
     {
         $order = $this->createOrder('dikirim');
 
@@ -153,8 +146,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cannot_change_status_of_completed_order()
+    public function test_cannot_change_status_of_completed_order()
     {
         $order = $this->createOrder('selesai');
 
@@ -170,8 +162,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cannot_change_status_of_cancelled_order()
+    public function test_cannot_change_status_of_cancelled_order()
     {
         $order = $this->createOrder('dibatalkan');
 
@@ -187,15 +178,13 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function kasir_can_access_orders()
+    public function test_kasir_can_access_orders()
     {
         $response = $this->actingAs($this->kasir)->get(route('admin.orders.index'));
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function cod_cancellation_increments_rejection_count()
+    public function test_cod_cancellation_increments_rejection_count()
     {
         $user = User::factory()->create(['cod_rejection_count' => 0]);
         $order = $this->createOrder('menunggu_diproses', 'cod', $user);
@@ -210,8 +199,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cod_cancellation_blocks_user_after_3_rejections()
+    public function test_cod_cancellation_blocks_user_after_3_rejections()
     {
         $user = User::factory()->create(['cod_rejection_count' => 2, 'cod_blocked_until' => null]);
 
@@ -226,8 +214,7 @@ class AdminOrderTest extends TestCase
         $this->assertNotNull($user->cod_blocked_until);
     }
 
-    /** @test */
-    public function non_cod_cancellation_does_not_increment_rejection()
+    public function test_non_cod_cancellation_does_not_increment_rejection()
     {
         $user = User::factory()->create(['cod_rejection_count' => 0]);
         $order = $this->createOrder('menunggu_pembayaran', 'midtrans', $user);
@@ -242,8 +229,7 @@ class AdminOrderTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function update_can_set_courier_and_tracking_number()
+    public function test_update_can_set_courier_and_tracking_number()
     {
         $order = $this->createOrder('diproses');
 

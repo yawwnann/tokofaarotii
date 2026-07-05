@@ -58,7 +58,7 @@ class ProductSeeder extends Seeder
             ['cat_id' => $bakery->id, 'name' => 'ROTI TAWAR BAKAR', 'price' => 8000, 'unit' => 'PCS', 'sku' => 'RT-BKR'],
             ['cat_id' => $bakery->id, 'name' => 'ROTI BURGER ISI 4', 'price' => 6000, 'unit' => 'ISI 4', 'sku' => 'RB-I4'],
             ['cat_id' => $bakery->id, 'name' => 'ROTI UNYIL', 'price' => 1000, 'unit' => 'PCS', 'sku' => 'RU-01'],
-        ];
+        ];s
 
         // 4. Masukkan data ke Database
         foreach ($products as $product) {

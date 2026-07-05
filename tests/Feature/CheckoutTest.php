@@ -7,6 +7,11 @@ use App\Models\Category;
 use App\Models\StockEntry;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Models\Store;
+use App\Models\ShippingZone;
+use App\Models\Province;
+use App\Models\Regency;
+use App\Models\District;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -14,12 +19,45 @@ class CheckoutTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private Province $province;
+    private Regency $regency;
+    private District $district;
+    private Store $store;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->withoutVite();
-        // Only disable CSRF middleware so auth/session still work
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $this->province = Province::firstOrCreate(
+            ['id' => '31'],
+            ['name' => 'DKI JAKARTA', 'island' => 'Jawa']
+        );
+        $this->regency = Regency::firstOrCreate(
+            ['id' => '3171'],
+            ['province_id' => '31', 'name' => 'KOTA JAKARTA SELATAN']
+        );
+        $this->district = District::firstOrCreate(
+            ['id' => '3171010'],
+            ['regency_id' => '3171', 'name' => 'JAGAKARSA']
+        );
+
+        $this->store = Store::create([
+            'name' => 'Toko Test',
+            'slug' => 'toko-test',
+            'district_id' => $this->district->id,
+            'address' => 'Jl. Test',
+            'is_active' => true,
+        ]);
+
+        foreach (ShippingZone::levels() as $level => $label) {
+            ShippingZone::create([
+                'store_id' => $this->store->id,
+                'zone_level' => $level,
+                'rate' => 5000,
+            ]);
+        }
     }
 
     public function test_checkout_index_redirects_if_cart_empty()
@@ -35,7 +73,13 @@ class CheckoutTest extends TestCase
     public function test_checkout_index_displays_address_and_cart()
     {
         $user = User::factory()->create();
-        $address = UserAddress::factory()->create(['user_id' => $user->id, 'is_default' => true]);
+        $address = UserAddress::factory()->create([
+            'user_id' => $user->id,
+            'is_default' => true,
+            'province_id' => $this->province->id,
+            'city_id' => $this->regency->id,
+            'district_id' => $this->district->id,
+        ]);
 
         $cart = [
             99 => [
@@ -59,7 +103,13 @@ class CheckoutTest extends TestCase
     public function test_checkout_process_creates_order_and_clears_cart()
     {
         $user = User::factory()->create();
-        $address = UserAddress::factory()->create(['user_id' => $user->id, 'is_default' => true]);
+        $address = UserAddress::factory()->create([
+            'user_id' => $user->id,
+            'is_default' => true,
+            'province_id' => $this->province->id,
+            'city_id' => $this->regency->id,
+            'district_id' => $this->district->id,
+        ]);
 
         $category = Category::create(['name' => 'Test Category']);
         $product = Product::create([
@@ -68,6 +118,7 @@ class CheckoutTest extends TestCase
             'sku' => 'SKU-' . uniqid(),
             'category_id' => $category->id,
             'weight' => 100,
+            'store_id' => $this->store->id,
         ]);
 
         StockEntry::create([
@@ -87,8 +138,9 @@ class CheckoutTest extends TestCase
             ]
         ];
 
+        $shippingCost = 5000; // same_district rate
         $codFee = round(20000 * 0.02, 2); // 400
-        $total = 20000 + 0 + $codFee; // shipping_cost = 0 when no store_district_id set
+        $total = 20000 + $shippingCost + $codFee;
 
         $response = $this->actingAs($user)
                          ->withSession(['cart' => $cart])
@@ -103,7 +155,7 @@ class CheckoutTest extends TestCase
             'user_id' => $user->id,
             'user_address_id' => $address->id,
             'subtotal' => 20000,
-            'shipping_cost' => 0,
+            'shipping_cost' => $shippingCost,
             'cod_fee' => $codFee,
             'total' => $total,
             'payment_method' => 'cod',
@@ -119,18 +171,33 @@ class CheckoutTest extends TestCase
         $this->assertNull(session('cart'));
     }
 
-    public function test_checkout_process_with_midtrans_works()
+    public function test_checkout_process_rejects_without_shipping_rates()
     {
+        $store2 = Store::create([
+            'name' => 'Toko Tanpa Tarif',
+            'slug' => 'toko-tanpa-tarif',
+            'district_id' => $this->district->id,
+            'address' => 'Jl. Lain',
+            'is_active' => true,
+        ]);
+
         $user = User::factory()->create();
-        $address = UserAddress::factory()->create(['user_id' => $user->id, 'is_default' => true]);
+        $address = UserAddress::factory()->create([
+            'user_id' => $user->id,
+            'is_default' => true,
+            'province_id' => $this->province->id,
+            'city_id' => $this->regency->id,
+            'district_id' => $this->district->id,
+        ]);
 
         $category = Category::create(['name' => 'Test Category']);
         $product = Product::create([
-            'name' => 'Produk B',
+            'name' => 'Produk Tanpa Ongkir',
             'price' => 15000,
             'sku' => 'SKU-' . uniqid(),
             'category_id' => $category->id,
             'weight' => 100,
+            'store_id' => $store2->id,
         ]);
 
         StockEntry::create([
@@ -154,20 +221,10 @@ class CheckoutTest extends TestCase
                          ->withSession(['cart' => $cart])
                          ->post('/checkout/process', [
                              'address_id' => $address->id,
-                             'payment_method' => 'midtrans',
+                             'payment_method' => 'cod',
                          ]);
 
-        // Midtrans flow should create order with no COD fee and redirect to payment
-        $response->assertRedirect();
-
-        $this->assertDatabaseHas('orders', [
-            'user_id' => $user->id,
-            'subtotal' => 15000,
-            'shipping_cost' => 0,
-            'cod_fee' => 0,
-            'total' => 15000,
-            'payment_method' => 'midtrans',
-            'order_status' => 'menunggu_pembayaran',
-        ]);
+        $response->assertRedirect(route('checkout.index'));
+        $response->assertSessionHasErrors('shipping');
     }
 }

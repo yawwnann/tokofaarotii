@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\District;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\ShippingRate;
+use App\Models\Product;
+use App\Models\ShippingZone;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,46 +36,20 @@ class CheckoutController extends Controller
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        // ── MULTI-STORE SHIPPING CALCULATION ──
-        $shippingCost = 0;
-        $shippingBreakdown = []; // For displaying per-store breakdown
-        $defaultDistrictId = DB::table('settings')->value('store_district_id');
+        $shippingResult = $address && $address->district_id
+            ? $this->calculateShippingCost($cart, $address->district_id)
+            : ['cost' => 0, 'breakdown' => [], 'has_rates' => false];
 
-        if ($address && $address->district_id) {
-            $productIds = array_column($cart, 'id');
-            $products = \App\Models\Product::whereIn('id', $productIds)->with('store.district')->get();
-
-            foreach ($products->groupBy('store_id') as $storeId => $items) {
-                $store = $items->first()->store;
-
-                // Jika tidak ada store (produk legacy), fallback ke settings.store_district_id
-                $originDistrictId = $store ? $store->district_id : $defaultDistrictId;
-                if (!$originDistrictId) continue;
-
-                $rate = ShippingRate::where('origin_district_id', $originDistrictId)
-                    ->where('destination_district_id', $address->district_id)
-                    ->first();
-
-                $cost = $rate ? (float) $rate->rate : 0;
-                $shippingCost += $cost;
-
-                $shippingBreakdown[] = [
-                    'store_name' => $store ? $store->name : 'Toko Utama',
-                    'store_district' => $store && $store->district ? $store->district->name : ($defaultDistrictId ? 'Kecamatan Default' : '-'),
-                    'cost' => $cost,
-                    'product_count' => $items->count(),
-                ];
-            }
-        }
-
+        $shippingCost = $shippingResult['cost'];
+        $shippingBreakdown = $shippingResult['breakdown'];
+        $hasRates = $shippingResult['has_rates'];
         $total = $subtotal + $shippingCost;
 
-        // Cek blokir COD
         $user = Auth::user();
         $codBlocked = $user->cod_blocked_until && now()->lessThan($user->cod_blocked_until);
 
         return view('customer.checkout.index', compact(
-            'cart', 'address', 'subtotal', 'shippingCost', 'shippingBreakdown', 'total', 'codBlocked'
+            'cart', 'address', 'subtotal', 'shippingCost', 'shippingBreakdown', 'hasRates', 'total', 'codBlocked'
         ));
     }
 
@@ -98,29 +74,17 @@ class CheckoutController extends Controller
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        // ── MULTI-STORE SHIPPING CALCULATION (PROCESS) ──
-        $shippingCost = 0;
-        $defaultDistrictId = DB::table('settings')->value('store_district_id');
+        $shippingResult = $userAddress->district_id
+            ? $this->calculateShippingCost($cart, $userAddress->district_id)
+            : ['cost' => 0, 'breakdown' => [], 'has_rates' => false];
 
-        if ($userAddress->district_id) {
-            $productIds = array_column($cart, 'id');
-            $products = \App\Models\Product::whereIn('id', $productIds)->with('store.district')->get();
+        $shippingCost = $shippingResult['cost'];
 
-            foreach ($products->groupBy('store_id') as $storeId => $items) {
-                $store = $items->first()->store;
-
-                $originDistrictId = $store ? $store->district_id : $defaultDistrictId;
-                if (!$originDistrictId) continue;
-
-                $rate = ShippingRate::where('origin_district_id', $originDistrictId)
-                    ->where('destination_district_id', $userAddress->district_id)
-                    ->first();
-
-                $shippingCost += $rate ? (float) $rate->rate : 0;
-            }
+        if (!$shippingResult['has_rates']) {
+            return redirect()->route('checkout.index')
+                ->withErrors(['shipping' => 'Belum ada tarif ongkir yang dikonfigurasi. Silakan hubungi admin toko.']);
         }
 
-        // Validasi jika COD dan user diblokir
         $user = Auth::user();
         if ($request->payment_method === 'cod') {
             if ($user->cod_blocked_until && now()->lessThan($user->cod_blocked_until)) {
@@ -129,7 +93,6 @@ class CheckoutController extends Controller
             }
         }
 
-        // Hitung COD fee (2% dari subtotal)
         $codFee = $request->payment_method === 'cod' ? round($subtotal * 0.02, 2) : 0;
         $total = $subtotal + $shippingCost + $codFee;
 
@@ -137,7 +100,6 @@ class CheckoutController extends Controller
         $orderStatus = $request->payment_method === 'cod' ? 'menunggu_diproses' : 'menunggu_pembayaran';
         $paymentStatus = 'pending';
 
-        // Jika Midtrans, generate snap token SEBELUM commit
         $snapToken = null;
         if ($request->payment_method === 'midtrans') {
             \Midtrans\Config::$serverKey = config('midtrans.server_key');
@@ -174,7 +136,7 @@ class CheckoutController extends Controller
             DB::beginTransaction();
 
             $productIds = array_column($cart, 'id');
-            $products = \App\Models\Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
+            $products = Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
 
             foreach ($cart as $item) {
                 $product = $products->get($item['id']);
@@ -227,5 +189,79 @@ class CheckoutController extends Controller
         }
 
         return redirect()->route('payment.show', $order->id)->with('success', 'Pesanan berhasil dibuat! Segera lakukan pembayaran.');
+    }
+
+    private function calculateShippingCost(array $cart, string $destinationDistrictId): array
+    {
+        $defaultDistrictId = DB::table('settings')->value('store_district_id');
+        $totalCost = 0;
+        $breakdown = [];
+        $hasRates = false;
+
+        $productIds = array_column($cart, 'id');
+        $products = Product::whereIn('id', $productIds)
+            ->with('store.district.regency.province')
+            ->get();
+
+        $destinationDistrict = District::with('regency.province')->find($destinationDistrictId);
+        if (!$destinationDistrict) {
+            return ['cost' => 0, 'breakdown' => [], 'has_rates' => false];
+        }
+
+        foreach ($products->groupBy('store_id') as $storeId => $items) {
+            $store = $items->first()->store;
+            if (!$store) continue;
+
+            $originDistrictId = $store->district_id ?? $defaultDistrictId;
+            if (!$originDistrictId) continue;
+
+            $originDistrict = District::with('regency.province')->find($originDistrictId);
+            if (!$originDistrict) continue;
+
+            $zoneLevel = $this->determineZoneLevel($originDistrict, $destinationDistrict);
+
+            $zone = ShippingZone::where('store_id', $storeId)
+                ->where('zone_level', $zoneLevel)
+                ->first();
+
+            $cost = $zone ? (float) $zone->rate : 0;
+            if ($zone) $hasRates = true;
+            $totalCost += $cost;
+
+            $breakdown[] = [
+                'store_name' => $store ? $store->name : 'Toko Utama',
+                'store_district' => $store && $store->district ? $store->district->name : ($defaultDistrictId ? 'Kecamatan Default' : '-'),
+                'cost' => $cost,
+                'product_count' => $items->count(),
+                'zone_level' => $zoneLevel,
+                'rate_found' => (bool) $zone,
+            ];
+        }
+
+        return ['cost' => $totalCost, 'breakdown' => $breakdown, 'has_rates' => $hasRates];
+    }
+
+    private function determineZoneLevel(District $origin, District $destination): string
+    {
+        if ($origin->id === $destination->id) {
+            return 'same_district';
+        }
+
+        if ($origin->regency_id === $destination->regency_id) {
+            return 'same_regency';
+        }
+
+        $originProvinceId = $origin->regency->province_id;
+        $destProvinceId = $destination->regency->province_id;
+
+        if ($originProvinceId === $destProvinceId) {
+            return 'same_province';
+        }
+
+        if ($origin->regency->province->island === $destination->regency->province->island) {
+            return 'same_island';
+        }
+
+        return 'different_island';
     }
 }

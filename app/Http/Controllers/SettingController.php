@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 
 class SettingController extends Controller
 {
@@ -61,5 +64,31 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Pengaturan sistem berhasil diperbarui!');
+    }
+
+    public function showPasswordForm()
+    {
+        return view('settings.password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'current_password.current_password' => 'Password saat ini tidak sesuai.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+            'password.min' => 'Password baru minimal 8 karakter.',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('settings.password')->with('success', 'Password berhasil diperbarui!');
     }
 }

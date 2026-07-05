@@ -144,7 +144,6 @@
             <div class="form-group">
                 <label>Role / Hak Akses</label>
                 <select name="role" id="create-role" required class="form-input" onchange="toggleCreateStoreField()">
-                    <option value="pengguna">Pelanggan</option>
                     <option value="pemilik">Pemilik Toko</option>
                     <option value="kasir">Kasir</option>
                     <option value="admin_master">Admin Master</option>
@@ -201,7 +200,6 @@
             <div class="form-group" id="edit-role-wrapper">
                 <label>Role / Hak Akses</label>
                 <select name="role" id="edit-role" required class="form-input" onchange="toggleEditStoreField()">
-                    <option value="pengguna">Pelanggan</option>
                     <option value="pemilik">Pemilik Toko</option>
                     <option value="kasir">Kasir</option>
                     <option value="admin_master">Admin Master</option>
@@ -360,12 +358,7 @@
             const editStoreGroup = document.getElementById('edit-store-group');
             const editStoreSelect = document.getElementById('edit-store-id');
 
-            // Sinkronisasi data role ke dropdown dengan aman
-            if(user.role === 'pelanggan') {
-                roleSelect.value = 'pengguna';
-            } else {
-                roleSelect.value = user.role;
-            }
+            roleSelect.value = user.role;
             
             // Set store value
             if (user.store_id) {

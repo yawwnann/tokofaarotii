@@ -14,13 +14,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Panggil ProductSeeder yang berisi logika pembuatan kategori dan produk lengkap
+        // Panggil seeder secara berurutan — Store harus ada sebelum User & Product
+        // Urutan penting: Wilayah → Store → Produk → User → Data dummy
         $this->call([
-            ProductSeeder::class,
-            UserSeeder::class,
-            WilayahSeeder::class,
-            DummyDataSeeder::class,
-            StoreSeeder::class,
+            WilayahSeeder::class,      // 1. Data provinsi/kabupaten/kecamatan
+            StoreSeeder::class,         // 2. Toko (membutuhkan district_id dari wilayah)
+            ProductSeeder::class,       // 3. Produk (membutuhkan store_id)
+            UserSeeder::class,          // 4. User (membutuhkan store_id)
+            DummyDataSeeder::class,     // 5. Data dummy (membutuhkan produk & user)
         ]);
     }
 }

@@ -26,6 +26,32 @@
     .btn-change-address { background: #ffffff; color: #3b82f6; border: 1px solid #bfdbfe; padding: 0.5rem 1rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: all 0.2s; display: inline-block; margin-top: 1rem; }
     .btn-change-address:hover { background: #eff6ff; }
 
+    .shipping-unavailable {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+        color: #991b1b;
+    }
+    .shipping-unavailable i {
+        font-size: 1.25rem;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+    .shipping-unavailable strong {
+        display: block;
+        font-size: .9rem;
+        margin-bottom: .25rem;
+    }
+    .shipping-unavailable p {
+        margin: 0;
+        font-size: .8rem;
+        opacity: .85;
+    }
+
     .shipping-rate-display {
         background: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -159,13 +185,26 @@
                     </div>
 
                     @if($address)
+                        @if(isset($hasRates) && !$hasRates)
+                        <div class="shipping-unavailable">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Ongkos Kirim Belum Tersedia</strong>
+                                <p>Admin belum mengatur tarif ongkos kirim. Silakan hubungi admin toko untuk melanjutkan checkout.</p>
+                            </div>
+                        </div>
+                        @else
                         <div class="shipping-rate-display">
                             <div>
                                 <div class="rate-label">Tarif Ongkir (Zonasi Toko)</div>
                                 <div class="rate-note">Berdasarkan kecamatan tujuan pengiriman</div>
                             </div>
                             <div class="rate-value" id="display_shipping_rate">
-                                Rp {{ number_format($shippingCost, 0, ',', '.') }}
+                                @if($shippingCost > 0)
+                                    Rp {{ number_format($shippingCost, 0, ',', '.') }}
+                                @else
+                                    <span style="color:#22c55e;">Gratis</span>
+                                @endif
                             </div>
                         </div>
 
@@ -179,10 +218,17 @@
                                     <span class="ssi-store">{{ $breakdown['store_name'] }}</span>
                                     <span class="ssi-district">({{ $breakdown['store_district'] }})</span>
                                 </div>
-                                <span class="ssi-cost">Rp {{ number_format($breakdown['cost'], 0, ',', '.') }}</span>
+                                <span class="ssi-cost">
+                                    @if($breakdown['cost'] > 0)
+                                        Rp {{ number_format($breakdown['cost'], 0, ',', '.') }}
+                                    @else
+                                        <span style="color:#94a3b8;">Gratis</span>
+                                    @endif
+                                </span>
                             </div>
                             @endforeach
                         </div>
+                        @endif
                         @endif
 
                         <input type="hidden" name="shipping_cost" value="{{ $shippingCost }}">

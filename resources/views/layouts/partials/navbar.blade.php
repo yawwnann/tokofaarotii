@@ -53,9 +53,9 @@
                <li><a href="{{ route('welcome') }}" class="{{ request()->routeIs('welcome') ? 'active' : '' }}">Beranda</a></li>
                <li><a href="{{ route('tentang-kami') }}" class="{{ request()->routeIs('tentang-kami') ? 'active' : '' }}">Tentang Kami</a></li>
                
-               <li class="nav-item dropdown">
+               <li class="nav-item dropdown" style="cursor: pointer;">
                   <a class="nav-link dropdown-toggle dropdown-toggle-custom" 
-                     href="#" 
+                     href="javascript:void(0)" 
                      id="navbarDropdown" 
                      role="button" 
                      data-bs-toggle="dropdown" 

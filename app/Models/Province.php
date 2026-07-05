@@ -12,7 +12,7 @@ class Province extends Model
     protected $keyType = 'string';
     public $timestamps = false;
 
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['id', 'name', 'island'];
 
     public function regencies(): HasMany
     {

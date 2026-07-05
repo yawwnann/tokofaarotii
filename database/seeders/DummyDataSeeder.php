@@ -84,6 +84,7 @@ class DummyDataSeeder extends Seeder
                 $qtySold = rand(1, 5);
                 $saleDate = Carbon::now()->subDays(rand(1, 180));
                 Sale::create([
+                    'store_id' => $product->store_id,
                     'product_id' => $product->id,
                     'quantity_sold' => $qtySold,
                     'sale_date' => $saleDate,

@@ -11,46 +11,58 @@ class MidtransController extends Controller
 {
     public function handle(Request $request)
     {
-        // Konfigurasi Midtrans
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        $serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$serverKey = $serverKey;
         \Midtrans\Config::$isProduction = config('midtrans.is_production');
 
-        try {
-            $notification = new \Midtrans\Notification();
-        } catch (\Exception $e) {
-            Log::error('Midtrans Webhook Error: ' . $e->getMessage());
+        $rawBody = $request->getContent();
+        $notification = json_decode($rawBody, true);
+
+        if (!$notification || !isset($notification['transaction_id'])) {
+            Log::error('Midtrans Webhook: Invalid notification body');
             return response()->json(['message' => 'Invalid notification'], 400);
         }
 
-        $orderId = $notification->order_id;
-        $transactionStatus = $notification->transaction_status;
-        $fraudStatus = $notification->fraud_status;
+        $orderId = $notification['order_id'] ?? null;
+        $transactionStatus = $notification['transaction_status'] ?? null;
+        $fraudStatus = $notification['fraud_status'] ?? null;
+        $transactionId = $notification['transaction_id'] ?? null;
+
+        if (!$orderId) {
+            Log::error('Midtrans Webhook: Missing order_id');
+            return response()->json(['message' => 'Missing order_id'], 400);
+        }
 
         $order = Order::where('invoice', $orderId)->first();
 
         if (!$order) {
+            Log::warning("Midtrans Webhook: Order not found for invoice: $orderId");
             return response()->json(['message' => 'Order not found'], 404);
         }
 
         if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
             if ($fraudStatus == 'challenge') {
-                $order->update([
-                    'payment_status' => 'pending',
-                ]);
+                $order->update(['payment_status' => 'pending']);
+                Log::info("Midtrans Webhook: Order $orderId challenged");
             } else {
                 $order->update([
                     'payment_status' => 'paid',
                     'order_status' => 'menunggu_diproses',
+                    'transaction_id' => $transactionId,
                 ]);
+                Log::info("Midtrans Webhook: Order $orderId paid");
             }
-        } else if ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
+        } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $order->update([
                 'payment_status' => 'failed',
                 'order_status' => 'dibatalkan',
+                'transaction_id' => $transactionId,
             ]);
-        } else if ($transactionStatus == 'pending') {
+            Log::info("Midtrans Webhook: Order $orderId $transactionStatus");
+        } elseif ($transactionStatus == 'pending') {
             $order->update([
                 'payment_status' => 'pending',
+                'transaction_id' => $transactionId,
             ]);
         }
 

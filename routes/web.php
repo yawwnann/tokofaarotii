@@ -17,7 +17,6 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\ShippingRateController;
 use App\Http\Controllers\Customer\ProfileCustomerController;
 use App\Http\Controllers\Customer\AddressCustomerController;
 
@@ -288,8 +287,12 @@ Route::middleware(['auth', 'role:admin_master'])->group(function () {
 
     Route::resource('pegawai', PegawaiController::class);
 
-    // Shipping Rates Management
-    Route::resource('shipping-rates', ShippingRateController::class);
+    // Redirect old shipping-rates to shipping-zones
+    Route::redirect('/shipping-rates', '/shipping-zones', 301)->name('shipping-rates.index');
+
+    // Shipping Zones Management
+    Route::get('/shipping-zones', [\App\Http\Controllers\ShippingZoneController::class, 'index'])->name('shipping-zones.index');
+    Route::put('/shipping-zones', [\App\Http\Controllers\ShippingZoneController::class, 'update'])->name('shipping-zones.update');
 
     // Stores Management
     Route::resource('stores', \App\Http\Controllers\StoreController::class);
@@ -302,6 +305,8 @@ Route::middleware(['auth', 'role:admin_master,pemilik,kasir'])->group(function (
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
         Route::put('/update', [SettingController::class, 'update'])->name('update');
+        Route::get('/password', [SettingController::class, 'showPasswordForm'])->name('password');
+        Route::put('/password', [SettingController::class, 'updatePassword'])->name('password.update');
     });
 
     Route::prefix('profile')->name('profile.')->group(function () {

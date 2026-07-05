@@ -46,6 +46,14 @@
                 </button>
             </div>
             
+            <div class="nav-card" style="margin-top: 1rem;">
+                <a href="{{ route('settings.password') }}" class="nav-item-btn" style="text-decoration: none; display: flex; border-left-color: transparent;">
+                    <i class="fas fa-key" style="color: #ef4444;"></i>
+                    <span style="color: #ef4444; font-weight: 700;">Ubah Password</span>
+                    <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 0.7rem; color: #cbd5e1;"></i>
+                </a>
+            </div>
+            
             <div class="nav-info-card">
                 <i class="fas fa-info-circle"></i>
                 <p>Perubahan pada pengaturan ini akan berdampak langsung pada identitas struk belanja dan informasi kontak WhatsApp utama sistem.</p>

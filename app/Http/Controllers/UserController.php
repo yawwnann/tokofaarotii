@@ -24,7 +24,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir', 'pelanggan'])],
+            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir'])],
             'store_id' => ['nullable', 'exists:stores,id'],
         ], [
             'email.unique' => 'Email sudah terdaftar dalam sistem.',
@@ -60,7 +60,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir', 'pelanggan'])],
+            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir'])],
             'store_id' => ['nullable', 'exists:stores,id'],
         ], [
             'email.unique' => 'Email sudah terdaftar dalam sistem.',
