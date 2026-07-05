@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Sale;
 use App\Models\Product;
 use Illuminate\Http\Request;
-// use Midtrans\Config;
-// use Midtrans\Snap;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -43,8 +43,14 @@ class SaleController extends Controller
      */
     public function create()
     {
-        $products = Product::with('category')->get();
-        return view('sales.create', compact('products'));
+        $user = Auth::user();
+        $products = Product::with('category')
+            ->when($user->role === 'kasir' && $user->store_id, function ($q) use ($user) {
+                $q->where('store_id', $user->store_id);
+            })
+            ->get();
+        $store = $user->store ?? DB::table('settings')->first();
+        return view('sales.create', compact('products', 'store'));
     }
 
     /**
@@ -75,10 +81,11 @@ class SaleController extends Controller
         $transactionId = 'TRX-S-' . date('Ymd') . '-' . rand(100, 999);
 
         Sale::create([
-            'invoice_number' => $transactionId, // Sinkronisasi kolom invoice
+            'invoice_number' => $transactionId,
+            'store_id' => Auth::user()->store_id,
             'product_id' => $request->product_id,
             'quantity_sold' => $request->quantity_sold,
-            'price_at_sale' => $product->price, // ✅ MENGUNCI HARGA SAAT INI
+            'price_at_sale' => $product->price,
             'total_price' => $request->total_price,
             'customer_name' => $request->customer_name ?? 'Umum',
             'source' => $request->source,
@@ -102,6 +109,8 @@ class SaleController extends Controller
 
         try {
             $transactionId = 'TRX-' . date('Ymd') . '-' . rand(1000, 9999);
+            $paymentMethod = $request->payment_method ?? 'tunai';
+            $isTransfer = in_array($paymentMethod, ['transfer', 'midtrans']);
 
             // 1. VALIDASI STOK TERLEBIH DAHULU UNTUK SEMUA BARANG DI KERANJANG
             foreach ($request->items as $item) {
@@ -119,27 +128,63 @@ class SaleController extends Controller
                 $product = Product::find($item['id']);
                 
                 Sale::create([
-                    'invoice_number' => $transactionId, // Sinkronisasi kolom invoice
+                    'invoice_number' => $transactionId,
+                    'store_id'      => Auth::user()->store_id,
                     'product_id'    => $item['id'],
                     'quantity_sold' => $item['qty'],
-                    'price_at_sale' => $product->price, // ✅ MENGUNCI HARGA SAAT INI
+                    'price_at_sale' => $product->price,
                     'total_price'   => $item['price'] * $item['qty'],
                     'customer_name' => $request->customer_name ?? 'Umum',
                     'source'        => 'offline',
-                    'status'        => 'completed',
+                    'status'        => $isTransfer ? 'pending' : 'completed',
                     'transaction_group' => $transactionId,
-                    'payment_method' => $request->payment_method ?? 'tunai',
+                    'payment_method' => $paymentMethod,
                     'sale_date'      => now(),
                 ]);
             }
 
-            return response()->json([
+            // 3. Jika Transfer, generate Snap token Midtrans
+            $snapToken = null;
+            if ($isTransfer) {
+                $totalBelanja = collect($request->items)->sum(fn($i) => $i['price'] * $i['qty']);
+
+                \Midtrans\Config::$serverKey = config('midtrans.server_key');
+                \Midtrans\Config::$isProduction = config('midtrans.is_production');
+                \Midtrans\Config::$isSanitized = true;
+                \Midtrans\Config::$is3ds = true;
+
+                $params = [
+                    'transaction_details' => [
+                        'order_id' => $transactionId,
+                        'gross_amount' => (int) $totalBelanja,
+                    ],
+                    'customer_details' => [
+                        'first_name' => $request->customer_name ?? 'Pembeli',
+                    ],
+                ];
+
+                try {
+                    $snapToken = \Midtrans\Snap::getSnapToken($params);
+                } catch (\Exception $e) {
+                    // Jika Midtrans gagal, tetap simpan transaksi dengan status pending
+                    $snapToken = null;
+                }
+            }
+
+            $response = [
                 'success' => true, 
                 'transaction_id' => $transactionId,
                 'customer' => $request->customer_name ?? 'Umum',
-                'payment_method' => $request->payment_method ?? 'tunai',
-                'time' => date('d M Y H:i')
-            ]);
+                'payment_method' => $paymentMethod,
+                'time' => date('d M Y H:i'),
+                'is_transfer' => $isTransfer,
+            ];
+
+            if ($snapToken) {
+                $response['snap_token'] = $snapToken;
+            }
+
+            return response()->json($response);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
@@ -215,40 +260,3 @@ class SaleController extends Controller
             ->with('success', 'Penjualan berhasil dikonfirmasi');
     }
 }
-
-    // // logika midtrans
-    // public function __construct(){
-    //     Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-    //     Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
-    //     Config::$isSanitized = true;
-    //     Config::$is3ds = true; 
-    // }
-
-    // public function buatTransaksiMidtrans(Request $request) {
-    //     // hitung total belanja dari kasir faa
-    //     $totalBelanja = $request->total_price;
-    //     $transactionId = 'TRX-' . time();
-
-    //     // dikirim ke midtrans
-    //     $params = [
-    //         'transaction_details' => [
-    //             'order_id' => $transactionId,
-    //             'gross_amount' => (int) $totalBelanja,
-    //         ],
-    //         'customer_details' => [
-    //             'first_name' => $request->customer_name ?? 'Umum',
-    //         ],
-    //     ];
-
-    //     try {
-    //         $snapToken = Snap::getSnapToken($params);
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'snap_token' => $snapToken,
-    //             'transaction_id' => $transactionId
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['success' => false, 'message' => $e->getMessage()]);
-    //     }
-    // }

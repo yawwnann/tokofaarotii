@@ -39,10 +39,20 @@
                 @forelse($rates as $rate)
                 <tr>
                     <td>
-                        <span class="u-name">{{ $rate->originDistrict->name ?? '-' }}</span>
+                        @if($rate->originDistrict)
+                            <span class="u-name">{{ $rate->originDistrict->name }}</span>
+                            <span class="u-sub">{{ $rate->originDistrict->regency->name ?? '' }}, {{ $rate->originDistrict->regency->province->name ?? '' }}</span>
+                        @else
+                            <span class="u-name">-</span>
+                        @endif
                     </td>
                     <td>
-                        <span class="u-name">{{ $rate->destinationDistrict->name ?? '-' }}</span>
+                        @if($rate->destinationDistrict)
+                            <span class="u-name">{{ $rate->destinationDistrict->name }}</span>
+                            <span class="u-sub">{{ $rate->destinationDistrict->regency->name ?? '' }}, {{ $rate->destinationDistrict->regency->province->name ?? '' }}</span>
+                        @else
+                            <span class="u-name">-</span>
+                        @endif
                     </td>
                     <td style="text-align:right;">
                         <span class="u-name" style="color:#f97316;">Rp {{ number_format($rate->rate, 0, ',', '.') }}</span>
@@ -93,6 +103,7 @@
     th { background: #f8fafc; padding: 1rem 1.5rem; text-align: left; font-size: .65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
     td { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
     .u-name { font-size: .9rem; font-weight: 700; color: #1e293b; }
+    .u-sub { display:block; font-size: .7rem; font-weight: 500; color: #94a3b8; margin-top: 2px; }
     .u-date { font-size: .75rem; color: #94a3b8; font-weight: 600; }
     .action-btns { display: flex; flex-direction: column; gap: 5px; align-items: center; }
     .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; padding: 0.4rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; color:#fff; }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -15,8 +17,13 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $categories = Category::all();
+        $user = Auth::user();
 
-        $products = Product::with('category')
+        $products = Product::with('category', 'store')
+            // Filter berdasarkan toko jika user adalah kasir
+            ->when($user->role === 'kasir' && $user->store_id, function ($query) use ($user) {
+                $query->where('store_id', $user->store_id);
+            })
             // Filter Kategori
             ->when($request->category_id, function ($query) use ($request) {
                 $query->where('category_id', $request->category_id);
@@ -40,8 +47,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        return view('products.create', compact('categories'));
+        return redirect()->route('products.index');
     }
 
     /**
@@ -58,6 +64,15 @@ class ProductController extends Controller
             'unit' => 'required|string|max:20',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Auto-assign store_id
+        $user = Auth::user();
+        if ($user->role === 'kasir' && $user->store_id) {
+            $validated['store_id'] = $user->store_id;
+        } elseif ($user->role === 'admin_master' && $request->store_id) {
+            // Admin bisa override store_id
+            $validated['store_id'] = $request->store_id;
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
@@ -83,7 +98,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all();
-        return view('products.edit', compact('product', 'categories'));
+        $stores = Store::where('is_active', true)->get();
+        return view('products.edit', compact('product', 'categories', 'stores'));
     }
 
     /**
@@ -99,7 +115,16 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'unit' => 'required|string|max:20',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'store_id' => 'nullable|exists:stores,id',
         ]);
+
+        // Update store_id: admin bisa ganti, kasir tidak bisa ubah
+        $user = Auth::user();
+        if ($user->role === 'admin_master' && $request->has('store_id')) {
+            $validated['store_id'] = $request->store_id;
+        }
+        // Kasir: store_id tetap dari tokonya (tidak bisa diubah)
+        // Produk legacy tanpa store_id: tetap null (fallback ke settings)
 
         if ($request->hasFile('image')) {
             // Delete old image if exists

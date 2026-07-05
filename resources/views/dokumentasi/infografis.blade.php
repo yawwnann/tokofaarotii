@@ -36,12 +36,16 @@
         @foreach($infografis as $info)
         <div class="info-card group">
             <div class="info-img-wrap">
+                @if($info->gambar)
                 <img src="{{ asset('storage/' . $info->gambar) }}" alt="{{ $info->judul }}">
                 <div class="info-overlay">
                     <a href="{{ asset('storage/' . $info->gambar) }}" target="_blank" class="btn-view-full">
                         <i class="fas fa-search-plus"></i> Lihat Full
                     </a>
                 </div>
+                @else
+                <div style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;"><i class="fas fa-image" style="font-size:2rem;"></i></div>
+                @endif
             </div>
             <div class="info-body">
                 <h4 class="info-title">{{ $info->judul }}</h4>

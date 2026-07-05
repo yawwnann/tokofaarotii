@@ -5,6 +5,11 @@
 
 @section('content')
 
+@php
+    $originId = old('origin_district_id', $shippingRate->origin_district_id ?? '');
+    $destId   = old('destination_district_id', $shippingRate->destination_district_id ?? '');
+@endphp
+
 @if($errors->any())
 <div class="alert-banner" style="background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b;">
     <div class="alert-inner">
@@ -26,27 +31,41 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Kecamatan Asal (Toko)</label>
-                    <select name="origin_district_id" class="form-input" required>
-                        <option value="">Pilih Kecamatan Asal...</option>
-                        @foreach($districts as $district)
-                            <option value="{{ $district->id }}" {{ old('origin_district_id', $shippingRate->origin_district_id ?? '') == $district->id ? 'selected' : '' }}>
-                                {{ $district->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label class="form-label">Asal (Toko)</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;">
+                        <select id="origin_province" class="form-input" data-prefix="origin" data-level="province">
+                            <option value="">Provinsi...</option>
+                            @foreach($provinces as $prov)
+                                <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+                            @endforeach
+                        </select>
+                        <select id="origin_regency" class="form-input" data-prefix="origin" data-level="regency" disabled>
+                            <option value="">Kab/Kota...</option>
+                        </select>
+                        <select id="origin_district" class="form-input" data-prefix="origin" data-level="district" disabled>
+                            <option value="">Kecamatan...</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="origin_district_id" id="origin_district_id" value="{{ old('origin_district_id', $shippingRate->origin_district_id ?? '') }}">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Kecamatan Tujuan</label>
-                    <select name="destination_district_id" class="form-input" required>
-                        <option value="">Pilih Kecamatan Tujuan...</option>
-                        @foreach($districts as $district)
-                            <option value="{{ $district->id }}" {{ old('destination_district_id', $shippingRate->destination_district_id ?? '') == $district->id ? 'selected' : '' }}>
-                                {{ $district->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label class="form-label">Tujuan</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;">
+                        <select id="dest_province" class="form-input" data-prefix="dest" data-level="province">
+                            <option value="">Provinsi...</option>
+                            @foreach($provinces as $prov)
+                                <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+                            @endforeach
+                        </select>
+                        <select id="dest_regency" class="form-input" data-prefix="dest" data-level="regency" disabled>
+                            <option value="">Kab/Kota...</option>
+                        </select>
+                        <select id="dest_district" class="form-input" data-prefix="dest" data-level="district" disabled>
+                            <option value="">Kecamatan...</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="destination_district_id" id="dest_district_id" value="{{ old('destination_district_id', $shippingRate->destination_district_id ?? '') }}">
                 </div>
             </div>
 
@@ -84,4 +103,95 @@
     .alert-inner { display:flex;align-items:flex-start;gap:.5rem; }
     @media (max-width: 700px) { .form-row { grid-template-columns: 1fr; } }
 </style>
+
+<script>
+function setupCascading(prefix, selectedId) {
+    const provSel = document.getElementById(prefix + '_province');
+    const regSel  = document.getElementById(prefix + '_regency');
+    const disSel  = document.getElementById(prefix + '_district');
+    const hidden  = document.getElementById(prefix + '_district_id');
+
+    function loadChildren(parent, level) {
+        const sel = level === 'regency' ? regSel : disSel;
+        sel.innerHTML = '<option value="">Memuat...</option>';
+        sel.disabled = true;
+
+        const url = level === 'regency'
+            ? `/api/wilayah/regencies/${parent.value}`
+            : `/api/wilayah/districts/${parent.value}`;
+
+        fetch(url)
+            .then(r => r.json())
+            .then(data => {
+                sel.innerHTML = '<option value="">Pilih ' + (level === 'regency' ? 'Kab/Kota' : 'Kecamatan') + '...</option>';
+                data.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = item.name;
+                    sel.appendChild(opt);
+                });
+                sel.disabled = false;
+            })
+            .catch(() => { sel.innerHTML = '<option value="">Gagal</option>'; });
+    }
+
+    provSel.addEventListener('change', function() {
+        regSel.innerHTML = '<option value="">Kab/Kota...</option>';
+        regSel.disabled = true;
+        disSel.innerHTML = '<option value="">Kecamatan...</option>';
+        disSel.disabled = true;
+        hidden.value = '';
+        if (this.value) loadChildren(this, 'regency');
+    });
+
+    regSel.addEventListener('change', function() {
+        disSel.innerHTML = '<option value="">Kecamatan...</option>';
+        disSel.disabled = true;
+        hidden.value = '';
+        if (this.value) loadChildren(this, 'district');
+    });
+
+    disSel.addEventListener('change', function() {
+        hidden.value = this.value || '';
+    });
+
+    // Pre-populate on edit
+    if (selectedId && selectedId.length >= 7) {
+        const provId = selectedId.substring(0, 2);
+        const regId  = selectedId.substring(0, 4);
+        provSel.value = provId;
+
+        fetch(`/api/wilayah/regencies/${provId}`)
+            .then(r => r.json())
+            .then(regencies => {
+                regSel.innerHTML = '<option value="">Kab/Kota...</option>';
+                regencies.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.id;
+                    opt.textContent = r.name;
+                    if (r.id === regId) opt.selected = true;
+                    regSel.appendChild(opt);
+                });
+                regSel.disabled = false;
+                return fetch(`/api/wilayah/districts/${regId}`);
+            })
+            .then(r => r.json())
+            .then(districts => {
+                disSel.innerHTML = '<option value="">Kecamatan...</option>';
+                districts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.name;
+                    if (d.id === selectedId) opt.selected = true;
+                    disSel.appendChild(opt);
+                });
+                disSel.disabled = false;
+            })
+            .catch(() => {});
+    }
+}
+
+setupCascading('origin', '{{ $originId }}');
+setupCascading('dest', '{{ $destId }}');
+</script>
 @endsection

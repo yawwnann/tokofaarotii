@@ -7,7 +7,7 @@ use App\Http\Controllers\StockEntryController;
 use App\Http\Controllers\SaleController;
 
 
-Route::name('api.')->group(function () {
+Route::middleware(['auth', 'role:admin_master,kasir'])->name('api.')->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::apiResource('stock-entries', StockEntryController::class);
     Route::apiResource('sales', SaleController::class);

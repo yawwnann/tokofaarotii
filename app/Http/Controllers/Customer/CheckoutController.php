@@ -34,23 +34,38 @@ class CheckoutController extends Controller
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        // Cari tarif ongkir berdasarkan zonasi kecamatan
-        $shippingRate = 0;
-        $storeDistrictId = null;
+        // ── MULTI-STORE SHIPPING CALCULATION ──
+        $shippingCost = 0;
+        $shippingBreakdown = []; // For displaying per-store breakdown
+        $defaultDistrictId = DB::table('settings')->value('store_district_id');
 
         if ($address && $address->district_id) {
-            $setting = DB::table('settings')->first();
-            $storeDistrictId = $setting->store_district_id ?? null;
+            $productIds = array_column($cart, 'id');
+            $products = \App\Models\Product::whereIn('id', $productIds)->with('store.district')->get();
 
-            if ($storeDistrictId) {
-                $rate = ShippingRate::where('origin_district_id', $storeDistrictId)
+            foreach ($products->groupBy('store_id') as $storeId => $items) {
+                $store = $items->first()->store;
+
+                // Jika tidak ada store (produk legacy), fallback ke settings.store_district_id
+                $originDistrictId = $store ? $store->district_id : $defaultDistrictId;
+                if (!$originDistrictId) continue;
+
+                $rate = ShippingRate::where('origin_district_id', $originDistrictId)
                     ->where('destination_district_id', $address->district_id)
                     ->first();
-                $shippingRate = $rate ? (float) $rate->rate : 0;
+
+                $cost = $rate ? (float) $rate->rate : 0;
+                $shippingCost += $cost;
+
+                $shippingBreakdown[] = [
+                    'store_name' => $store ? $store->name : 'Toko Utama',
+                    'store_district' => $store && $store->district ? $store->district->name : ($defaultDistrictId ? 'Kecamatan Default' : '-'),
+                    'cost' => $cost,
+                    'product_count' => $items->count(),
+                ];
             }
         }
 
-        $shippingCost = $shippingRate;
         $total = $subtotal + $shippingCost;
 
         // Cek blokir COD
@@ -58,7 +73,7 @@ class CheckoutController extends Controller
         $codBlocked = $user->cod_blocked_until && now()->lessThan($user->cod_blocked_until);
 
         return view('customer.checkout.index', compact(
-            'cart', 'address', 'subtotal', 'shippingCost', 'total', 'codBlocked'
+            'cart', 'address', 'subtotal', 'shippingCost', 'shippingBreakdown', 'total', 'codBlocked'
         ));
     }
 
@@ -83,16 +98,26 @@ class CheckoutController extends Controller
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        // Cari tarif ongkir dari database zonasi
-        $setting = DB::table('settings')->first();
-        $storeDistrictId = $setting->store_district_id ?? null;
+        // ── MULTI-STORE SHIPPING CALCULATION (PROCESS) ──
         $shippingCost = 0;
+        $defaultDistrictId = DB::table('settings')->value('store_district_id');
 
-        if ($storeDistrictId && $userAddress->district_id) {
-            $rate = ShippingRate::where('origin_district_id', $storeDistrictId)
-                ->where('destination_district_id', $userAddress->district_id)
-                ->first();
-            $shippingCost = $rate ? (float) $rate->rate : 0;
+        if ($userAddress->district_id) {
+            $productIds = array_column($cart, 'id');
+            $products = \App\Models\Product::whereIn('id', $productIds)->with('store.district')->get();
+
+            foreach ($products->groupBy('store_id') as $storeId => $items) {
+                $store = $items->first()->store;
+
+                $originDistrictId = $store ? $store->district_id : $defaultDistrictId;
+                if (!$originDistrictId) continue;
+
+                $rate = ShippingRate::where('origin_district_id', $originDistrictId)
+                    ->where('destination_district_id', $userAddress->district_id)
+                    ->first();
+
+                $shippingCost += $rate ? (float) $rate->rate : 0;
+            }
         }
 
         // Validasi jika COD dan user diblokir
@@ -111,6 +136,39 @@ class CheckoutController extends Controller
         $invoice = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
         $orderStatus = $request->payment_method === 'cod' ? 'menunggu_diproses' : 'menunggu_pembayaran';
         $paymentStatus = 'pending';
+
+        // Jika Midtrans, generate snap token SEBELUM commit
+        $snapToken = null;
+        if ($request->payment_method === 'midtrans') {
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$isProduction = config('midtrans.is_production');
+            \Midtrans\Config::$isSanitized = true;
+            \Midtrans\Config::$is3ds = true;
+
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $invoice,
+                    'gross_amount' => $total,
+                ],
+                'customer_details' => [
+                    'first_name' => Auth::user()->name,
+                    'email' => Auth::user()->email,
+                    'phone' => $userAddress->phone ?? '',
+                ],
+            ];
+
+            try {
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+            } catch (\Exception $e) {
+                return redirect()->route('checkout.index')
+                    ->withErrors(['midtrans' => 'Gagal terhubung ke server pembayaran: ' . $e->getMessage()]);
+            }
+
+            if (!$snapToken) {
+                return redirect()->route('checkout.index')
+                    ->withErrors(['midtrans' => 'Gagal mendapatkan token pembayaran. Silakan coba lagi.']);
+            }
+        }
 
         try {
             DB::beginTransaction();
@@ -142,6 +200,7 @@ class CheckoutController extends Controller
                 'payment_status' => $paymentStatus,
                 'order_status' => $orderStatus,
                 'courier' => 'Zonasi Toko',
+                'snap_token' => $snapToken,
             ]);
 
             foreach ($cart as $item) {
@@ -165,30 +224,6 @@ class CheckoutController extends Controller
 
         if ($request->payment_method === 'cod') {
             return redirect()->route('welcome')->with('success', 'Pesanan COD berhasil dibuat! Menunggu diproses.');
-        }
-
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('midtrans.is_production');
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
-
-        $params = [
-            'transaction_details' => [
-                'order_id' => $invoice,
-                'gross_amount' => $total,
-            ],
-            'customer_details' => [
-                'first_name' => Auth::user()->name,
-                'email' => Auth::user()->email,
-                'phone' => $userAddress->phone ?? '',
-            ],
-        ];
-
-        try {
-            $snapToken = \Midtrans\Snap::getSnapToken($params);
-            $order->update(['snap_token' => $snapToken]);
-        } catch (\Exception $e) {
-            return redirect()->route('checkout.index')->withErrors(['midtrans' => 'Gagal terhubung ke server pembayaran: ' . $e->getMessage()]);
         }
 
         return redirect()->route('payment.show', $order->id)->with('success', 'Pesanan berhasil dibuat! Segera lakukan pembayaran.');

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             WilayahSeeder::class,
             DummyDataSeeder::class,
+            StoreSeeder::class,
         ]);
     }
 }

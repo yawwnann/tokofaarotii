@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\District;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -12,9 +12,9 @@ class SettingController extends Controller
     public function index()
     {
         $settings = DB::table('settings')->first();
-        $districts = District::orderBy('name')->get();
+        $provinces = Province::orderBy('name')->get();
 
-        return view('settings.index', compact('settings', 'districts'));
+        return view('settings.index', compact('settings', 'provinces'));
     }
 
     public function update(Request $request)

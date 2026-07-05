@@ -98,16 +98,23 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Kecamatan Toko (Asal Pengiriman)</label>
-                            <select name="store_district_id" class="form-input">
-                                <option value="">Pilih Kecamatan...</option>
-                                @foreach($districts as $district)
-                                    <option value="{{ $district->id }}" {{ old('store_district_id', $settings->store_district_id ?? '') == $district->id ? 'selected' : '' }}>
-                                        {{ $district->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">Kecamatan ini akan digunakan sebagai titik asal perhitungan ongkos kirim zonasi.</p>
+                            <label class="form-label">Lokasi Toko (Asal Pengiriman)</label>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.5rem;">
+                                <select id="settings_province" class="form-input" data-level="province">
+                                    <option value="">Provinsi...</option>
+                                    @foreach($provinces as $prov)
+                                        <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+                                    @endforeach
+                                </select>
+                                <select id="settings_regency" class="form-input" data-level="regency" disabled>
+                                    <option value="">Kabupaten/Kota...</option>
+                                </select>
+                                <select id="settings_district" class="form-input" data-level="district" disabled>
+                                    <option value="">Kecamatan...</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="store_district_id" id="settings_district_id" value="{{ old('store_district_id', $settings->store_district_id ?? '') }}">
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">Pilih provinsi → kabupaten → kecamatan lokasi toko. Digunakan sebagai titik asal perhitungan ongkos kirim zonasi.</p>
                         </div>
                     </div>
                 </div>
@@ -230,18 +237,111 @@
     @media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .settings-nav { display: none; } .form-row { grid-template-columns: 1fr; } }
 </style>
 
-{{-- ── JAVASCRIPT SWITCHER SETTINGS ── --}}
+{{-- ── JAVASCRIPT CASCADING WILAYAH ── --}}
 <script>
-    function switchSettingsTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.add('d-none');
+function switchSettingsTab(tabId) {
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.add('d-none');
+    });
+    document.getElementById(tabId).classList.remove('d-none');
+    document.querySelectorAll('.nav-item-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById('btn-' + tabId).classList.add('active');
+}
+
+function loadChildren(parent, level) {
+    const sel = parent.closest('.form-group')?.querySelector(`[data-level="${level}"]`);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Memuat...</option>';
+    sel.disabled = true;
+
+    const url = level === 'regency'
+        ? `/api/wilayah/regencies/${parent.value}`
+        : `/api/wilayah/districts/${parent.value}`;
+
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            sel.innerHTML = '<option value="">Pilih ' + (level === 'regency' ? 'Kabupaten/Kota' : 'Kecamatan') + '...</option>';
+            data.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = item.name;
+                sel.appendChild(opt);
+            });
+            sel.disabled = false;
+        })
+        .catch(() => {
+            sel.innerHTML = '<option value="">Gagal memuat</option>';
         });
-        document.getElementById(tabId).classList.remove('d-none');
-        document.querySelectorAll('.nav-item-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.getElementById('btn-' + tabId).classList.add('active');
-    }
+}
+
+document.querySelectorAll('[data-level="province"], [data-level="regency"]').forEach(el => {
+    el.addEventListener('change', function() {
+        const next = this.dataset.level === 'province' ? 'regency' : 'district';
+        const nextSel = this.closest('.form-group')?.querySelector(`[data-level="${next}"]`);
+        if (nextSel) {
+            nextSel.innerHTML = '<option value="">Pilih ' + (next === 'regency' ? 'Kabupaten/Kota' : 'Kecamatan') + '...</option>';
+            nextSel.disabled = true;
+            if (next === 'district') {
+                document.getElementById('settings_district_id').value = '';
+            }
+        }
+        if (this.value) loadChildren(this, next);
+    });
+});
+
+document.querySelectorAll('[data-level="district"]').forEach(el => {
+    el.addEventListener('change', function() {
+        document.getElementById('settings_district_id').value = this.value || '';
+    });
+});
+
+// Pre-populate on page load if editing
+(function() {
+    const districtId = document.getElementById('settings_district_id').value;
+    if (!districtId) return;
+
+    const provId = districtId.substring(0, 2);
+    const regId = districtId.substring(0, 4);
+
+    const provinceSel = document.getElementById('settings_province');
+    provinceSel.value = provId;
+
+    // Load regencies then districts
+    fetch(`/api/wilayah/regencies/${provId}`)
+        .then(r => r.json())
+        .then(regencies => {
+            const regSel = document.getElementById('settings_regency');
+            regSel.innerHTML = '<option value="">Kabupaten/Kota...</option>';
+            regencies.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                opt.textContent = r.name;
+                if (r.id === regId) opt.selected = true;
+                regSel.appendChild(opt);
+            });
+            regSel.disabled = false;
+
+            // Now load districts
+            return fetch(`/api/wilayah/districts/${regId}`);
+        })
+        .then(r => r.json())
+        .then(districts => {
+            const disSel = document.getElementById('settings_district');
+            disSel.innerHTML = '<option value="">Kecamatan...</option>';
+            districts.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name;
+                if (d.id === districtId) opt.selected = true;
+                disSel.appendChild(opt);
+            });
+            disSel.disabled = false;
+        })
+        .catch(() => {});
+})();
 </script>
 
 @endsection

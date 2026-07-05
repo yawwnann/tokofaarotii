@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     protected $fillable = [
+        'store_id',
         'product_id',
         'quantity_sold',
         'total_price',
@@ -20,6 +21,11 @@ class Sale extends Model
         'payment_method',
         'invoice_number',
     ];
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
 
     protected static function booted()
     {

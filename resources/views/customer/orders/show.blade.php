@@ -40,8 +40,8 @@
                                 <tr>
                                     <td class="px-4 py-3">
                                         <div class="d-flex align-items-center">
-                                            @if($item->product && $item->product->image_path)
-                                                <img src="{{ Storage::url($item->product->image_path) }}" alt="{{ $item->product_name }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            @if($item->product && $item->product->image)
+                                                <img src="{{ asset('storage/'.$item->product->image) }}" alt="{{ $item->product_name }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                             @else
                                                 <div class="bg-light rounded me-3 d-flex justify-content-center align-items-center text-muted" style="width: 50px; height: 50px;">
                                                     <i class="bi bi-image"></i>

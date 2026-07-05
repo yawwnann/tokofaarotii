@@ -578,6 +578,18 @@
                     <i class="fas fa-users-cog"></i>
                     <span>Kelola Pegawai</span>
                 </a>
+
+                <a href="{{ route('stores.index') }}"
+                   class="nav-link {{ request()->routeIs('stores.*') ? 'active' : '' }}">
+                    <i class="fas fa-store"></i>
+                    <span>Kelola Toko</span>
+                </a>
+
+                <a href="{{ route('shipping-rates.index') }}"
+                   class="nav-link {{ request()->routeIs('shipping-rates.*') ? 'active' : '' }}">
+                    <i class="fas fa-truck"></i>
+                    <span>Tarif Ongkir</span>
+                </a>
                 @endif
 
                 @if(in_array(auth()->user()?->role, ['admin_master', 'pemilik']))
@@ -744,7 +756,7 @@
                             </div>
                         </div>
                         <div class="dropdown-panel-body">
-                            <a href="{{ route('settings.index') }}" class="dropdown-panel-item">
+                            <a href="{{ route('profile.edit') }}" class="dropdown-panel-item">
                                 <i class="fas fa-user-circle"></i>
                                 <span>Profil Saya</span>
                             </a>

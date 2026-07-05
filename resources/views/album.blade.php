@@ -266,9 +266,13 @@
                 @forelse($albums as $album)
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 50 }}">
                     <div class="album-card-wrapper">
-                        <a href="{{ asset('storage/' . $album->gambar) }}" class="album-card text-decoration-none" title="{{ $album->judul }}">
+                        <a href="{{ $album->gambar ? asset('storage/' . $album->gambar) : '#' }}" class="album-card text-decoration-none" title="{{ $album->judul }}">
                             <div class="album-img-wrapper">
+                                @if($album->gambar)
                                 <img src="{{ asset('storage/' . $album->gambar) }}" alt="{{ $album->judul }}" class="album-img">
+                                @else
+                                <div class="album-img" style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;"><i class="fas fa-image" style="font-size:2rem;"></i></div>
+                                @endif
                                 <div class="album-img-overlay">
                                     <i class="bi bi-fullscreen"></i>
                                 </div>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\District;
+use App\Models\Province;
 use App\Models\ShippingRate;
 use Illuminate\Http\Request;
 
@@ -10,14 +10,17 @@ class ShippingRateController extends Controller
 {
     public function index()
     {
-        $rates = ShippingRate::with(['originDistrict', 'destinationDistrict'])->latest()->paginate(20);
+        $rates = ShippingRate::with([
+            'originDistrict.regency.province',
+            'destinationDistrict.regency.province',
+        ])->latest()->paginate(20);
         return view('shipping_rates.index', compact('rates'));
     }
 
     public function create()
     {
-        $districts = District::orderBy('name')->get();
-        return view('shipping_rates.form', compact('districts'));
+        $provinces = Province::orderBy('name')->get();
+        return view('shipping_rates.form', compact('provinces'));
     }
 
     public function store(Request $request)
@@ -36,8 +39,8 @@ class ShippingRateController extends Controller
 
     public function edit(ShippingRate $shippingRate)
     {
-        $districts = District::orderBy('name')->get();
-        return view('shipping_rates.form', compact('shippingRate', 'districts'));
+        $provinces = Province::orderBy('name')->get();
+        return view('shipping_rates.form', compact('shippingRate', 'provinces'));
     }
 
     public function update(Request $request, ShippingRate $shippingRate)

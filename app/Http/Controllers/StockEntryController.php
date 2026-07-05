@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StockEntry;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StockEntryController extends Controller
 {
@@ -12,6 +13,14 @@ class StockEntryController extends Controller
     {
         $query = StockEntry::with('product')->where('type', 'in');
         
+        // Filter by store for kasir
+        $user = Auth::user();
+        if ($user->role === 'kasir' && $user->store_id) {
+            $query->whereHas('product', function ($q) use ($user) {
+                $q->where('store_id', $user->store_id);
+            });
+        }
+
         // Filter by product
         if (request('product_id')) {
             $query->where('product_id', request('product_id'));
@@ -23,7 +32,14 @@ class StockEntryController extends Controller
         }
         
         $stockEntries = $query->latest()->paginate(10);
-        $products = Product::orderBy('name')->get();
+        $products = Product::orderBy('name')
+            ->when($user->role === 'kasir' && $user->store_id, function ($q) use ($user) {
+                $q->where('store_id', $user->store_id);
+            })
+            ->get();
+        
+        $totalIn = StockEntry::where('type', 'in')->sum('quantity');
+        $totalTransactions = StockEntry::where('type', 'in')->count();
         
         $totalIn = StockEntry::where('type', 'in')->sum('quantity');
         $totalTransactions = StockEntry::where('type', 'in')->count();
@@ -38,7 +54,12 @@ class StockEntryController extends Controller
 
     public function create()
     {
-        $products = Product::orderBy('name')->get();
+        $user = Auth::user();
+        $products = Product::orderBy('name')
+            ->when($user->role === 'kasir' && $user->store_id, function ($q) use ($user) {
+                $q->where('store_id', $user->store_id);
+            })
+            ->get();
         return view('stock-entries.create', compact('products'));
     }
 
@@ -68,7 +89,12 @@ class StockEntryController extends Controller
 
     public function edit(StockEntry $stockEntry)
     {
-        $products = Product::orderBy('name')->get();
+        $user = Auth::user();
+        $products = Product::orderBy('name')
+            ->when($user->role === 'kasir' && $user->store_id, function ($q) use ($user) {
+                $q->where('store_id', $user->store_id);
+            })
+            ->get();
         return view('stock-entries.edit', compact('stockEntry', 'products'));
     }
 

@@ -39,6 +39,14 @@
     .shipping-rate-display .rate-value { font-size: 1.2rem; font-weight: 800; color: #f97316; }
     .shipping-rate-display .rate-note { font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem; }
 
+    .shipping-breakdown { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem 1rem; }
+    .shipping-store-item { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px dashed #e2e8f0; }
+    .shipping-store-item:last-child { border-bottom: none; }
+    .ssi-info { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+    .ssi-store { font-size: 0.8rem; font-weight: 600; color: #1e293b; }
+    .ssi-district { font-size: 0.75rem; color: #94a3b8; }
+    .ssi-cost { font-size: 0.85rem; font-weight: 700; color: #f97316; white-space: nowrap; }
+
     .payment-options { display: flex; flex-direction: column; gap: 1rem; }
     .payment-tile { position: relative; }
     .payment-tile input[type="radio"] { position: absolute; opacity: 0; }
@@ -160,6 +168,23 @@
                                 Rp {{ number_format($shippingCost, 0, ',', '.') }}
                             </div>
                         </div>
+
+                        {{-- Multi-Store Shipping Breakdown --}}
+                        @if(count($shippingBreakdown) > 0)
+                        <div class="shipping-breakdown" style="margin-top:1rem;">
+                            <p style="font-size:0.8rem;font-weight:700;color:#475569;margin:0 0 0.5rem;">Rincian Ongkos Kirim:</p>
+                            @foreach($shippingBreakdown as $breakdown)
+                            <div class="shipping-store-item">
+                                <div class="ssi-info">
+                                    <span class="ssi-store">{{ $breakdown['store_name'] }}</span>
+                                    <span class="ssi-district">({{ $breakdown['store_district'] }})</span>
+                                </div>
+                                <span class="ssi-cost">Rp {{ number_format($breakdown['cost'], 0, ',', '.') }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
                         <input type="hidden" name="shipping_cost" value="{{ $shippingCost }}">
                         <input type="hidden" name="courier" value="Zonasi Toko">
                         <input type="hidden" name="shipping_service" value="Reguler">

@@ -99,7 +99,7 @@
                             @if(strtolower($sale->payment_method ?? 'tunai') == 'tunai')
                                 <span class="badge-tunai"><i class="fas fa-money-bill-wave"></i> Tunai</span>
                             @else
-                                <span class="badge-qris"><i class="fas fa-qrcode"></i> QRIS</span>
+                                <span class="badge-transfer"><i class="fas fa-credit-card"></i> {{ ucfirst($sale->payment_method ?? 'Online') }}</span>
                             @endif
                         </div>
                     </td>
@@ -159,8 +159,8 @@
     /* ── Toolbar ── */
     .toolbar-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
     .toolbar-title { font-size: 1.125rem; font-weight: 800; color: #1e293b; margin: 0; }
-    .btn-primary { background: #6366f1; color: #fff; padding: .625rem 1.25rem; border-radius: .75rem; font-size: .85rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: .5rem; transition: all .2s; }
-    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99, 102, 241, .2); }
+    .btn-primary { background: #f97316; color: #fff; padding: .625rem 1.25rem; border-radius: .75rem; font-size: .85rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: .5rem; transition: all .2s; }
+    .btn-primary:hover { background: #ea580c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99, 102, 241, .2); }
 
     /* ── Table ── */
     .table-container { background: #fff; border-radius: 1.25rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(15,23,42,.05); overflow: hidden; }
@@ -173,18 +173,18 @@
     .td-date { font-size: .85rem; font-weight: 700; color: #1e293b; }
     .td-no { font-size: .75rem; font-weight: 800; color: #94a3b8; text-align: center; }
     .td-sub-info { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
-    .text-indigo { color: #6366f1; }
+    .text-indigo { color: #f97316; }
 
     .td-product-group { display: flex; flex-direction: column; gap: 4px; }
     .p-name-group { font-size: .8rem; font-weight: 700; color: #1e293b; line-height: 1.4; }
     .p-cat-group { font-size: .65rem; font-weight: 600; color: #94a3b8; }
 
     .badge-tunai { background: #f0fdf4; color: #166534; padding: .25rem .6rem; border-radius: .5rem; font-size: .65rem; font-weight: 800; display: inline-flex; align-items: center; gap: .3rem; }
-    .badge-qris { background: #f5f3ff; color: #6d28d9; padding: .25rem .6rem; border-radius: .5rem; font-size: .65rem; font-weight: 800; display: inline-flex; align-items: center; gap: .3rem; border: 1px solid #ddd6fe; }
+    .badge-transfer { background: #f0fdf4; color: #166534; padding: .25rem .6rem; border-radius: .5rem; font-size: .65rem; font-weight: 800; display: inline-flex; align-items: center; gap: .3rem; border: 1px solid #bbf7d0; }
     .td-payment { display: flex; flex-direction: column; gap: 4px; }
 
     .qty-badge { display: inline-block; padding: .2rem .6rem; background: #f1f5f9; border-radius: .5rem; font-size: .75rem; font-weight: 800; color: #475569; }
-    .total-price { font-size: .9rem; font-weight: 800; color: #6366f1; }
+    .total-price { font-size: .9rem; font-weight: 800; color: #f97316; }
 
     /* Action buttons standard */
     .action-btns { display: flex; flex-direction: column; gap: 5px; align-items: center; }
@@ -214,6 +214,10 @@
 </style>
 
 <script>
+const storeName = "{{ addslashes(DB::table('settings')->value('store_name') ?? 'TOKO FAA') }}";
+const storeAddress = "{{ addslashes(DB::table('settings')->value('store_address') ?? '') }}";
+const storePhone = "{{ addslashes(DB::table('settings')->value('store_whatsapp') ?? '') }}";
+
 function reprintStruk(trxId, customer, date, products, qty, total, payment) {
     let strukWindow = window.open('', '', 'width=400,height=600');
     
@@ -227,9 +231,9 @@ function reprintStruk(trxId, customer, date, products, qty, total, payment) {
         <html>
         <body style="font-family: 'Courier New', Courier, monospace; width: 300px; padding: 10px; color: #333;">
             <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                <h2 style="margin: 0; font-size: 18px;">TOKO FAA FROZEN</h2>
-                <p style="margin: 2px 0; font-size: 10px;">Kuday, Sungai Liat, Kabupaten Bangka</p>
-                <p style="margin: 2px 0; font-size: 10px;">HP: 085368787893</p>
+                <h2 style="margin: 0; font-size: 18px;">${storeName}</h2>
+                ${storeAddress ? `<p style="margin: 2px 0; font-size: 10px;">${storeAddress}</p>` : ''}
+                ${storePhone ? `<p style="margin: 2px 0; font-size: 10px;">${storePhone}</p>` : ''}
                 <p style="margin: 5px 0 0; font-size: 9px; font-weight: bold;">(COPY STRUK)</p>
             </div>
             <div style="font-size: 10px; margin-bottom: 10px; line-height: 1.4;">

@@ -90,6 +90,7 @@
                     <th style="width:80px; text-align:center;">GAMBAR</th>
                     <th>NAMA PRODUK</th>
                     <th style="width:130px;">KATEGORI</th>
+                    <th style="width:120px;">TOKO</th>
                     <th style="width:140px;">HARGA</th>
                     <th style="width:120px;">STOK</th>
                     <th class="col-action">AKSI</th>
@@ -141,6 +142,15 @@
                         @endif
                     </td>
 
+                    {{-- TOKO --}}
+                    <td>
+                        @if($product->store)
+                            <span style="font-size:.7rem;font-weight:600;color:#f97316;">{{ $product->store->name }}</span>
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </td>
+
                     {{-- HARGA --}}
                     <td>
                         <div class="prod-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
@@ -187,7 +197,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="empty-state">
+                    <td colspan="8" class="empty-state">
                         <i class="fas fa-box-open"></i>
                         <p>Belum ada produk</p>
                         <button type="button" onclick="openCreateModal()" class="btn-primary" style="margin-top:.75rem;">
@@ -350,6 +360,21 @@
                     <input type="text" name="unit" id="unit" required value="pcs" placeholder="Contoh: pcs, box" class="form-input">
                 </div>
             </div>
+
+            {{-- Store (Hanya untuk Admin) --}}
+            @if(auth()->user()?->role === 'admin_master')
+            <div class="form-group">
+                <label class="form-section-label" for="store_id">
+                    <i class="fas fa-store"></i> Toko
+                </label>
+                <select name="store_id" id="store_id" class="form-input">
+                    <option value="">— Semua Toko —</option>
+                    @foreach(\App\Models\Store::where('is_active', true)->get() as $store)
+                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
 
             {{-- Footer Buttons --}}
             <div class="modal-footer">
@@ -554,6 +579,10 @@
         document.getElementById('price').value = product.price;
         document.getElementById('sku').value = product.sku || '';
         document.getElementById('unit').value = product.unit || 'pcs';
+        const storeSelect = document.getElementById('store_id');
+        if (storeSelect && product.store_id) {
+            storeSelect.value = product.store_id;
+        }
 
         // Tampilkan gambar preview lama jika ada
         if (product.image) {

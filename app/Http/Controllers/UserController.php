@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,8 +13,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->paginate(10);
-        return view('kelola-user.index', compact('users'));
+        $users = User::with('store')->latest()->paginate(10);
+        $stores = Store::where('is_active', true)->orderBy('name')->get();
+        return view('kelola-user.index', compact('users', 'stores'));
     }
 
     public function store(Request $request)
@@ -22,12 +24,18 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'pegawai', 'pelanggan'])],
+            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir', 'pelanggan'])],
+            'store_id' => ['nullable', 'exists:stores,id'],
         ], [
             'email.unique' => 'Email sudah terdaftar dalam sistem.',
             'role.in' => 'Role yang dipilih tidak valid.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
+
+        // store_id required untuk role kasir
+        if ($validated['role'] === 'kasir' && empty($request->store_id)) {
+            return redirect()->back()->with('error', 'Store ID wajib diisi untuk role Kasir.')->withInput();
+        }
 
         try {
             User::create([
@@ -35,6 +43,7 @@ class UserController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role' => $validated['role'],
+                'store_id' => $validated['role'] === 'kasir' ? $request->store_id : null,
                 'email_verified_at' => now(), 
             ]);
 
@@ -51,18 +60,25 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'pegawai', 'pelanggan'])],
+            'role' => ['required', 'string', Rule::in(['admin_master', 'pemilik', 'kasir', 'pelanggan'])],
+            'store_id' => ['nullable', 'exists:stores,id'],
         ], [
             'email.unique' => 'Email sudah terdaftar dalam sistem.',
             'role.in' => 'Role yang dipilih tidak valid.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
+        // store_id required untuk role kasir
+        if ($validated['role'] === 'kasir' && empty($request->store_id)) {
+            return redirect()->back()->with('error', 'Store ID wajib diisi untuk role Kasir.')->withInput();
+        }
+
         try {
             $updateData = [
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'role' => $validated['role'],
+                'store_id' => $validated['role'] === 'kasir' ? $request->store_id : null,
             ];
 
             if ($request->filled('password')) {

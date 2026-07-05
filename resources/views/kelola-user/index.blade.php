@@ -41,6 +41,7 @@
                     <th>NAMA PENGGUNA</th>
                     <th>EMAIL</th>
                     <th style="text-align:center;">ROLE</th>
+                    <th style="text-align:center;">TOKO</th>
                     <th style="text-align:center;">BERGABUNG PADA</th>
                     <th style="text-align:center;">AKSI</th>
                 </tr>
@@ -78,6 +79,13 @@
                             @default
                                 <span class="role-badge badge-gray">PELANGGAN</span>
                         @endswitch
+                    </td>
+                    <td style="text-align:center;">
+                        @if($user->store)
+                            <span class="u-store">{{ $user->store->name }}</span>
+                        @else
+                            <span style="font-size:.75rem;color:#94a3b8;">-</span>
+                        @endif
                     </td>
                     <td style="text-align:center;">
                         <span class="u-date">{{ $user->created_at ? $user->created_at->translatedFormat('d F Y') : '-' }}</span>
@@ -135,13 +143,25 @@
             </div>
             <div class="form-group">
                 <label>Role / Hak Akses</label>
-                <select name="role" required class="form-input">
+                <select name="role" id="create-role" required class="form-input" onchange="toggleCreateStoreField()">
                     <option value="pengguna">Pelanggan</option>
                     <option value="pemilik">Pemilik Toko</option>
                     <option value="kasir">Kasir</option>
                     <option value="admin_master">Admin Master</option>
                 </select>
             </div>
+
+            <div class="form-group" id="create-store-group" style="display:none;">
+                <label>Toko <span class="text-danger">*</span></label>
+                <select name="store_id" class="form-input">
+                    <option value="">— Pilih Toko —</option>
+                    @foreach($stores as $store)
+                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                    @endforeach
+                </select>
+                <p style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">Pilih toko tempat kasir akan bekerja.</p>
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
                     <label>Kata Sandi</label>
@@ -180,7 +200,7 @@
             
             <div class="form-group" id="edit-role-wrapper">
                 <label>Role / Hak Akses</label>
-                <select name="role" id="edit-role" required class="form-input">
+                <select name="role" id="edit-role" required class="form-input" onchange="toggleEditStoreField()">
                     <option value="pengguna">Pelanggan</option>
                     <option value="pemilik">Pemilik Toko</option>
                     <option value="kasir">Kasir</option>
@@ -189,6 +209,17 @@
                 <p id="edit-role-warning" class="hidden" style="font-size: 0.75rem; color: #ef4444; margin-top: 4px;">
                     *Anda tidak bisa mengubah role Anda sendiri untuk mencegah hilangnya akses sistem.
                 </p>
+            </div>
+
+            <div class="form-group" id="edit-store-group" style="display:none;">
+                <label>Toko <span class="text-danger">*</span></label>
+                <select name="store_id" id="edit-store-id" class="form-input">
+                    <option value="">— Pilih Toko —</option>
+                    @foreach($stores as $store)
+                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                    @endforeach
+                </select>
+                <p style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">Pilih toko tempat kasir akan bekerja.</p>
             </div>
 
             {{-- Section Ganti Password ini akan di sembunyikan/ditampilkan lewat JS secara dinamis --}}
@@ -236,6 +267,8 @@
     
     .u-email { font-size: .85rem; color: #64748b; font-weight: 500; }
     .u-date { font-size: .85rem; color: #94a3b8; font-weight: 600; }
+    .u-store { font-size: .7rem; color: #f97316; font-weight: 600; margin-top: 2px; display:block; }
+    .text-danger { color: #ef4444; }
 
     .role-badge { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .65rem; font-weight: 800; letter-spacing: .05em; }
     .badge-red { background: #fee2e2; color: #dc2626; }
@@ -291,6 +324,27 @@
         document.getElementById(id).classList.toggle('hidden');
     }
 
+    // ── TOGGLE STORE FIELD ──
+    function toggleCreateStoreField() {
+        const role = document.getElementById('create-role').value;
+        const storeGroup = document.getElementById('create-store-group');
+        if (role === 'kasir') {
+            storeGroup.style.display = 'block';
+        } else {
+            storeGroup.style.display = 'none';
+        }
+    }
+
+    function toggleEditStoreField() {
+        const role = document.getElementById('edit-role').value;
+        const storeGroup = document.getElementById('edit-store-group');
+        if (role === 'kasir') {
+            storeGroup.style.display = 'block';
+        } else {
+            storeGroup.style.display = 'none';
+        }
+    }
+
     // Menggunakan Event Listener untuk memproses klik edit agar lebih clean & aman
     document.querySelectorAll('.btn-edit-user').forEach(button => {
         button.addEventListener('click', function() {
@@ -303,6 +357,8 @@
             const roleSelect = document.getElementById('edit-role');
             const roleWarning = document.getElementById('edit-role-warning');
             const passwordSection = document.getElementById('edit-password-section');
+            const editStoreGroup = document.getElementById('edit-store-group');
+            const editStoreSelect = document.getElementById('edit-store-id');
 
             // Sinkronisasi data role ke dropdown dengan aman
             if(user.role === 'pelanggan') {
@@ -311,6 +367,20 @@
                 roleSelect.value = user.role;
             }
             
+            // Set store value
+            if (user.store_id) {
+                editStoreSelect.value = user.store_id;
+            } else {
+                editStoreSelect.value = '';
+            }
+
+            // Tampilkan/sembunyikan store field berdasarkan role
+            if (roleSelect.value === 'kasir') {
+                editStoreGroup.style.display = 'block';
+            } else {
+                editStoreGroup.style.display = 'none';
+            }
+
             // ── VALIDASI UTAMA: LOGIKA KATA SANDI & AKSES ROLE ──
             if (user.id === currentUserId) {
                 // Jika mengedit akun sendiri: Form password MUNCUL, dropdown role DIKUNCI
