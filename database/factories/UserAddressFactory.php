@@ -18,12 +18,17 @@ class UserAddressFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory(),
-            'label' => $this->faker->word(),
+            'label' => $this->faker->randomElement(['Rumah', 'Kantor', 'Kost', 'Apartemen']),
             'receiver_name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
-            'province' => $this->faker->state(),
-            'city' => $this->faker->city(),
-            'district' => $this->faker->citySuffix(),
+            'province_id' => '31', // DKI Jakarta
+            'province' => 'DKI JAKARTA',
+            'city_id' => '3171', // Jakarta Selatan
+            'city' => 'KOTA JAKARTA SELATAN',
+            'district_id' => '3171010', // Jagakarsa
+            'district' => 'JAGAKARSA',
+            'village_id' => '3171010001', // Jagakarsa village
+            'village' => 'JAGAKARSA',
             'postal_code' => $this->faker->postcode(),
             'address' => $this->faker->streetAddress(),
             'is_default' => false,

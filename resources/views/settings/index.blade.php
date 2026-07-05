@@ -96,6 +96,19 @@
                             <textarea name="store_address" class="form-input" rows="3" 
                                       placeholder="Alamat lengkap Toko FAA untuk footer/struk...">{{ old('store_address', $settings->store_address ?? '') }}</textarea>
                         </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Kecamatan Toko (Asal Pengiriman)</label>
+                            <select name="store_district_id" class="form-input">
+                                <option value="">Pilih Kecamatan...</option>
+                                @foreach($districts as $district)
+                                    <option value="{{ $district->id }}" {{ old('store_district_id', $settings->store_district_id ?? '') == $district->id ? 'selected' : '' }}>
+                                        {{ $district->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">Kecamatan ini akan digunakan sebagai titik asal perhitungan ongkos kirim zonasi.</p>
+                        </div>
                     </div>
                 </div>
 

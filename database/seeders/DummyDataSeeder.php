@@ -32,16 +32,21 @@ class DummyDataSeeder extends Seeder
             return;
         }
 
-        // 1. Buat Alamat Customer
+        // 1. Buat Alamat Customer (dengan data wilayah yang valid)
         $address = UserAddress::updateOrCreate(
             ['user_id' => $customer->id, 'is_default' => true],
             [
                 'receiver_name' => 'Bapak Pelanggan',
                 'phone' => '081234567890',
                 'address' => 'Jl. Kebon Jeruk No. 12',
-                'district' => 'Kebon Jeruk',
-                'city' => 'Jakarta Barat',
-                'province' => 'DKI Jakarta',
+                'province_id' => '31',
+                'province' => 'DKI JAKARTA',
+                'city_id' => '3174',
+                'city' => 'KOTA JAKARTA BARAT',
+                'district_id' => '3174040',
+                'district' => 'KEBON JERUK',
+                'village_id' => '3174040001',
+                'village' => 'KEBON JERUK',
                 'postal_code' => '11530',
             ]
         );

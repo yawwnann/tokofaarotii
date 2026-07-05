@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ShippingRate;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $cart = Session::get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('cart.index')->withErrors(['cart' => 'Keranjang belanja kosong.']);
         }
@@ -24,8 +25,7 @@ class CheckoutController extends Controller
         $address = UserAddress::where('user_id', Auth::id())
                     ->where('is_default', true)
                     ->first();
-                    
-        // Jika tidak ada yang default, ambil yang terbaru
+
         if (!$address) {
             $address = UserAddress::where('user_id', Auth::id())->latest()->first();
         }
@@ -34,17 +34,38 @@ class CheckoutController extends Controller
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        // Ongkir diset gratis untuk tahap testing Midtrans
-        $shippingCost = 0;
+        // Cari tarif ongkir berdasarkan zonasi kecamatan
+        $shippingRate = 0;
+        $storeDistrictId = null;
+
+        if ($address && $address->district_id) {
+            $setting = DB::table('settings')->first();
+            $storeDistrictId = $setting->store_district_id ?? null;
+
+            if ($storeDistrictId) {
+                $rate = ShippingRate::where('origin_district_id', $storeDistrictId)
+                    ->where('destination_district_id', $address->district_id)
+                    ->first();
+                $shippingRate = $rate ? (float) $rate->rate : 0;
+            }
+        }
+
+        $shippingCost = $shippingRate;
         $total = $subtotal + $shippingCost;
 
-        return view('customer.checkout.index', compact('cart', 'address', 'subtotal', 'shippingCost', 'total'));
+        // Cek blokir COD
+        $user = Auth::user();
+        $codBlocked = $user->cod_blocked_until && now()->lessThan($user->cod_blocked_until);
+
+        return view('customer.checkout.index', compact(
+            'cart', 'address', 'subtotal', 'shippingCost', 'total', 'codBlocked'
+        ));
     }
 
     public function process(Request $request)
     {
         $cart = Session::get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('cart.index')->withErrors(['cart' => 'Keranjang belanja kosong.']);
         }
@@ -54,53 +75,75 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:midtrans,cod',
         ]);
 
+        $userAddress = UserAddress::where('id', $request->address_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
         $subtotal = array_reduce($cart, function ($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
 
-        $shippingCost = 0; // Sesuai kesepakatan sementara
-        $total = $subtotal + $shippingCost;
+        // Cari tarif ongkir dari database zonasi
+        $setting = DB::table('settings')->first();
+        $storeDistrictId = $setting->store_district_id ?? null;
+        $shippingCost = 0;
+
+        if ($storeDistrictId && $userAddress->district_id) {
+            $rate = ShippingRate::where('origin_district_id', $storeDistrictId)
+                ->where('destination_district_id', $userAddress->district_id)
+                ->first();
+            $shippingCost = $rate ? (float) $rate->rate : 0;
+        }
+
+        // Validasi jika COD dan user diblokir
+        $user = Auth::user();
+        if ($request->payment_method === 'cod') {
+            if ($user->cod_blocked_until && now()->lessThan($user->cod_blocked_until)) {
+                return redirect()->route('checkout.index')
+                    ->withErrors(['cod' => 'Fitur COD diblokir sementara karena Anda telah menolak pesanan COD sebanyak 3 kali. Silakan gunakan pembayaran online.']);
+            }
+        }
+
+        // Hitung COD fee (2% dari subtotal)
+        $codFee = $request->payment_method === 'cod' ? round($subtotal * 0.02, 2) : 0;
+        $total = $subtotal + $shippingCost + $codFee;
 
         $invoice = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
         $orderStatus = $request->payment_method === 'cod' ? 'menunggu_diproses' : 'menunggu_pembayaran';
         $paymentStatus = 'pending';
 
-        // Gunakan DB Transaction untuk mencegah Race Condition
         try {
             DB::beginTransaction();
 
             $productIds = array_column($cart, 'id');
-            // Pessimistic Locking: Kunci baris produk ini agar transaksi lain tidak bisa memodifikasi/membaca stoknya sampai transaksi ini selesai
             $products = \App\Models\Product::whereIn('id', $productIds)->lockForUpdate()->get()->keyBy('id');
 
-            // 0. Validasi Stok Real-Time
             foreach ($cart as $item) {
                 $product = $products->get($item['id']);
-                
+
                 if (!$product) {
                     throw new \Exception('Produk "' . $item['name'] . '" tidak ditemukan.');
                 }
-                
-                // Ambil stok real-time (telah memperhitungkan OrderItem lain karena transaksi mereka sudah di-commit sebelum lock ini dilepas)
+
                 if ($product->total_stok < $item['quantity']) {
                     throw new \Exception('Stok produk "' . $product->name . '" tidak mencukupi. Sisa stok: ' . $product->total_stok);
                 }
             }
 
-            // 1. Buat Order
             $order = Order::create([
                 'invoice' => $invoice,
                 'user_id' => Auth::id(),
                 'user_address_id' => $request->address_id,
                 'subtotal' => $subtotal,
                 'shipping_cost' => $shippingCost,
+                'cod_fee' => $codFee,
                 'total' => $total,
                 'payment_method' => $request->payment_method,
                 'payment_status' => $paymentStatus,
                 'order_status' => $orderStatus,
+                'courier' => 'Zonasi Toko',
             ]);
 
-            // 2. Buat Order Items
             foreach ($cart as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -112,7 +155,6 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // 3. Hapus Keranjang
             Session::forget('cart');
 
             DB::commit();
@@ -121,12 +163,10 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.index')->withErrors(['checkout' => $e->getMessage()]);
         }
 
-        // Jika COD, langsung sukses
         if ($request->payment_method === 'cod') {
             return redirect()->route('welcome')->with('success', 'Pesanan COD berhasil dibuat! Menunggu diproses.');
         }
 
-        // Konfigurasi Midtrans
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         \Midtrans\Config::$isProduction = config('midtrans.is_production');
         \Midtrans\Config::$isSanitized = true;
@@ -140,7 +180,7 @@ class CheckoutController extends Controller
             'customer_details' => [
                 'first_name' => Auth::user()->name,
                 'email' => Auth::user()->email,
-                'phone' => UserAddress::find($request->address_id)->phone ?? '',
+                'phone' => $userAddress->phone ?? '',
             ],
         ];
 
@@ -151,7 +191,6 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.index')->withErrors(['midtrans' => 'Gagal terhubung ke server pembayaran: ' . $e->getMessage()]);
         }
 
-        // Arahkan ke halaman pembayaran
         return redirect()->route('payment.show', $order->id)->with('success', 'Pesanan berhasil dibuat! Segera lakukan pembayaran.');
     }
 }

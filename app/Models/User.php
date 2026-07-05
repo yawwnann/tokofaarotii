@@ -22,6 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'cod_rejection_count',
+        'cod_blocked_until',
     ];
 
     /**
@@ -42,6 +44,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'cod_blocked_until' => 'datetime',
         ];
     }
 

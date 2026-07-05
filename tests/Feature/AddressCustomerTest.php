@@ -15,6 +15,8 @@ class AddressCustomerTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
+        // Only disable CSRF middleware so auth/session still work
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
     }
 
     public function test_user_can_view_their_addresses()
@@ -36,10 +38,15 @@ class AddressCustomerTest extends TestCase
             'label' => 'Kantor',
             'receiver_name' => 'John Doe',
             'phone' => '08123456789',
-            'province' => 'DKI Jakarta',
-            'city' => 'Jakarta Selatan',
-            'district' => 'Tebet',
-            'postal_code' => '12810',
+            'province_id' => '31',
+            'province' => 'DKI JAKARTA',
+            'city_id' => '3174',
+            'city' => 'KOTA JAKARTA BARAT',
+            'district_id' => '3174040',
+            'district' => 'KEBON JERUK',
+            'village_id' => '3174040001',
+            'village' => 'KEBON JERUK',
+            'postal_code' => '11530',
             'address' => 'Jl. Sudirman No 1',
         ]);
 
@@ -47,7 +54,11 @@ class AddressCustomerTest extends TestCase
         $this->assertDatabaseHas('user_addresses', [
             'user_id' => $user->id,
             'label' => 'Kantor',
-            'is_default' => 1, // first address should be default
+            'province_id' => '31',
+            'city_id' => '3174',
+            'district_id' => '3174040',
+            'village_id' => '3174040001',
+            'is_default' => 1,
         ]);
     }
 
@@ -60,10 +71,13 @@ class AddressCustomerTest extends TestCase
             'label' => 'New Label',
             'receiver_name' => 'John Doe',
             'phone' => '08123456789',
-            'province' => 'DKI Jakarta',
-            'city' => 'Jakarta Selatan',
-            'district' => 'Tebet',
-            'postal_code' => '12810',
+            'province_id' => '31',
+            'province' => 'DKI JAKARTA',
+            'city_id' => '3174',
+            'city' => 'KOTA JAKARTA BARAT',
+            'district_id' => '3174040',
+            'district' => 'KEBON JERUK',
+            'postal_code' => '11530',
             'address' => 'Jl. Sudirman No 1',
         ]);
 
@@ -71,6 +85,9 @@ class AddressCustomerTest extends TestCase
         $this->assertDatabaseHas('user_addresses', [
             'id' => $address->id,
             'label' => 'New Label',
+            'province_id' => '31',
+            'city_id' => '3174',
+            'district_id' => '3174040',
         ]);
     }
 
@@ -106,5 +123,15 @@ class AddressCustomerTest extends TestCase
             'id' => $address2->id,
             'is_default' => 1,
         ]);
+    }
+
+    public function test_user_cannot_access_others_address()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $address = UserAddress::factory()->create(['user_id' => $otherUser->id]);
+
+        $response = $this->actingAs($user)->delete("/alamat-saya/{$address->id}");
+        $response->assertStatus(403);
     }
 }

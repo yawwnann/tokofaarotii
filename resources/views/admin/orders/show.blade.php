@@ -91,6 +91,12 @@
                         <span>Ongkos Kirim</span>
                         <span>Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
                     </div>
+                    @if($order->cod_fee > 0)
+                    <div class="summary-row" style="color:#dc2626;">
+                        <span>Biaya COD (2%)</span>
+                        <span>Rp {{ number_format($order->cod_fee, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
                     <div class="summary-row total-row">
                         <span>Total Tagihan</span>
                         <span>Rp {{ number_format($order->total, 0, ',', '.') }}</span>

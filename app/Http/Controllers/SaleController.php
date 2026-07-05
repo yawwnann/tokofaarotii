@@ -175,7 +175,13 @@ class SaleController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $sale->update($request->all());
+        $sale->update($request->only([
+            'product_id',
+            'quantity_sold',
+            'total_price',
+            'customer_name',
+            'notes',
+        ]));
 
         return redirect()->route('sales.index')
             ->with('success', 'Penjualan berhasil diperbarui');

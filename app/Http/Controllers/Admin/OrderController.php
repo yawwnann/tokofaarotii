@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -28,11 +29,25 @@ class OrderController extends Controller
             'tracking_number' => 'nullable|string|max:100',
         ]);
 
+        $oldStatus = $order->order_status;
+
         $order->update([
             'order_status' => $request->order_status,
             'courier' => $request->courier,
             'tracking_number' => $request->tracking_number,
         ]);
+
+        // Jika order COD dibatalkan, increment cod_rejection_count user
+        if ($order->payment_method === 'cod' && $request->order_status === 'dibatalkan' && $oldStatus !== 'dibatalkan') {
+            $user = $order->user;
+            $user->increment('cod_rejection_count');
+
+            if ($user->cod_rejection_count >= 3) {
+                $user->update([
+                    'cod_blocked_until' => now()->addDays(30),
+                ]);
+            }
+        }
 
         return redirect()->route('admin.orders.index')->with('success', 'Status pesanan berhasil diperbarui.');
     }

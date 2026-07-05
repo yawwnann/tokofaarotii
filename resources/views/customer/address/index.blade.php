@@ -32,7 +32,7 @@
                         {{ $address->phone }}
                         <p class="mt-2 mb-0">{{ $address->address }}</p>
                         <small>
-                            {{ $address->village ? $address->village . ',' : '' }}
+                            @if($address->village){{ $address->village }}, @endif
                             {{ $address->district }},
                             {{ $address->city }},
                             {{ $address->province }}
@@ -74,41 +74,63 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3">
-                                <label>Label Alamat (Rumah, Kantor, dll)</label>
-                                <input type="text" name="label" class="form-control" value="{{ $address->label }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Nama Penerima</label>
-                                <input type="text" name="receiver_name" class="form-control" value="{{ $address->receiver_name }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Nomor HP</label>
-                                <input type="text" name="phone" class="form-control" value="{{ $address->phone }}" required>
-                            </div>
                             <div class="row">
                                 <div class="col-6 mb-3">
-                                    <label>Provinsi</label>
-                                    <input type="text" name="province" class="form-control" value="{{ $address->province }}" required>
+                                    <label>Label Alamat (Rumah, Kantor, dll)</label>
+                                    <input type="text" name="label" class="form-control" value="{{ $address->label }}" required>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <label>Kota/Kabupaten</label>
-                                    <input type="text" name="city" class="form-control" value="{{ $address->city }}" required>
+                                    <label>Nama Penerima</label>
+                                    <input type="text" name="receiver_name" class="form-control" value="{{ $address->receiver_name }}" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 mb-3">
-                                    <label>Kecamatan</label>
-                                    <input type="text" name="district" class="form-control" value="{{ $address->district }}" required>
+                                    <label>Nomor HP</label>
+                                    <input type="text" name="phone" class="form-control" value="{{ $address->phone }}" required>
                                 </div>
                                 <div class="col-6 mb-3">
                                     <label>Kode Pos</label>
                                     <input type="text" name="postal_code" class="form-control" value="{{ $address->postal_code }}" required>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <label>Provinsi</label>
+                                    <input type="hidden" name="province" class="province-name" value="{{ $address->province }}">
+                                    <select name="province_id" class="form-select province-select" data-selected="{{ $address->province_id }}" required>
+                                        <option value="">Pilih Provinsi...</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label>Kota/Kabupaten</label>
+                                    <input type="hidden" name="city" class="city-name" value="{{ $address->city }}">
+                                    <select name="city_id" class="form-select city-select" data-selected="{{ $address->city_id }}" required disabled>
+                                        <option value="">Pilih Kota...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <label>Kecamatan</label>
+                                    <input type="hidden" name="district" class="district-name" value="{{ $address->district }}">
+                                    <select name="district_id" class="form-select district-select" data-selected="{{ $address->district_id }}" required disabled>
+                                        <option value="">Pilih Kecamatan...</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label>Desa/Kelurahan <small class="text-muted">(opsional)</small></label>
+                                    <input type="hidden" name="village" class="village-name" value="{{ $address->village }}">
+                                    <select name="village_id" class="form-select village-select" data-selected="{{ $address->village_id }}" disabled>
+                                        <option value="">Pilih Desa...</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
-                                <label>Alamat Lengkap</label>
-                                <textarea name="address" class="form-control" rows="3" required>{{ $address->address }}</textarea>
+                                <label>Alamat Lengkap (Nama jalan, gedung, no. rumah)</label>
+                                <textarea name="address" class="form-control" rows="2" required>{{ $address->address }}</textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -135,41 +157,63 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Label Alamat (Rumah, Kantor, dll)</label>
-                        <input type="text" name="label" class="form-control" placeholder="Rumah" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Nama Penerima</label>
-                        <input type="text" name="receiver_name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Nomor HP</label>
-                        <input type="text" name="phone" class="form-control" required>
-                    </div>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label>Provinsi</label>
-                            <input type="text" name="province" class="form-control" required>
+                            <label>Label Alamat (Rumah, Kantor, dll)</label>
+                            <input type="text" name="label" class="form-control" placeholder="Rumah" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <label>Kota/Kabupaten</label>
-                            <input type="text" name="city" class="form-control" required>
+                            <label>Nama Penerima</label>
+                            <input type="text" name="receiver_name" class="form-control" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label>Kecamatan</label>
-                            <input type="text" name="district" class="form-control" required>
+                            <label>Nomor HP</label>
+                            <input type="text" name="phone" class="form-control" required>
                         </div>
                         <div class="col-6 mb-3">
                             <label>Kode Pos</label>
                             <input type="text" name="postal_code" class="form-control" required>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label>Provinsi</label>
+                            <input type="hidden" name="province" class="province-name">
+                            <select name="province_id" class="form-select province-select" required>
+                                <option value="">Pilih Provinsi...</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Kota/Kabupaten</label>
+                            <input type="hidden" name="city" class="city-name">
+                            <select name="city_id" class="form-select city-select" required disabled>
+                                <option value="">Pilih Kota...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label>Kecamatan</label>
+                            <input type="hidden" name="district" class="district-name">
+                            <select name="district_id" class="form-select district-select" required disabled>
+                                <option value="">Pilih Kecamatan...</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Desa/Kelurahan <small class="text-muted">(opsional)</small></label>
+                            <input type="hidden" name="village" class="village-name">
+                            <select name="village_id" class="form-select village-select" disabled>
+                                <option value="">Pilih Desa...</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
-                        <label>Alamat Lengkap</label>
-                        <textarea name="address" class="form-control" rows="3" placeholder="Nama jalan, gedung, no. rumah" required></textarea>
+                        <label>Alamat Lengkap (Nama jalan, gedung, no. rumah)</label>
+                        <textarea name="address" class="form-control" rows="2" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -181,3 +225,236 @@
 </div>
 
 @endsection
+
+@push('styles')
+<style>
+    .form-select {
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        border-color: #cbd5e1;
+    }
+    .form-select:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 0.25rem rgba(0, 74, 173, 0.25);
+    }
+    .form-select:disabled {
+        background-color: #f1f5f9;
+        cursor: not-allowed;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    async function fetchData(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Gagal memuat data');
+        return response.json();
+    }
+
+    async function loadProvinces(modalElement, selectedProvinceId = null) {
+        const provinceSelect = modalElement.querySelector('.province-select');
+
+        if (provinceSelect.dataset.loaded === 'true') return;
+
+        provinceSelect.innerHTML = '<option value="">Memuat provinsi...</option>';
+        provinceSelect.disabled = true;
+
+        try {
+            const provinces = await fetchData('/api/wilayah/provinces');
+
+            provinceSelect.innerHTML = '<option value="">Pilih Provinsi...</option>';
+            provinces.forEach(prov => {
+                const isSelected = selectedProvinceId && selectedProvinceId === prov.id ? 'selected' : '';
+                provinceSelect.innerHTML += `<option value="${prov.id}" ${isSelected}>${prov.name}</option>`;
+            });
+
+            provinceSelect.dataset.loaded = 'true';
+            provinceSelect.disabled = false;
+
+            if (selectedProvinceId) {
+                provinceSelect.value = selectedProvinceId;
+                provinceSelect.dispatchEvent(new Event('change'));
+            }
+        } catch (error) {
+            console.error('Error fetching provinces:', error);
+            provinceSelect.innerHTML = '<option value="">Gagal memuat provinsi</option>';
+            provinceSelect.disabled = false;
+        }
+    }
+
+    async function loadRegencies(modalElement, provinceId, selectedCityId = null) {
+        const citySelect = modalElement.querySelector('.city-select');
+        const districtSelect = modalElement.querySelector('.district-select');
+        const villageSelect = modalElement.querySelector('.village-select');
+
+        citySelect.innerHTML = '<option value="">Memuat kota...</option>';
+        citySelect.disabled = true;
+        districtSelect.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+        districtSelect.disabled = true;
+        villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+        villageSelect.disabled = true;
+
+        modalElement.querySelector('.city-name').value = '';
+        modalElement.querySelector('.district-name').value = '';
+        modalElement.querySelector('.village-name').value = '';
+
+        try {
+            const regencies = await fetchData(`/api/wilayah/regencies/${provinceId}`);
+
+            citySelect.innerHTML = '<option value="">Pilih Kota...</option>';
+            regencies.forEach(regency => {
+                const isSelected = selectedCityId && selectedCityId === regency.id ? 'selected' : '';
+                citySelect.innerHTML += `<option value="${regency.id}" ${isSelected}>${regency.name}</option>`;
+            });
+
+            citySelect.disabled = false;
+
+            if (selectedCityId) {
+                citySelect.value = selectedCityId;
+                citySelect.dispatchEvent(new Event('change'));
+            }
+        } catch (error) {
+            console.error('Error fetching regencies:', error);
+            citySelect.innerHTML = '<option value="">Gagal memuat kota</option>';
+            citySelect.disabled = false;
+        }
+    }
+
+    async function loadDistricts(modalElement, regencyId, selectedDistrictId = null) {
+        const districtSelect = modalElement.querySelector('.district-select');
+        const villageSelect = modalElement.querySelector('.village-select');
+
+        districtSelect.innerHTML = '<option value="">Memuat kecamatan...</option>';
+        districtSelect.disabled = true;
+        villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+        villageSelect.disabled = true;
+
+        modalElement.querySelector('.district-name').value = '';
+        modalElement.querySelector('.village-name').value = '';
+
+        try {
+            const districts = await fetchData(`/api/wilayah/districts/${regencyId}`);
+
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+            districts.forEach(district => {
+                const isSelected = selectedDistrictId && selectedDistrictId === district.id ? 'selected' : '';
+                districtSelect.innerHTML += `<option value="${district.id}" ${isSelected}>${district.name}</option>`;
+            });
+
+            districtSelect.disabled = false;
+
+            if (selectedDistrictId) {
+                districtSelect.value = selectedDistrictId;
+                districtSelect.dispatchEvent(new Event('change'));
+            }
+        } catch (error) {
+            console.error('Error fetching districts:', error);
+            districtSelect.innerHTML = '<option value="">Gagal memuat kecamatan</option>';
+            districtSelect.disabled = false;
+        }
+    }
+
+    async function loadVillages(modalElement, districtId, selectedVillageId = null) {
+        const villageSelect = modalElement.querySelector('.village-select');
+
+        villageSelect.innerHTML = '<option value="">Memuat desa...</option>';
+        villageSelect.disabled = true;
+
+        modalElement.querySelector('.village-name').value = '';
+
+        try {
+            const villages = await fetchData(`/api/wilayah/villages/${districtId}`);
+
+            villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+            villages.forEach(village => {
+                const isSelected = selectedVillageId && selectedVillageId === village.id ? 'selected' : '';
+                villageSelect.innerHTML += `<option value="${village.id}" ${isSelected}>${village.name}</option>`;
+            });
+
+            villageSelect.disabled = false;
+        } catch (error) {
+            console.error('Error fetching villages:', error);
+            villageSelect.innerHTML = '<option value="">Gagal memuat desa</option>';
+            villageSelect.disabled = false;
+        }
+    }
+
+    function setupCascading(modalElement) {
+        const provinceSelect = modalElement.querySelector('.province-select');
+        const citySelect = modalElement.querySelector('.city-select');
+        const districtSelect = modalElement.querySelector('.district-select');
+        const villageSelect = modalElement.querySelector('.village-select');
+
+        provinceSelect.addEventListener('change', function() {
+            const provName = this.options[this.selectedIndex]?.text || '';
+            modalElement.querySelector('.province-name').value = (provName !== 'Pilih Provinsi...' && provName !== '') ? provName : '';
+
+            citySelect.innerHTML = '<option value="">Pilih Kota...</option>';
+            citySelect.disabled = true;
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+            districtSelect.disabled = true;
+            villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+            villageSelect.disabled = true;
+            modalElement.querySelector('.city-name').value = '';
+            modalElement.querySelector('.district-name').value = '';
+            modalElement.querySelector('.village-name').value = '';
+
+            if (this.value) {
+                loadRegencies(modalElement, this.value);
+            }
+        });
+
+        citySelect.addEventListener('change', function() {
+            const cityName = this.options[this.selectedIndex]?.text || '';
+            modalElement.querySelector('.city-name').value = (cityName !== 'Pilih Kota...' && cityName !== '') ? cityName : '';
+
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+            districtSelect.disabled = true;
+            villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+            villageSelect.disabled = true;
+            modalElement.querySelector('.district-name').value = '';
+            modalElement.querySelector('.village-name').value = '';
+
+            if (this.value) {
+                loadDistricts(modalElement, this.value);
+            }
+        });
+
+        districtSelect.addEventListener('change', function() {
+            const districtName = this.options[this.selectedIndex]?.text || '';
+            modalElement.querySelector('.district-name').value = (districtName !== 'Pilih Kecamatan...' && districtName !== '') ? districtName : '';
+
+            villageSelect.innerHTML = '<option value="">Pilih Desa...</option>';
+            villageSelect.disabled = true;
+            modalElement.querySelector('.village-name').value = '';
+
+            if (this.value) {
+                loadVillages(modalElement, this.value);
+            }
+        });
+
+        villageSelect.addEventListener('change', function() {
+            const villageName = this.options[this.selectedIndex]?.text || '';
+            modalElement.querySelector('.village-name').value = (villageName !== 'Pilih Desa...' && villageName !== '') ? villageName : '';
+        });
+    }
+
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('show.bs.modal', function () {
+            if (!this.dataset.cascadingSetup) {
+                setupCascading(this);
+                this.dataset.cascadingSetup = 'true';
+            }
+
+            const selectedProvince = this.querySelector('.province-select').getAttribute('data-selected');
+            loadProvinces(this, selectedProvince || null);
+        });
+    });
+
+});
+</script>
+@endpush

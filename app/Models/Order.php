@@ -12,6 +12,7 @@ class Order extends Model
         'user_address_id',
         'subtotal',
         'shipping_cost',
+        'cod_fee',
         'total',
         'payment_method',
         'payment_status',

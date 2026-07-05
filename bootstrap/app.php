@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => CheckRole::class,
         ]);
+
+        // Redirect user yang sudah login (misal akses /login via tombol back)
+        // ke halaman utama (welcome) agar tidak kena 403 dari route /dashboard
+        $middleware->redirectUsersTo('/');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

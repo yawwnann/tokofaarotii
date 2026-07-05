@@ -7,16 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     protected $fillable = [
-        'product_id', 
-        'quantity_sold', 
-        'total_price', 
+        'product_id',
+        'quantity_sold',
+        'total_price',
+        'price_at_sale',
         'sale_date',
         'customer_name',
         'source',
         'status',
         'notes',
         'transaction_group',
-        'payment_method'
+        'payment_method',
+        'invoice_number',
     ];
 
     protected static function booted()

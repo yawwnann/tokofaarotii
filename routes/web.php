@@ -17,6 +17,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ShippingRateController;
 use App\Http\Controllers\Customer\ProfileCustomerController;
 use App\Http\Controllers\Customer\AddressCustomerController;
 
@@ -55,6 +56,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    // API Wilayah (Database Lokal)
+    Route::get('/api/wilayah/provinces', [\App\Http\Controllers\WilayahController::class, 'getProvinces'])->name('wilayah.provinces');
+    Route::get('/api/wilayah/regencies/{province}', [\App\Http\Controllers\WilayahController::class, 'getRegencies'])->name('wilayah.regencies');
+    Route::get('/api/wilayah/districts/{regency}', [\App\Http\Controllers\WilayahController::class, 'getDistricts'])->name('wilayah.districts');
+    Route::get('/api/wilayah/villages/{district}', [\App\Http\Controllers\WilayahController::class, 'getVillages'])->name('wilayah.villages');
+
     Route::get('/alamat-saya', [AddressCustomerController::class, 'index'])->name('customer.address');
     Route::post('/alamat-saya', [AddressCustomerController::class, 'store'])->name('customer.address.store');
     Route::put('/alamat-saya/{address}', [AddressCustomerController::class, 'update'])->name('customer.address.update');
@@ -176,30 +183,30 @@ Route::middleware('auth')->group(function () {
         }
     })->name('chatbot.proxy'); // Nama ini WAJIB sama dengan yang dipanggil di JavaScript fetch
 
-    // 3. (Opsional, tapi direkomendasikan) Rute untuk cek status model AI
-    //    Berguna kalau mau menampilkan indikator "AI sedang siap / masih loading" di frontend.
-    Route::get('/chatbot/status', function () {
-        try {
-            $response = Http::withoutVerifying()
-                ->connectTimeout(2)
-                ->timeout(5)
-                ->get('http://127.0.0.1:5000/health');
-
-            if ($response->successful()) {
-                return response()->json($response->json());
-            }
-
-            return response()->json(['model_ready' => false], 503);
-
-        } catch (\Exception $e) {
-            return response()->json(['model_ready' => false, 'error' => 'Server tidak terjangkau'], 503);
-        }
-    })->name('chatbot.status');
-
     Route::get('/showroom-3d', function () {
         return view('showroom');
     })->name('showroom.3d');
 });
+
+// Rute status chatbot — publik (tanpa auth) agar fetch AJAX dari widget chatbot
+// di halaman publik tidak memicu auth redirect yang menyimpan intended URL salah.
+Route::get('/chatbot/status', function () {
+    try {
+        $response = Http::withoutVerifying()
+            ->connectTimeout(2)
+            ->timeout(5)
+            ->get('http://127.0.0.1:5000/health');
+
+        if ($response->successful()) {
+            return response()->json($response->json());
+        }
+
+        return response()->json(['model_ready' => false], 503);
+
+    } catch (\Exception $e) {
+        return response()->json(['model_ready' => false, 'error' => 'Server tidak terjangkau'], 503);
+    }
+})->name('chatbot.status');
 
 
 // ==========================================
@@ -305,6 +312,9 @@ Route::middleware(['auth', 'role:admin_master'])->group(function () {
     });
 
     Route::resource('pegawai', PegawaiController::class);
+
+    // Shipping Rates Management
+    Route::resource('shipping-rates', ShippingRateController::class);
 });
 
 // ==========================================

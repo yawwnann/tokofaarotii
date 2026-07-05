@@ -19,11 +19,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        /* Modern Warm Palette Integration */
+        /* Modern Warm Palette Integration (FAA Brand Colors) */
         :root {
-            --primary: #f97316;
-            --primary-dark: #ea580c;
-            --primary-light: #ffedd5;
+            --primary: #004aad;
+            --primary-dark: #003580;
+            --primary-light: #e6f0fa;
+            --accent: #f97316;
             --dark: #0f172a;
             --slate: #475569;
             --light: #f8fafc;
@@ -43,7 +44,7 @@
 
         /* FAQ Section Base */
         .faq-section {
-            padding: 80px 0;
+            padding: 140px 0 80px 0;
         }
 
         .section-tag {
@@ -129,7 +130,7 @@
             bottom: 30px;
             right: 30px;
             z-index: 9999;
-            background-color: var(--primary);
+            background-color: var(--accent);
             color: var(--white);
             border: none;
             width: 44px;
@@ -153,9 +154,9 @@
         }
 
         #btt:hover {
-            background-color: var(--primary-dark);
+            background-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 74, 173, 0.4);
         }
 
         .empty-state {
@@ -236,6 +237,9 @@
         <button id="nlBtn"></button>
         <input id="nlEmail">
     </div>
+
+    <!-- Bootstrap JS is required for Accordion to work -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Back to Top Button Logic

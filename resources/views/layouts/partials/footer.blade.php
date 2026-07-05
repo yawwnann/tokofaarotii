@@ -1,6 +1,7 @@
 
 
 <!-- Footer -->
+<link rel="stylesheet" href="{{ asset('template-sarab/css/footer.css') }}">
 <footer>
     <div class="container py-5">
     <div class="row g-5">

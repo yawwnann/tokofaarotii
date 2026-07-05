@@ -282,7 +282,8 @@
 </head>
 <body>
 
-    @include('layouts.partials.navbar')
+  
+@include('layouts.partials.navbar')
 
     <!-- Hero Section -->
     <section class="about-hero">

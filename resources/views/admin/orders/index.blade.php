@@ -25,7 +25,8 @@
                 <tr>
                     <th>INVOICE</th>
                     <th>PELANGGAN</th>
-                    <th>TOTAL</th>
+                    <th style="text-align:right;">TOTAL</th>
+                    <th style="text-align:right;">COD FEE</th>
                     <th style="text-align:center;">METODE</th>
                     <th style="text-align:center;">BAYAR</th>
                     <th style="text-align:center;">STATUS PESANAN</th>
@@ -50,8 +51,15 @@
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td style="text-align:right;">
                         <span class="u-name" style="color: #f97316;">Rp {{ number_format($order->total, 0, ',', '.') }}</span>
+                    </td>
+                    <td style="text-align:right;">
+                        @if($order->cod_fee > 0)
+                            <span style="font-size:0.85rem; font-weight:600; color:#dc2626;">Rp {{ number_format($order->cod_fee, 0, ',', '.') }}</span>
+                        @else
+                            <span style="font-size:0.85rem; color:#94a3b8;">-</span>
+                        @endif
                     </td>
                     <td style="text-align:center;">
                         @if($order->payment_method == 'midtrans')
@@ -96,7 +104,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center" style="padding: 3rem;">
+                    <td colspan="8" class="text-center" style="padding: 3rem;">
                         <i class="fas fa-box-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
                         <p style="color: #64748b; font-weight: 600;">Belum ada pesanan online.</p>
                     </td>
