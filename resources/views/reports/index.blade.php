@@ -85,7 +85,7 @@
 </div>
 
 <div class="report-sections">
-    
+
     {{-- ── SECTION: PENJUALAN ── --}}
     <div class="section-title">
         <span><i class="fas fa-chart-line"></i> Analisis Penjualan</span>
@@ -192,17 +192,17 @@
                             </div>
                         </td>
                         <td><span class="cat-badge">{{ $product->category->name ?? '-' }}</span></td>
-                        <td style="text-align:center;"><span class="stock-num text-blue">{{ $product->stockEntries->sum('quantity') }}</span></td>
-                        <td style="text-align:center;"><span class="stock-num text-orange">{{ $product->sales->sum('quantity_sold') }}</span></td>
+                        <td style="text-align:center;"><span class="stock-num text-blue">{{ number_format($product->stock_in_total) }}</span></td>
+                        <td style="text-align:center;"><span class="stock-num text-orange">{{ number_format($product->sold_total) }}</span></td>
                         <td style="text-align:center;">
-                            <span class="stock-num-bold {{ $product->total_stok < 10 ? 'text-red' : 'text-green' }}">
-                                {{ $product->total_stok }}
+                            <span class="stock-num-bold {{ $product->total_stok_report < 10 ? 'text-red' : 'text-green' }}">
+                                {{ number_format($product->total_stok_report) }}
                             </span>
                         </td>
                         <td style="text-align:center;">
-                            @if($product->total_stok <= 0)
+                            @if($product->total_stok_report <= 0)
                                 <span class="status-pill pill-red">Habis</span>
-                            @elseif($product->total_stok < 10)
+                            @elseif($product->total_stok_report < 10)
                                 <span class="status-pill pill-amber">Menipis</span>
                             @else
                                 <span class="status-pill pill-green">Tersedia</span>
@@ -263,12 +263,12 @@
     .table-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f8fafc; display: flex; align-items: center; justify-content: space-between; }
     .table-title { font-size: .95rem; font-weight: 800; color: #1e293b; margin: 0; }
     .btn-print-outline { background: #fff; border: 1.5px solid #e2e8f0; color: #64748b; padding: .5rem 1rem; border-radius: .625rem; font-size: .75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: .4rem; }
-    
+
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     th { background: #f8fafc; padding: 1rem 1.5rem; text-align: left; font-size: .65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
     td { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    
+
     .cat-badge { display: inline-block; padding: .2rem .6rem; background: #f1f5f9; border-radius: .5rem; font-size: .7rem; font-weight: 700; color: #64748b; }
     .qty-badge { display: inline-block; padding: .2rem .6rem; background: #f1f5f9; border-radius: .5rem; font-size: .75rem; font-weight: 800; color: #475569; }
     .total-price { font-size: .9rem; font-weight: 800; color: #6366f1; }
@@ -346,29 +346,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: @json($products->pluck('name')),
                 datasets: [{
                     label: 'Sisa Stok',
-                    data: @json($products->map(fn($p) => $p->total_stok)),
-                    backgroundColor: @json($products->map(fn($p) => $p->total_stok <= 0 ? '#ef4444' : ($p->total_stok < 10 ? '#f59e0b' : '#3b82f6'))),
+                    data: @json($products->map(fn($p) => $p->total_stok_report)),
+                    backgroundColor: @json($products->map(fn($p) => $p->total_stok_report <= 0 ? '#ef4444' : ($p->total_stok_report < 10 ? '#f59e0b' : '#3b82f6'))),
                     borderRadius: 6,
                 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    y: { 
-                        beginAtZero: true, 
+                    y: {
+                        beginAtZero: true,
                         grid: { borderDash: [5, 5], color: '#f1f5f9' },
                         ticks: { font: { weight: '600' } }
                     },
-                    x: { 
+                    x: {
                         grid: { display: false },
-                        ticks: { 
+                        ticks: {
                             font: { size: 10, weight: '600' },
                             maxRotation: 45,
                             minRotation: 45
                         }
                     }
                 },
-                plugins: { 
+                plugins: {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {

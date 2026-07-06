@@ -76,14 +76,16 @@
                         <span class="cat-badge">{{ $product->category->name ?? '-' }}</span>
                     </td>
                     <td style="text-align:center;">
-                        <span class="stock-num text-blue">{{ $product->stockEntries->sum('quantity') }}</span>
+                        {{-- stock_in_total di-set oleh controller via withStockData() --}}
+                        <span class="stock-num text-blue">{{ number_format($product->stock_in_total ?? 0) }}</span>
                     </td>
                     <td style="text-align:center;">
-                        <span class="stock-num text-orange">{{ $product->sales->sum('quantity_sold') }}</span>
+                        {{-- sold_total = offline + online, di-set controller via injectOnlineSold() --}}
+                        <span class="stock-num text-orange">{{ number_format(($product->offline_sold_total ?? 0) + ($product->online_sold_total ?? 0)) }}</span>
                     </td>
                     <td style="text-align:center;">
                         <span class="stock-num-bold {{ $product->total_stok < 10 ? 'text-red' : 'text-green' }}">
-                            {{ $product->total_stok }}
+                            {{ number_format($product->total_stok) }}
                         </span>
                     </td>
                     <td style="text-align:center;">
@@ -133,7 +135,7 @@
     table { width: 100%; border-collapse: collapse; }
     th { background: #f8fafc; padding: 1rem 1.5rem; text-align: left; font-size: .65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
     td { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    
+
     .td-product { display: flex; flex-direction: column; gap: 2px; }
     .p-name { font-size: .85rem; font-weight: 700; color: #1e293b; }
     .p-sku { font-size: .65rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
@@ -184,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: 'Sisa Stok',
                     data: @json($products->map(fn($p) => $p->total_stok)),
                     backgroundColor: @json($products->map(fn($p) => $p->total_stok <= 0 ? '#ef4444' : ($p->total_stok < 10 ? '#f59e0b' : '#3b82f6'))),
+                    {{-- total_stok menggunakan fast path jika controller memanggil withStockData + injectOnlineSold --}}
                     borderRadius: 6,
                 }]
             },

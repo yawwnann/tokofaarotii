@@ -99,9 +99,9 @@
             <tbody>
                 @forelse($products as $index => $product)
                 @php
-                    $totalStock  = $product->stockEntries ? $product->stockEntries->sum('quantity') : 0;
-                    $totalSold   = $product->sales ? $product->sales->sum('quantity_sold') : 0;
-                    $currentStock = $totalStock - $totalSold;
+                    // Nilai sudah disiapkan controller via withStockData + injectOnlineSold.
+                    // Accessor total_stok menggunakan path cepat (0 query tambahan).
+                    $currentStock = $product->total_stok;
                 @endphp
                 <tr class="prod-row">
                     {{-- NO --}}
@@ -177,7 +177,7 @@
                                class="btn-action btn-detail" title="Lihat Detail">
                                 <i class="fas fa-eye"></i> Detail
                             </a>
-                            <button type="button" 
+                            <button type="button"
                                     onclick="openEditModal({{ json_encode($product) }})"
                                     class="btn-action btn-edit" title="Edit">
                                 <i class="fas fa-pencil-alt"></i> Edit
@@ -187,7 +187,7 @@
                                 onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
                                 @csrf
                                 @method('DELETE')
-                                
+
                                 <button type="submit" class="btn-action btn-delete" title="Hapus">
                                     <i class="fas fa-trash"></i> Hapus
                                 </button>
@@ -248,13 +248,8 @@
         <div class="stat-info">
             <p class="stat-label">Stok Rendah</p>
             @php
-                $lowStockCount = 0;
-                foreach($products as $product) {
-                    $ts = $product->stockEntries ? $product->stockEntries->sum('quantity') : 0;
-                    $so = $product->sales ? $product->sales->sum('quantity_sold') : 0;
-                    $cs = $ts - $so;
-                    if($cs < 10 && $cs > 0) $lowStockCount++;
-                }
+                // total_stok menggunakan path cepat (pre-computed dari controller)
+                $lowStockCount = $products->filter(fn($p) => $p->total_stok < 10 && $p->total_stok > 0)->count();
             @endphp
             <p class="stat-value">{{ $lowStockCount }}</p>
         </div>
@@ -268,7 +263,7 @@
 {{-- ─── POPUP MODAL: TAMBAH / EDIT PRODUK ─── --}}
 <div id="productModal" class="modal-backdrop hidden">
     <div class="modal-box">
-        
+
         {{-- Modal Header --}}
         <div class="modal-header">
             <div class="modal-header-left">
@@ -505,7 +500,7 @@
     .form-input.with-prefix { padding-left:2.5rem; }
     .modal-footer { display:flex; justify-content:flex-end; gap:.625rem; padding-top:1rem; border-top:1px solid #f1f5f9; margin-top:.25rem; }
     .btn-cancel { display:inline-flex; align-items:center; gap:.375rem; padding:.5rem 1.125rem; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; border-radius:.5rem; font-size:.825rem; font-weight:600; cursor:pointer; }
-    
+
     /* Tombol Submit Modal Orange Gradasi */
     .btn-submit.update-mode { display:inline-flex; align-items:center; gap:.375rem; padding:.5rem 1.375rem; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; border:none; border-radius:.5rem; font-size:.825rem; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(249,115,22,#f97316); transition:box-shadow .2s,transform .15s; }
     .btn-submit.update-mode:hover { box-shadow:0 5px 16px rgba(249,115,22,.45); transform:translateY(-1px); }
@@ -559,7 +554,7 @@
         modalTitle.innerText = "Tambah Produk Baru";
         submitBtnText.innerText = "Simpan Produk";
         document.getElementById('preview').src = 'https://via.placeholder.com/120x120?text=No+Image';
-        
+
         modal.classList.remove('hidden');
     }
 
@@ -568,7 +563,7 @@
         // Set URL & spoofing method PUT untuk Update Laravel
         form.action = `/products/${product.id}`;
         methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-        
+
         modalTitle.innerText = "Edit Data Produk";
         submitBtnText.innerText = "Update Produk";
 

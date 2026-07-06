@@ -19,27 +19,36 @@ class ProductController extends Controller
         $categories = Category::all();
         $user = Auth::user();
 
-        $products = Product::with('category', 'store')
+        $products = Product::with("category", "store")
+            ->withStockData() // agregat stok masuk & terjual offline — 2 query tambahan flat
             // Filter berdasarkan toko jika user adalah kasir
-            ->when($user->role === 'kasir' && $user->store_id, function ($query) use ($user) {
-                $query->where('store_id', $user->store_id);
+            ->when($user->role === "kasir" && $user->store_id, function (
+                $query,
+            ) use ($user) {
+                $query->where("store_id", $user->store_id);
             })
             // Filter Kategori
             ->when($request->category_id, function ($query) use ($request) {
-                $query->where('category_id', $request->category_id);
+                $query->where("category_id", $request->category_id);
             })
             // Filter Pencarian Nama atau SKU
             ->when($request->search, function ($query) use ($request) {
-                $query->where(function($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('sku', 'like', '%' . $request->search . '%');
+                $query->where(function ($q) use ($request) {
+                    $q->where(
+                        "name",
+                        "like",
+                        "%" . $request->search . "%",
+                    )->orWhere("sku", "like", "%" . $request->search . "%");
                 });
             })
             ->latest()
             ->paginate(10)
             ->withQueryString(); // Menjaga filter tetap ada saat pindah halaman
 
-        return view('products.index', compact('products', 'categories'));
+        // Inject penjualan online — 1 query agregat untuk seluruh halaman
+        Product::injectOnlineSold($products->getCollection());
+
+        return view("products.index", compact("products", "categories"));
     }
 
     /**
@@ -47,7 +56,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return redirect()->route('products.index');
+        return redirect()->route("products.index");
     }
 
     /**
@@ -56,32 +65,35 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|max:50',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'unit' => 'required|string|max:20',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            "name" => "required|string|max:255",
+            "sku" => "nullable|string|max:50",
+            "description" => "nullable|string",
+            "price" => "required|numeric|min:0",
+            "category_id" => "required|exists:categories,id",
+            "unit" => "required|string|max:20",
+            "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
         // Auto-assign store_id
         $user = Auth::user();
-        if ($user->role === 'kasir' && $user->store_id) {
-            $validated['store_id'] = $user->store_id;
-        } elseif ($user->role === 'admin_master' && $request->store_id) {
+        if ($user->role === "kasir" && $user->store_id) {
+            $validated["store_id"] = $user->store_id;
+        } elseif ($user->role === "admin_master" && $request->store_id) {
             // Admin bisa override store_id
-            $validated['store_id'] = $request->store_id;
+            $validated["store_id"] = $request->store_id;
         }
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+        if ($request->hasFile("image")) {
+            $validated["image"] = $request
+                ->file("image")
+                ->store("products", "public");
         }
 
         Product::create($validated);
 
-        return redirect()->route('products.index')
-            ->with('success', 'Produk berhasil ditambahkan');
+        return redirect()
+            ->route("products.index")
+            ->with("success", "Produk berhasil ditambahkan");
     }
 
     /**
@@ -89,7 +101,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        // Eager-load relasi yang diakses di view; total_stok pakai path lambat (single-product)
+        $product->load("category", "store", "stockEntries", "sales");
+        return view("products.show", compact("product"));
     }
 
     /**
@@ -98,8 +112,11 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all();
-        $stores = Store::where('is_active', true)->get();
-        return view('products.edit', compact('product', 'categories', 'stores'));
+        $stores = Store::where("is_active", true)->get();
+        return view(
+            "products.edit",
+            compact("product", "categories", "stores"),
+        );
     }
 
     /**
@@ -108,36 +125,39 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|max:50',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'unit' => 'required|string|max:20',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'store_id' => 'nullable|exists:stores,id',
+            "name" => "required|string|max:255",
+            "sku" => "nullable|string|max:50",
+            "description" => "nullable|string",
+            "price" => "required|numeric|min:0",
+            "category_id" => "required|exists:categories,id",
+            "unit" => "required|string|max:20",
+            "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
+            "store_id" => "nullable|exists:stores,id",
         ]);
 
         // Update store_id: admin bisa ganti, kasir tidak bisa ubah
         $user = Auth::user();
-        if ($user->role === 'admin_master' && $request->has('store_id')) {
-            $validated['store_id'] = $request->store_id;
+        if ($user->role === "admin_master" && $request->has("store_id")) {
+            $validated["store_id"] = $request->store_id;
         }
         // Kasir: store_id tetap dari tokonya (tidak bisa diubah)
         // Produk legacy tanpa store_id: tetap null (fallback ke settings)
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile("image")) {
             // Delete old image if exists
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+                Storage::disk("public")->delete($product->image);
             }
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $validated["image"] = $request
+                ->file("image")
+                ->store("products", "public");
         }
 
         $product->update($validated);
 
-        return redirect()->route('products.index')
-            ->with('success', 'Produk berhasil diperbarui');
+        return redirect()
+            ->route("products.index")
+            ->with("success", "Produk berhasil diperbarui");
     }
 
     /**
@@ -147,13 +167,14 @@ class ProductController extends Controller
     {
         // Delete image if exists
         if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+            Storage::disk("public")->delete($product->image);
         }
 
         $product->delete();
 
-        return redirect()->route('products.index')
-            ->with('success', 'Produk berhasil dihapus');
+        return redirect()
+            ->route("products.index")
+            ->with("success", "Produk berhasil dihapus");
     }
 
     /**
@@ -162,19 +183,21 @@ class ProductController extends Controller
     public function produkMakanan()
     {
         // Ambil kategori yang relevan beserta produknya
-        $categories = Category::where('name', 'like', '%Frozen%')
-            ->orWhere('name', 'like', '%Bakery%')
-            ->orWhere('name', 'like', '%Roti%')
-            ->with(['products' => function($query) {
-                $query->latest();
-            }])
+        $categories = Category::where("name", "like", "%Frozen%")
+            ->orWhere("name", "like", "%Bakery%")
+            ->orWhere("name", "like", "%Roti%")
+            ->with([
+                "products" => function ($query) {
+                    $query->latest();
+                },
+            ])
             ->get();
 
         // Sortir agar Frozen Food muncul pertama jika ada
-        $categories = $categories->sortBy(function($cat) {
-            return str_contains(strtolower($cat->name), 'frozen') ? 0 : 1;
+        $categories = $categories->sortBy(function ($cat) {
+            return str_contains(strtolower($cat->name), "frozen") ? 0 : 1;
         });
 
-        return view('produk-makanan', compact('categories'));
+        return view("produk-makanan", compact("categories"));
     }
 }

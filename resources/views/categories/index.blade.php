@@ -89,7 +89,7 @@
                     </td>
                     <td>
                         <span class="prod-count-badge">
-                            {{ $category->products_count ?? $category->products->count() }} produk
+                            {{ $category->products_count }} produk
                         </span>
                     </td>
                     <td class="col-action">
@@ -276,7 +276,7 @@
     .modal-footer { display:flex;justify-content:flex-end;gap:.625rem;padding-top:1rem;border-top:1px solid #f1f5f9;margin-top:.25rem; }
     .btn-cancel { display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.125rem;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s; }
     .btn-cancel:hover { background:#f8fafc;border-color:#cbd5e1;color:#374151; }
-    
+
     .btn-submit { display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.375rem;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(249,115,22,.35);transition:box-shadow .2s,transform .15s; }
     .btn-submit:hover { box-shadow:0 5px 16px rgba(249,115,22,.45);transform:translateY(-1px); }
 
