@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Models\District;
 use App\Models\Order;
@@ -243,6 +244,9 @@ class CheckoutController extends Controller
             }
 
             Session::forget("cart");
+
+            // Hapus juga DB cart agar tidak muncul lagi setelah login berikutnya
+            CartController::clearDbCart(Auth::id());
 
             DB::commit();
         } catch (\Exception $e) {
