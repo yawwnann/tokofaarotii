@@ -155,7 +155,7 @@
               enctype="multipart/form-data"
               class="modal-body">
             @csrf
-            <input type="hidden" id="methodField" name="_method">
+            <input type="hidden" id="methodField" name="_method" disabled>
 
             {{-- Foto Preview --}}
             <div class="foto-upload-wrap">
@@ -599,6 +599,7 @@ function openModal(data = null) {
     const form        = document.getElementById('pegawaiForm');
     const submitBtn   = document.getElementById('submitBtn');
     const submitLabel = document.getElementById('submitLabel');
+    const methodField = document.getElementById('methodField');
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -606,8 +607,9 @@ function openModal(data = null) {
     if (data) {
         document.getElementById('modalTitle').innerText = 'Edit Pegawai';
 
-        form.action = `/pegawai/${data.id}`;
-        document.getElementById('methodField').value = 'PUT';
+        form.action = `{{ url('/pegawai') }}/${data.id}`;
+        methodField.disabled = false;
+        methodField.value = 'PUT';
 
         document.getElementById('nama').value   = data.nama;
         document.getElementById('posisi').value = data.posisi;
@@ -623,8 +625,9 @@ function openModal(data = null) {
     } else {
         document.getElementById('modalTitle').innerText = 'Tambah Pegawai';
 
-        form.action = `/pegawai`;
-        document.getElementById('methodField').value = '';
+        form.action = `{{ route('pegawai.store') }}`;
+        methodField.value = '';
+        methodField.disabled = true;
 
         form.reset();
 
