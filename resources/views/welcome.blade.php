@@ -582,68 +582,6 @@
           </div>
        </div>
 
-       <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="card border-0 rounded-4 p-4 position-relative overflow-hidden text-white h-100 shadow-sm hover-lift" 
-               style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); min-height: 240px;">
-             
-             <div class="position-absolute end-0 top-50 translate-middle-y opacity-10" 
-                  style="width: 180px; height: 180px; border-radius: 50%; background: #ffffff; background-image: url('{{ asset("template-sarab/img/icons/chatbot.jpg") }}'); background-size: contain; background-repeat: no-repeat; margin-right: -30px;"></div>
-             
-             <div class="position-relative z-1 d-flex flex-column justify-content-between h-100">
-                <div>
-                   <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" 
-                        style="width: 45px; height: 45px; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
-                      <i class="bi bi-robot fs-5 text-white"></i>
-                   </div>
-                   <div class="d-flex align-items-center mb-2">
-                      <h3 class="fw-bold m-0 fs-4 me-2" style="color: #ffffff;">AI Chatbot</h3>
-                      <span class="badge rounded-pill text-white font-monospace opacity-75 small" 
-                            style="background-color: #f97316; border: 1px solid #fbbf24; font-size: 0.65rem;">
-                         <i class="bi bi-sparkles me-1"></i>Beta
-                      </span>
-                   </div>
-                   <p class="text-white-50 small mb-4" style="max-width: 85%;">Tanya rekomendasi produk, cek ketersediaan stok, atau dapatkan resep masak langsung via chat.</p>
-                </div>
-                <a href="#" class="btn rounded-pill px-4 py-2 align-self-start btn-sm fw-semibold d-flex align-items-center text-white" 
-                   style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);">
-                   Mulai Chat <i class="bi bi-arrow-right ms-2"></i>
-                </a>
-             </div>
-          </div>
-       </div>
-
-    </div>
-
-    <div class="row" data-aos="fade-up" data-aos-delay="300">
-       <div class="col-12">
-          <div class="card border rounded-4 p-4 shadow-sm bg-white hover-lift">
-             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                
-                <div class="d-flex align-items-center">
-                   <div class="rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0" title="Butuh Bantuan"
-                        style="width: 48px; height: 48px; background-color: #fff7ed; color: #f97316; border: 1px solid #fed7aa;">
-                      <i class="bi bi-headset fs-4"></i>
-                   </div>
-                   <div>
-                      <h5 class="fw-bold mb-1" style="color: #1e293b; font-size: 1rem;">Butuh Bantuan?</h5>
-                      <p class="text-muted small m-0">Tim kami siap membantu Senin–Sabtu, pukul 08.00–20.00 WIB</p>
-                   </div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                   <a href="https://wa.me/yournumber" class="btn btn-warning fw-bold px-4 py-2 rounded-3 d-flex align-items-center" 
-                      style="background-color: #f97316; border: none; font-size: 0.9rem; color: white;">
-                      WhatsApp
-                   </a>
-                   <a href="#" class="btn btn-outline-primary fw-semibold px-4 py-2 rounded-3" 
-                      style="color: #004aad; border-color: #004aad; font-size: 0.9rem;">
-                      Hubungi Kami
-                   </a>
-                </div>
-
-             </div>
-          </div>
-       </div>
     </div>
 
  </div>
@@ -717,7 +655,7 @@
                    </span>
                    
                    <h5 class="fw-bold mb-3" style="font-size: 1.15rem; line-height: 1.4;">
-                      <a href="{{ route('berita.show', $berita->id) }}" class="text-decoration-none text-dark hover-opacity" style="color: #1e293b;">
+                      <a href="{{ route('berita.show.public', $berita->id) }}" class="text-decoration-none text-dark hover-opacity" style="color: #1e293b;">
                          {{ $berita->judul }}
                       </a>
                    </h5>
@@ -728,7 +666,7 @@
                    </div>
                 </div>
 
-                <a href="{{ route('berita.show', $berita->id) }}" class="text-primary fw-bold text-decoration-none small d-inline-flex align-items-center mt-auto" style="letter-spacing: 0.2px; color: #004aad !important;">
+                <a href="{{ route('berita.show.public', $berita->id) }}" class="text-primary fw-bold text-decoration-none small d-inline-flex align-items-center mt-auto" style="letter-spacing: 0.2px; color: #004aad !important;">
                    Baca Selengkapnya <i class="fas fa-arrow-right ms-2" style="font-size: 0.8rem;"></i>
                 </a>
              </div>

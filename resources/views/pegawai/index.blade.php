@@ -614,7 +614,7 @@ function openModal(data = null) {
 
         document.getElementById('preview').src =
             data.foto
-            ? `/storage/${data.foto}`
+            ? `{{ asset('storage') }}/${data.foto}`
             : `https://ui-avatars.com/api/?name=${encodeURIComponent(data.nama)}&background=f97316&color=fff&bold=true`;
 
         submitLabel.textContent = 'Update';

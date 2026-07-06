@@ -90,6 +90,10 @@ Route::get('/berita/public', function () {
         return view('view-berita', compact('beritas'));
     })->name('berita.public');
 
+Route::get('/berita/public/{berita}', function (Berita $berita) {
+    return view('berita.show', compact('berita'));
+})->name('berita.show.public');
+
 // Route Diagnosa Email (Hapus setelah berhasil) — SUDAH DIHAPUS
 
 // Tombol Reset Pendaftaran yang Gagal — SUDAH DIHAPUS

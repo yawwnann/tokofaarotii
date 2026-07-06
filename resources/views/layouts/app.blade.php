@@ -415,61 +415,6 @@
         .dropdown-panel-item:hover { background: #f8fafc; color: var(--text-main); }
         .dropdown-panel-item i { width: 1rem; text-align: center; font-size: 0.75rem; }
 
-        /* Notification dropdown */
-        .notif-panel {
-            min-width: 280px;
-        }
-        .notif-panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.875rem 1rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .notif-panel-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .notif-badge {
-            background: #f97316;
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 1px 6px;
-            border-radius: 99px;
-        }
-        .notif-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.625rem;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #f8fafc;
-            transition: background 0.15s;
-        }
-        .notif-item:hover { background: #fafafa; }
-        .notif-item-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #f97316;
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-        .notif-item-text { font-size: 0.775rem; color: var(--text-main); line-height: 1.4; }
-        .notif-item-time { font-size: 0.7rem; color: var(--text-soft); margin-top: 2px; }
-        .notif-footer {
-            padding: 0.625rem 1rem;
-            text-align: center;
-        }
-        .notif-footer a {
-            font-size: 0.775rem;
-            color: #f97316;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .notif-footer a:hover { text-decoration: underline; }
-
         /* =========================================
             MAIN CONTENT
         ========================================= */
@@ -516,14 +461,8 @@
     <aside class="sidebar" id="sidebar">
 
         {{-- Brand --}}
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-icon">
-                <i class="fas fa-store"></i>
-            </div>
-            <div>
-                <div class="sidebar-brand-name">Toko FAA</div>
-                <div class="sidebar-brand-role">Frozen Food & Bakery</div>
-            </div>
+        <div class="sidebar-brand" style="justify-content: center; padding: 1.25rem;">
+            <img src="{{ asset('template-sarab/img/logo-toko-faa.png') }}" alt="Logo Toko FAA" style="max-height: 45px; width: auto; max-width: 100%; object-fit: contain;">
         </div>
 
         {{-- Nav --}}
@@ -705,44 +644,6 @@
                 {{-- Date --}}
                 <span class="topbar-date">{{ now()->translatedFormat('l, d F Y') }}</span>
 
-                {{-- Notification Bell --}}
-                <div class="topbar-dropdown">
-                    <button class="btn-icon btn-bell" id="notifToggle" aria-label="Notifikasi">
-                        <i class="fas fa-bell" style="font-size:0.8rem;"></i>
-                        <span class="badge-dot"></span>
-                    </button>
-                    <div class="dropdown-panel notif-panel" id="notifPanel">
-                        <div class="notif-panel-header">
-                            <span class="notif-panel-title">Notifikasi</span>
-                            <span class="notif-badge">3</span>
-                        </div>
-                        <div class="notif-item">
-                            <div class="notif-item-dot"></div>
-                            <div>
-                                <div class="notif-item-text">Stok produk hampir habis</div>
-                                <div class="notif-item-time">5 menit yang lalu</div>
-                            </div>
-                        </div>
-                        <div class="notif-item">
-                            <div class="notif-item-dot"></div>
-                            <div>
-                                <div class="notif-item-text">Penjualan baru masuk #00123</div>
-                                <div class="notif-item-time">30 menit yang lalu</div>
-                            </div>
-                        </div>
-                        <div class="notif-item">
-                            <div class="notif-item-dot"></div>
-                            <div>
-                                <div class="notif-item-text">Laporan bulanan siap diunduh</div>
-                                <div class="notif-item-time">1 jam yang lalu</div>
-                            </div>
-                        </div>
-                        <div class="notif-footer">
-                            <a href="#">Lihat semua notifikasi</a>
-                        </div>
-                    </div>
-                </div>
-
                 {{-- Avatar / Profile Dropdown --}}
                 <div class="topbar-dropdown">
                     <div class="topbar-avatar" id="avatarToggle">
@@ -902,7 +803,7 @@
             });
         }
 
-        setupDropdown('notifToggle', 'notifPanel');
+
         setupDropdown('avatarToggle', 'avatarPanel');
 
         // Close dropdowns on outside click

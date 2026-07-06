@@ -586,7 +586,7 @@
 
         // Tampilkan gambar preview lama jika ada
         if (product.image) {
-            document.getElementById('preview').src = `/storage/${product.image}`;
+            document.getElementById('preview').src = `{{ asset('storage') }}/${product.image}`;
         } else {
             document.getElementById('preview').src = 'https://via.placeholder.com/120x120?text=No+Image';
         }

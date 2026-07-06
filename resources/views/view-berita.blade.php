@@ -129,7 +129,7 @@
                     </div>
                     <h3>{{ $featured->judul }}</h3>
                     <p>{{ strip_tags($featured->isi) }}</p>
-                    <a href="{{ route('berita.show', $featured->id) }}" class="btn-read">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
+                    <a href="{{ route('berita.show.public', $featured->id) }}" class="btn-read">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
             <div class="side-stack">
@@ -141,7 +141,7 @@
                     </div>
                     <h4>{{ $side->judul }}</h4>
                     <p>{{ Str::limit(strip_tags($side->isi), 100) }}</p>
-                    <a href="{{ route('berita.show', $side->id) }}" class="side-link">Detail Berita <i class="bi bi-chevron-right"></i></a>
+                    <a href="{{ route('berita.show.public', $side->id) }}" class="side-link">Detail Berita <i class="bi bi-chevron-right"></i></a>
                 </div>
                 @endforeach
                 @if($sideItems->count() < 2)
@@ -185,7 +185,7 @@
                     <h5>{{ $item->judul }}</h5>
                     <p>{{ Str::limit(strip_tags($item->isi), 120) }}</p>
                     <div class="card-news-footer">
-                        <a href="{{ route('berita.show', $item->id) }}" class="btn-detail">Selengkapnya <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('berita.show.public', $item->id) }}" class="btn-detail">Selengkapnya <i class="bi bi-arrow-right"></i></a>
                         <span class="news-read-time"><i class="bi bi-clock"></i> 3 mnt</span>
                     </div>
                 </div>
