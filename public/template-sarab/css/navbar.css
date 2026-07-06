@@ -23,6 +23,7 @@ html{scroll-padding-top:95px;}
  border-bottom:3px solid var(--blue);
  box-shadow:0 4px 20px rgba(0,74,173,.1);
  z-index:1030;
+ overflow:visible!important;
 }
 
 .brand-text{font-weight:800;color:var(--blue);font-size:20px}
@@ -37,6 +38,125 @@ html{scroll-padding-top:95px;}
 }
 .nav-links a:hover{background:var(--orange-soft);color:var(--orange)}
 .nav-links a.active{color:var(--blue);font-weight:600}
+
+.nav-item.dropdown,
+.nav-item.dropdown-hover{
+ position:relative;
+}
+
+/* ═══════════════════════════════════════════
+   CSS ANIMATION DROPDOWN (Dokumentasi)
+   ═══════════════════════════════════════════ */
+
+/* Arrow animation */
+.dropdown-arrow{
+ font-size:10px;
+ margin-left:6px;
+ transition:transform .3s cubic-bezier(.4,0,.2,1);
+ display:inline-block;
+}
+
+.dropdown-hover:hover .dropdown-arrow{
+ transform:rotate(180deg);
+}
+
+/* Menu container - hidden by default */
+.dropdown-menu-custom{
+ position:absolute;
+ top:100%;
+ left:0;
+ min-width:240px;
+ background:#fff;
+ border:none;
+ border-radius:12px;
+ box-shadow:0 10px 35px rgba(0,0,0,.12);
+ padding:.75rem;
+ z-index:1050;
+ list-style:none;
+ margin:8px 0 0 0;
+ 
+ /* Animation */
+ opacity:0;
+ visibility:hidden;
+ transform:translateY(-8px);
+ transition:opacity .25s cubic-bezier(.4,0,.2,1),
+             visibility .25s cubic-bezier(.4,0,.2,1),
+             transform .25s cubic-bezier(.4,0,.2,1);
+ pointer-events:none;
+}
+
+/* Show on hover (desktop) + focus-within (touch/click) */
+.dropdown-hover:hover .dropdown-menu-custom,
+.dropdown-hover:focus-within .dropdown-menu-custom{
+ opacity:1;
+ visibility:visible;
+ transform:translateY(0);
+ pointer-events:auto;
+}
+
+/* Menu items */
+.dropdown-item-custom{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:10px 14px;
+ border-radius:10px;
+ color:#334155;
+ text-decoration:none;
+ font-size:14px;
+ font-weight:500;
+ transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+
+.dropdown-item-custom:hover{
+ background:var(--orange-soft);
+ color:var(--orange);
+ transform:translateX(4px);
+}
+
+.dropdown-item-custom.active{
+ background:var(--orange-soft);
+ color:var(--orange);
+ font-weight:600;
+}
+
+.dropdown-item-custom .dropdown-item-icon{
+ width:35px;
+ height:35px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:10px;
+ background:var(--orange-soft);
+ color:var(--orange);
+ flex-shrink:0;
+}
+
+/* Stagger animation for sub-items */
+.dropdown-hover:hover .dropdown-item-custom,
+.dropdown-hover:focus-within .dropdown-item-custom{
+ animation:slideInItem .3s ease both;
+}
+
+.dropdown-hover .dropdown-item-custom:nth-child(1){ animation-delay:0s; }
+.dropdown-hover .dropdown-item-custom:nth-child(2){ animation-delay:.04s; }
+.dropdown-hover .dropdown-item-custom:nth-child(3){ animation-delay:.08s; }
+.dropdown-hover .dropdown-item-custom:nth-child(4){ animation-delay:.12s; }
+
+@keyframes slideInItem{
+ from{
+  opacity:0;
+  transform:translateX(-8px);
+ }
+ to{
+  opacity:1;
+  transform:translateX(0);
+ }
+}
+
+/* ═══════════════════════════════════════════
+   BOOTSTRAP DROPDOWN (Profil, dll)
+   ═══════════════════════════════════════════ */
 
 .nav-link.dropdown-toggle-custom{
  color:#334155!important;
@@ -55,6 +175,15 @@ html{scroll-padding-top:95px;}
  border-radius:12px;
  box-shadow:0 10px 35px rgba(0,0,0,.12);
  padding:.75rem;
+ z-index:1050;
+}
+
+/* Pastikan dropdown tidak terpotong di container manapun */
+.navbar .navbar-collapse{
+ overflow:visible!important;
+}
+.navbar .nav-links{
+ overflow:visible!important;
 }
 
 .dropdown-item-icon{
@@ -131,6 +260,40 @@ html{scroll-padding-top:95px;}
   flex-direction:column;
   align-items:flex-start;
  }
+
+ /* Mobile: dropdown jadi inline expand */
+ .dropdown-menu-custom{
+  position:static!important;
+  box-shadow:none;
+  margin-top:0;
+  padding-left:1.5rem;
+  padding-top:0;
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  pointer-events:auto!important;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease;
+ }
+
+ .dropdown-hover:hover .dropdown-menu-custom,
+ .dropdown-hover:focus-within .dropdown-menu-custom{
+  max-height:300px;
+  opacity:1;
+ }
+
+ .dropdown-hover:hover .dropdown-item-custom,
+ .dropdown-hover:focus-within .dropdown-item-custom{
+  animation:none;
+  opacity:1;
+  transform:none;
+ }
+
+ .dropdown-arrow{
+  display:none;
+ }
+
  .sovcats{
   grid-template-columns:repeat(2,1fr);
  }

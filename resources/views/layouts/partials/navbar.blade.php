@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="{{ asset('template-sarab/css/navbar.css') }}">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Search Overlay -->
 <div id="searchOv">
@@ -53,46 +52,41 @@
                <li><a href="{{ route('welcome') }}" class="{{ request()->routeIs('welcome') ? 'active' : '' }}">Beranda</a></li>
                <li><a href="{{ route('tentang-kami') }}" class="{{ request()->routeIs('tentang-kami') ? 'active' : '' }}">Tentang Kami</a></li>
                
-               <li class="nav-item dropdown" style="cursor: pointer;">
-                  <a class="nav-link dropdown-toggle dropdown-toggle-custom" 
-                     href="javascript:void(0)" 
-                     id="navbarDropdown" 
-                     role="button" 
-                     data-bs-toggle="dropdown" 
-                     aria-expanded="false">
-                      Dokumentasi
+               <li class="nav-item dropdown-hover" style="cursor: pointer;">
+                  <a class="nav-link dropdown-toggle-custom" href="#" id="navbarDropdown">
+                      Dokumentasi <i class="fas fa-chevron-down dropdown-arrow"></i>
                   </a>
-                  <ul class="dropdown-menu mt-2" aria-labelledby="navbarDropdown" style="min-width: 240px;">
+                  <ul class="dropdown-menu-custom" style="min-width: 240px;">
                      <li>
-                        <a class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 {{ request()->routeIs('berita.public') ? 'active' : '' }}" href="{{ route('berita.public') }}">
-                           <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 dropdown-item-icon">
+                        <a class="dropdown-item-custom {{ request()->routeIs('berita.public') ? 'active' : '' }}" href="{{ route('berita.public') }}">
+                           <div class="dropdown-item-icon">
                               <i class="bi bi-newspaper fs-6"></i>
                            </div>
-                           <span class="fw-medium text-dark" style="font-size: 0.9rem;">Berita FAA</span>
+                           <span>Berita FAA</span>
                         </a>
                      </li>
                      <li>
-                        <a class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 {{ request()->routeIs('album.public') ? 'active' : '' }}" href="{{ route('album.public') }}">
-                           <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 dropdown-item-icon">
+                        <a class="dropdown-item-custom {{ request()->routeIs('album.public') ? 'active' : '' }}" href="{{ route('album.public') }}">
+                           <div class="dropdown-item-icon">
                               <i class="bi bi-images fs-6"></i>
                            </div>
-                           <span class="fw-medium text-dark" style="font-size: 0.9rem;">Album Kegiatan</span>
+                           <span>Album Kegiatan</span>
                         </a>
                      </li>
                      <li>
-                        <a class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 {{ request()->routeIs('infografis.public') ? 'active' : '' }}" href="{{ route('infografis.public') }}">
-                           <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 dropdown-item-icon">
+                        <a class="dropdown-item-custom {{ request()->routeIs('infografis.public') ? 'active' : '' }}" href="{{ route('infografis.public') }}">
+                           <div class="dropdown-item-icon">
                               <i class="bi bi-bar-chart-line fs-6"></i>
                            </div>
-                           <span class="fw-medium text-dark" style="font-size: 0.9rem;">Infografis</span>
+                           <span>Infografis</span>
                         </a>
                      </li>
                      <li>
-                        <a class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 {{ request()->routeIs('video.public') ? 'active' : '' }}" href="{{ route('video.public') }}">
-                           <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 dropdown-item-icon">
+                        <a class="dropdown-item-custom {{ request()->routeIs('video.public') ? 'active' : '' }}" href="{{ route('video.public') }}">
+                           <div class="dropdown-item-icon">
                               <i class="bi bi-camera-video fs-6"></i>
                            </div>
-                           <span class="fw-medium text-dark" style="font-size: 0.9rem;">Video</span>
+                           <span>Video</span>
                         </a>
                      </li>
                   </ul>
@@ -216,3 +210,5 @@
 
    </div>
 </nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

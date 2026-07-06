@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusText    = document.getElementById('statusText');
     const quickReplies  = document.querySelectorAll('.quick-reply-btn');
 
-    const API_URL = "http://127.0.0.1:8000/chat";
+    const API_URL = "http://127.0.0.1:8080/chat";
 
     function escapeHtml(str) {
         const div = document.createElement('div');

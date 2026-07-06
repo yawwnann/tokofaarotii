@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.public')
 
 @section('title', 'Detail Pesanan ' . $order->invoice)
 
