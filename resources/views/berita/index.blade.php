@@ -420,6 +420,7 @@
         if (data) {
             modalTitle.textContent  = 'Edit Data Berita';
             form.action             = `{{ url('berita') }}/${data.id}`;
+            methodField.disabled    = false;
             methodField.value       = 'PUT';
             judul.value             = data.judul;
             submitLabel.textContent = 'Update';
@@ -435,6 +436,7 @@
         } else {
             modalTitle.textContent  = 'Tambah Data Berita';
             form.action             = `{{ route('berita.store') }}`;
+            methodField.disabled    = true;
             methodField.value       = '';
             judul.value             = '';
             preview.src             = "https://via.placeholder.com/150";
