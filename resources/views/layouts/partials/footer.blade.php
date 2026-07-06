@@ -16,7 +16,7 @@
                 <a href="#"><i class="fab fa-tiktok"></i></a>
             </div>
         </div>
-        
+
         <!-- Kolom 2: Link Cepat-->
         <div class="col-sm-6 col-lg-2">
             <div class="ftit">Link Cepat</div>
@@ -28,7 +28,7 @@
                 <li><a href="{{ route('faq.public') }}"><i class="fas fa-chevron-right"></i>FAQ</a></li>
             </ul>
         </div>
-        
+
         <!-- Kolom 3: Hubungi Kami-->
         <div class="col-sm-6 col-lg-4">
             <div class="ftit">Hubungi Kami</div>
@@ -54,20 +54,20 @@
         <div class="col-sm-6 col-lg-3">
             <div class="ftit">Lokasi</div>
             <div class="fmap" style="border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3985.449717171717!2d106.1104212!3d-1.8504601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22f3e7784d51ad%3A0xf0b32b5d14082039!2sFAA+FROZEN+FOOD!5e0!3m2!1sid!2sid!4v1717424400000!5m2!1sid!2sid" 
-                width="100%" 
-                height="200" 
-                style="border:0; display:block;" 
-                allowfullscreen="" 
-                loading="lazy" 
+                <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3985.449717171717!2d106.1104212!3d-1.8504601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22f3e7784d51ad%3A0xf0b32b5d14082039!2sFAA+FROZEN+FOOD!5e0!3m2!1sid!2sid!4v1717424400000!5m2!1sid!2sid"
+                width="100%"
+                height="200"
+                style="border:0; display:block;"
+                allowfullscreen=""
+                loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
             </div>
         </div>
     </div>
     </div>
-    
+
     <div class="fbot">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -77,10 +77,7 @@
     </div>
 </footer>
 
-<!-- Scroll To Top Button -->
-<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <i class="fas fa-chevron-up"></i>
-</button>
+
 
 <!-- JavaScript Libraries -->
 <script src="{{ asset('template-sarab/js/jquery-3.7.1.min.js') }}"></script>
