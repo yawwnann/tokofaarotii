@@ -144,13 +144,6 @@
     .modal-content-custom { border-radius: var(--radius-lg); overflow: hidden; border: none; box-shadow: var(--shadow-md); }
     .modal-header-custom { border-bottom: none; padding: 16px 20px 0 20px; }
     .modal-product-img { border-radius: var(--radius-md); width: 100%; aspect-ratio: 4/3; object-fit: cover; margin-bottom: 16px; background: var(--light); }
-    #waOrderBtn {
-        background: #25D366; color: var(--white); border: none; padding: 10px 24px;
-        border-radius: 50px; font-weight: 600; font-size: 14px; width: 100%;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        transition: all 0.2s ease; text-decoration: none;
-    }
-    #waOrderBtn:hover { background: #128C7E; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
     .empty-state { padding: 60px 20px; text-align: center; background: var(--white); border-radius: var(--radius-lg); border: 2px dashed var(--border); }
 </style>
 
@@ -200,6 +193,7 @@
                                                     </a>
                                                     <a href="#" class="btn-action-round btn-view-detail open-modal" 
                                                        data-bs-toggle="modal" data-bs-target="#productModal"
+                                                       data-id="{{ $product->id }}"
                                                        data-name="{{ $product->name }}"
                                                        data-price="Rp {{ number_format($product->price, 0, ',', '.') }}"
                                                        data-desc="{{ $product->description }}"
@@ -247,9 +241,9 @@
                         <i class="bi bi-tag-fill text-warning me-2" style="color: var(--primary) !important;"></i> Satuan: <span id="modalUnit"></span>
                     </span>
                 </div>
-                <a href="#" id="waOrderBtn" target="_blank">
-                    <i class="bi bi-whatsapp"></i> Pesan Melalui WhatsApp
-                </a>
+                <button id="checkoutBtn" class="btn w-100 py-2 fw-bold" style="background-color: var(--primary); color: white; border: none; border-radius: 50px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
+                    <i class="bi bi-cart-check"></i> Tambah & Lanjut Checkout
+                </button>
             </div>
         </div>
     </div>
@@ -258,7 +252,6 @@
 @include('chatbot')
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -299,8 +292,26 @@
             document.getElementById('modalDesc').textContent = desc || 'Produk pilihan terbaik dari FAA Frozen Food & Bakery.';
             document.getElementById('modalImg').src = img;
             document.getElementById('modalUnit').textContent = unit || '-';
-            const waMessage = encodeURIComponent(`Halo FAA Frozen Food & Bakery, saya tertarik dan ingin memesan produk: ${name} (${price})`);
-            document.getElementById('waOrderBtn').href = `https://wa.me/6285368787893?text=${waMessage}`;
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const productId = button.getAttribute('data-id');
+            checkoutBtn.onclick = function() {
+                @auth
+                    $.ajax({
+                        url: `/cart/add/${productId}`,
+                        method: 'POST',
+                        data: { _token: '{{ csrf_token() }}' },
+                        success: function(response) {
+                            $('#cartCount').text(response.cart_count);
+                            window.location.href = '{{ route("checkout.index") }}';
+                        },
+                        error: function() {
+                            window.location.href = '{{ route("checkout.index") }}';
+                        }
+                    });
+                @else
+                    window.location.href = '{{ route("login") }}';
+                @endauth
+            };
         });
     });
 </script>

@@ -1,37 +1,5 @@
 <link rel="stylesheet" href="{{ asset('template-sarab/css/navbar.css') }}">
 
-<!-- Search Overlay -->
-<div id="searchOv">
-    <button id="searchClose" class="sovclose"><i class="fas fa-times"></i></button>
-    <div class="sovbox">
-    <h4>Apa yang Anda dambakan hari ini?</h4>
-    <div class="sovinput">
-        <input type="text" id="searchInput" placeholder="Cari roti, frozen food, pastry...">
-        <button><i class="fas fa-search"></i></button>
-    </div>
-    <div class="sovcats">
-        <div class="sovcat active" data-cat="all">
-            <img src="{{ asset('template-sarab/img/category/1.jpg') }}" alt="Semua"> <span>Semua Item</span>
-        </div>
-        <div class="sovcat" data-cat="bread">
-            <img src="{{ asset('template-sarab/img/category/1.jpg') }}" alt="Roti"> <span>Bakery</span>
-        </div>
-        <div class="sovcat" data-cat="frozen">
-            <img src="{{ asset('template-sarab/img/category/2.jpg') }}" alt="Frozen"> <span>Frozen Food</span>
-        </div>
-        <div class="sovcat" data-cat="pastry">
-            <img src="{{ asset('template-sarab/img/category/3.jpg') }}" alt="Pastry"> <span>Tentang Kami</span>
-        </div>
-    </div>
-    <div class="sovtrend">
-        <p>🔥 Pencarian yang Sedang Tren</p>
-        <span class="ttag">Roti O Coklat</span>
-        <span class="ttag">Bakso Ayam</span>
-        <span class="ttag">Visi & Misi Toko FAA</span>
-    </div>
-    </div>
-</div>
-
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3 fixed-top">
    <div class="container-fluid px-lg-4">
@@ -98,11 +66,6 @@
 
             <div class="nav-actions d-flex align-items-center gap-2 gap-lg-3 flex-grow-1 justify-content-lg-end w-100 w-lg-auto">
                
-               <div class="position-relative flex-grow-1" style="max-width: 380px;">
-                  <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                  <input type="text" class="form-control rounded-pill border-0 ps-5 py-2 shadow-sm" placeholder="Cari produk..." style="background-color: #f1f5f9; font-size: 0.9rem;">
-               </div>
-
                <a href="{{ route('showroom.3d') }}" class="text-secondary p-2 d-flex align-items-center justify-content-center rounded-circle hover-bg-light" title="VR 3D Showroom">
                   <i class="bi bi-box-seam fs-5" style="color: #64748b;"></i>
                </a>
@@ -210,5 +173,3 @@
 
    </div>
 </nav>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

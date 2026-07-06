@@ -51,25 +51,38 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a) {
 });
 
 
+// Search overlay functionality (guarded: elements may not exist)
 var searchOv = document.getElementById('searchOv');
+var navSearchBtn = document.getElementById('navSearchBtn');
+var searchClose = document.getElementById('searchClose');
 
-document.getElementById('navSearchBtn').addEventListener('click', function() {
-    searchOv.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(function() {
-        document.getElementById('searchInput').focus();
-    }, 220);
-});
+if (navSearchBtn && searchOv) {
+    navSearchBtn.addEventListener('click', function() {
+        searchOv.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(function() {
+            var searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.focus();
+        }, 220);
+    });
+}
 
-document.getElementById('searchClose').addEventListener('click', closeSearch);
+if (searchClose && searchOv) {
+    searchClose.addEventListener('click', function() {
+        closeSearch();
+    });
+}
 
-// Close when clicking backdrop
-searchOv.addEventListener('click', function(e) {
-    if (e.target === searchOv) closeSearch();
-});
+if (searchOv) {
+    searchOv.addEventListener('click', function(e) {
+        if (e.target === searchOv) closeSearch();
+    });
+}
 
 function closeSearch() {
-    searchOv.classList.remove('open');
+    if (searchOv) {
+        searchOv.classList.remove('open');
+    }
     document.body.style.overflow = '';
 }
 
@@ -84,10 +97,13 @@ document.querySelectorAll('.sovcat').forEach(function(btn) {
         closeSearch();
         setTimeout(function() {
             filterMenu(f);
-            document.getElementById('menu').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            var menuEl = document.getElementById('menu');
+            if (menuEl) {
+                menuEl.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         }, 300);
     });
 });
@@ -95,8 +111,11 @@ document.querySelectorAll('.sovcat').forEach(function(btn) {
 // Trending tags fill the search input
 document.querySelectorAll('.sovtrend .ttag').forEach(function(t) {
     t.addEventListener('click', function() {
-        document.getElementById('searchInput').value = this.textContent.trim();
-        document.getElementById('searchInput').focus();
+        var searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = this.textContent.trim();
+            searchInput.focus();
+        }
     });
 });
 
