@@ -420,12 +420,8 @@
         if (data) {
             modalTitle.textContent  = 'Edit Data Berita';
             form.action             = `{{ url('berita') }}/${data.id}`;
-<<<<<<< Updated upstream
             methodField.disabled    = false;
             methodField.value       = 'PUT';
-=======
-            methodField.disabled = false; methodField.value = 'PUT';
->>>>>>> Stashed changes
             judul.value             = data.judul;
             submitLabel.textContent = 'Update';
             submitBtn.classList.add('update-mode');
@@ -440,12 +436,8 @@
         } else {
             modalTitle.textContent  = 'Tambah Data Berita';
             form.action             = `{{ route('berita.store') }}`;
-<<<<<<< Updated upstream
             methodField.disabled    = true;
             methodField.value       = '';
-=======
-            methodField.disabled = true; methodField.value = '';
->>>>>>> Stashed changes
             judul.value             = '';
             preview.src             = "https://via.placeholder.com/150";
             fileInput.value         = ''; 
