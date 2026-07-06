@@ -19,7 +19,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        filter: drop-shadow(0 0 12px rgba(0, 74, 173, 0.4)); 
+        filter: drop-shadow(0 0 12px rgba(0, 74, 173, 0.4));
         animation: floatingEffect 3s ease-in-out infinite;
     }
 
@@ -30,7 +30,7 @@
     }
 
     .text-faa {
-        font-family: 'Poppins', sans-serif; 
+        font-family: 'Poppins', sans-serif;
         letter-spacing: 1px;
         color: #004aad;
     }
@@ -127,7 +127,7 @@
         text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
     }
 
-    .slider_item-detail p.text-muted, 
+    .slider_item-detail p.text-muted,
     .slider_item-detail p {
         font-size: 1.1rem;
         color: rgba(255, 255, 255, 0.9) !important;
@@ -144,7 +144,7 @@
         box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         transition: transform 0.5s ease;
     }
-    
+
     .slider_img-box:hover img {
         transform: scale(1.03);
     }
@@ -179,7 +179,7 @@
         margin: 0 6px;
         transition: all 0.3s ease;
     }
-    
+
     .carousel-indicators .active {
         background-color: #f97316 !important;
         width: 24px;
@@ -266,7 +266,7 @@
         justify-content: center;
         padding: 20px;
     }
-    
+
     #menuPop.active {
         display: flex;
     }
@@ -281,7 +281,7 @@
       </div>
 
       <div class="carousel-inner">
-         
+
          <div class="carousel-item active">
          <div class="slider_item-box" style="background-image: url('{{ asset('template-sarab/img/banner-faa-new.jpeg') }}');">
             <div class="slider_item-container">
@@ -447,7 +447,7 @@
 
 <section id="categories" class="py-5 bg-white">
  <div class="container">
-    
+
     <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-up">
        <div>
           <span class="text-primary fw-bold text-uppercase small d-block mb-1" style="letter-spacing: 1px;">Kategori Produk</span>
@@ -461,7 +461,7 @@
     </div>
 
     <div class="row g-4 mb-4">
-       
+
        <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="100">
           <div class="card border-0 rounded-4 overflow-hidden position-relative text-white shadow-sm hover-lift" style="height: 280px; cursor: pointer;">
              <img class="w-100 h-100" src="{{ asset('template-sarab/img/menu/roti unyil.jpeg') }}" alt="Frozen Food" style="object-fit: cover;">
@@ -550,31 +550,31 @@
 
 <section id="quick-access" class="pb-5 bg-white">
  <div class="container">
-    
+
     <div class="mb-4" data-aos="fade-up">
        <span class="text-primary fw-bold text-uppercase small d-block mb-1" style="letter-spacing: 1px;">Akses Cepat</span>
        <h2 class="fw-bold m-0" style="color: #0f172a;">Pengalaman Belanja Lebih Modern</h2>
     </div>
 
     <div class="row g-4 mb-4">
-       
+
        <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="card border-0 rounded-4 p-4 position-relative overflow-hidden text-white h-100 shadow-sm hover-lift" 
+          <div class="card border-0 rounded-4 p-4 position-relative overflow-hidden text-white h-100 shadow-sm hover-lift"
                style="background: linear-gradient(135deg, #004aad 0%, #003580 100%); min-height: 240px;">
-             
-             <div class="position-absolute end-0 top-50 translate-middle-y opacity-10" 
+
+             <div class="position-absolute end-0 top-50 translate-middle-y opacity-10"
                   style="width: 180px; height: 180px; border-radius: 50%; background: #ffffff; background-image: url('{{ asset("template-sarab/img/icons/vrShowroomnew.jpg") }}'); background-size: contain; background-repeat: no-repeat; border: 20px solid #ffffff; margin-right: -40px;"></div>
-             
+
              <div class="position-relative z-1 d-flex flex-column justify-content-between h-100">
                 <div>
-                   <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" 
+                   <div class="rounded-3 d-flex align-items-center justify-content-center mb-3"
                         style="width: 45px; height: 45px; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
                       <i class="bi bi-box-seam fs-5 text-white"></i>
                    </div>
                    <h3 class="fw-bold mb-2 fs-4" style="color: #ffffff;">VR 3D Showroom</h3>
                    <p class="text-white-50 small mb-4" style="max-width: 85%;">Jelajahi toko kami secara virtual. Lihat produk dari segala sudut sebelum membeli.</p>
                 </div>
-                <a href="#" class="btn rounded-pill px-4 py-2 align-self-start btn-sm fw-semibold d-flex align-items-center text-white" 
+                <a href="#" class="btn rounded-pill px-4 py-2 align-self-start btn-sm fw-semibold d-flex align-items-center text-white"
                    style="background-color: #f97316; border: none;">
                    Masuk Showroom <i class="bi bi-arrow-right ms-2"></i>
                 </a>
@@ -601,13 +601,13 @@
        <div id="mpPrice"></div>
        <div class="mpmeta" id="mpMeta"></div>
        <div class="mptags" id="mpTags"></div>
-       
+
        <div class="mpqty">
           <button class="mpqbtn" id="mpMinus">-</button>
           <div class="mpqnum" id="mpQnum">1</div>
           <button class="mpqbtn" id="mpPlus">+</button>
        </div>
-       
+
        <button class="mpaddcart" id="mpAddCart" style="background-color: #004aad;">
           <i class="fas fa-shopping-cart"></i> Add to Cart
        </button>
@@ -617,7 +617,7 @@
 
 <section id="blog" class="py-5" style="background-color: #fffaf0;">
  <div class="container">
-    
+
     <div class="text-center mb-5" data-aos="fade-up">
        <span class="d-block text-primary fw-semibold text-capitalize mb-2" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem;">Berita & Pembaruan</span>
        <h2 class="fw-bold position-relative d-inline-block pb-3" style="color: #0f172a; font-size: 2.25rem;">
@@ -630,18 +630,18 @@
        @forelse($beritas as $index => $berita)
        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $index * 80 }}">
           <div class="card border-0 rounded-4 overflow-hidden shadow-sm h-100 bg-white news-card">
-             
+
              <div class="position-relative overflow-hidden img-container" style="height: 220px;">
                 @if($berita->gambar)
                    <img class="w-100 h-100" src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}" style="object-fit: cover; object-position: center;"/>
                 @else
                    <img class="w-100 h-100" src="{{ asset('template-sarab/img/blog/' . ($index + 1) . '.jpg') }}" alt="Default" style="object-fit: cover; object-position: center;"/>
                 @endif
-                
+
                 @php
                    $date = \Carbon\Carbon::parse($berita->created_at);
                 @endphp
-                
+
                 <div class="position-absolute top-0 start-0 m-3 text-white rounded-3 d-flex flex-column align-items-center justify-content-center shadow" style="width: 45px; height: 48px; line-height: 1.1; background-color: #004aad !important;">
                    <span class="fw-bold fs-5">{{ $date->translatedFormat('d') }}</span>
                    <span class="text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">{{ $date->translatedFormat('M') }}</span>
@@ -653,13 +653,13 @@
                    <span class="text-primary text-uppercase fw-bold d-block mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #004aad !important;">
                       {{ $berita->kategori ?? 'Berita' }}
                    </span>
-                   
+
                    <h5 class="fw-bold mb-3" style="font-size: 1.15rem; line-height: 1.4;">
                       <a href="{{ route('berita.show.public', $berita->id) }}" class="text-decoration-none text-dark hover-opacity" style="color: #1e293b;">
                          {{ $berita->judul }}
                       </a>
                    </h5>
-                   
+
                    <div class="text-muted small d-flex align-items-center mb-4">
                       <i class="far fa-calendar-alt me-2 text-primary"></i>
                       <span>{{ $date->translatedFormat('d M Y') }}</span>
@@ -689,14 +689,12 @@
  </div>
 </section>
 
-<button id="btt" title="Kembali ke atas"><i class="bi bi-chevron-up fs-5"></i></button>
-
 @include('chatbot')
 
 @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-       
+
        // 1. Live Search Product
        const searchInput = document.getElementById('searchInput');
        if (searchInput) {
@@ -704,14 +702,14 @@
              let query = this.value.toLowerCase().trim();
              let items = document.querySelectorAll('.mwrap');
              let hasResults = false;
-             
+
              items.forEach(item => {
                 let titleEl = item.querySelector('.card-title');
                 let descEl = item.querySelector('.text-muted');
-                
+
                 let title = titleEl ? titleEl.textContent.toLowerCase() : '';
                 let desc = descEl ? descEl.textContent.toLowerCase() : '';
-                
+
                 if (title.includes(query) || desc.includes(query)) {
                    item.classList.remove('gone');
                    item.style.display = 'block';

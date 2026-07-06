@@ -59,7 +59,6 @@
     </div>
 </section>
 
-<button id="btt" aria-label="Kembali ke atas"><i class="bi bi-arrow-up-short" style="font-size: 22px;"></i></button>
 
 <script>
     const bttButton = document.getElementById('btt');
