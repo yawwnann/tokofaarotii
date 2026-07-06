@@ -165,7 +165,7 @@ class SaleController extends Controller
 
                 try {
                     $snapToken = \Midtrans\Snap::getSnapToken($params);
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     // Jika Midtrans gagal, tetap simpan transaksi dengan status pending
                     $snapToken = null;
                 }
@@ -185,7 +185,7 @@ class SaleController extends Controller
             }
 
             return response()->json($response);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }

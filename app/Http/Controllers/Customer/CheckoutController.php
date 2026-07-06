@@ -121,7 +121,7 @@ class CheckoutController extends Controller
 
             try {
                 $snapToken = \Midtrans\Snap::getSnapToken($params);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 return redirect()->route('checkout.index')
                     ->withErrors(['midtrans' => 'Gagal terhubung ke server pembayaran: ' . $e->getMessage()]);
             }
