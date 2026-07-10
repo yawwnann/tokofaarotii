@@ -45,7 +45,7 @@
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%);
+        background: rgba(15, 23, 42, 0.75);
     }
 
     .hero-content {
@@ -56,7 +56,7 @@
     }
 
     .product-hero h1 {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Poppins', sans-serif;
         font-size: clamp(36px, 6vw, 54px);
         font-weight: 700;
         color: var(--white);
@@ -92,7 +92,7 @@
     }
     .section-header { margin-bottom: 40px; text-align: center; }
     .section-title {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Poppins', sans-serif;
         font-weight: 700;
         font-size: clamp(26px, 4vw, 36px);
         color: var(--dark);

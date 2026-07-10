@@ -279,7 +279,7 @@
         align-items: center;
         gap: 0.4rem;
         padding: 0.5rem 1rem;
-        background: linear-gradient(135deg, #f97316, #ea580c);
+        background: var(--color-primary, #ea580c);
         color: #fff;
         border: none;
         border-radius: 0.5rem;
@@ -519,7 +519,7 @@
         width: 32px;
         height: 32px;
         border-radius: 8px;
-        background: linear-gradient(135deg, #f97316, #ea580c);
+        background: var(--color-primary, #ea580c);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -613,7 +613,7 @@
         align-items: center;
         gap: 0.375rem;
         padding: 0.5rem 1.375rem;
-        background: linear-gradient(135deg, #f97316, #ea580c);
+        background: var(--color-primary, #ea580c);
         color: #fff;
         border: none;
         border-radius: 0.5rem;
@@ -628,7 +628,7 @@
         transform: translateY(-1px);
     }
     .btn-submit.update-mode {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
+        background: #16a34a;
         box-shadow: 0 3px 10px rgba(34,197,94,.35);
     }
     .btn-submit.update-mode:hover {

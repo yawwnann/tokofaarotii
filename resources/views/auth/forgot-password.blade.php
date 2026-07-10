@@ -27,7 +27,7 @@
         }
         .panel-left::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(160deg, rgba(10,30,90,0.55) 0%, rgba(30,60,180,0.45) 100%);
+            background: rgba(15, 23, 42, 0.7);
             z-index: 1;
         }
         .panel-left-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -45,7 +45,7 @@
         .logo-wrap img { height: 70px; object-fit: contain; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.08)); }
 
         .page-icon-wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
-        .page-icon-circle { width: 58px; height: 58px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(249,115,22,0.35); font-size: 1.4rem; color: #fff; }
+        .page-icon-circle { width: 58px; height: 58px; background: var(--color-primary, #ea580c); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(249,115,22,0.35); font-size: 1.4rem; color: #fff; }
 
         .form-header { text-align: center; margin-bottom: 1.75rem; }
         .form-header h2 { font-size: 1.55rem; font-weight: 800; color: #004aad; margin-bottom: 0.35rem; }
@@ -62,7 +62,7 @@
         .form-input.is-invalid { border-color: #f87171; box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
         .input-error { font-size: 0.77rem; color: #ef4444; margin-top: 0.28rem; display: flex; align-items: center; gap: 0.3rem; }
 
-        .btn-submit { width: 100%; padding: 0.82rem; background: linear-gradient(135deg, #004aad, #1d4ed8); color: #fff; font-size: 0.96rem; font-weight: 700; border: none; border-radius: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; margin-top: 0.5rem; }
+        .btn-submit { width: 100%; padding: 0.82rem; background: #004aad; color: #fff; font-size: 0.96rem; font-weight: 700; border: none; border-radius: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; margin-top: 0.5rem; }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,74,173,0.28); }
         .btn-submit:active { transform: translateY(0); }
 

@@ -79,7 +79,7 @@
         .sidebar-brand-icon {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, #f97316, #ea580c);
+            background: var(--color-primary);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -340,7 +340,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
+            background: var(--color-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -381,7 +381,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
+            background: var(--color-primary);
             display: flex;
             align-items: center;
             justify-content: center;

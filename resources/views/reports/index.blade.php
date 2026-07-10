@@ -124,6 +124,7 @@
                         <th>TANGGAL</th>
                         <th>PRODUK</th>
                         <th>KATEGORI</th>
+                        <th>SUMBER</th>
                         <th style="text-align:center;">QTY</th>
                         <th style="text-align:right;">TOTAL HARGA</th>
                     </tr>
@@ -132,14 +133,21 @@
                     @forelse($salesData as $index => $sale)
                     <tr>
                         <td class="td-no">{{ $index + 1 }}</td>
-                        <td class="td-date">{{ \Carbon\Carbon::parse($sale->sale_date)->translatedFormat('d M Y') }}</td>
+                        <td class="td-date">{{ $sale->date->translatedFormat('d M Y') }}</td>
                         <td><span class="p-name">{{ $sale->product->name ?? '-' }}</span></td>
                         <td><span class="cat-badge">{{ $sale->product->category->name ?? '-' }}</span></td>
-                        <td style="text-align:center;"><span class="qty-badge">{{ $sale->quantity_sold }}</span></td>
-                        <td style="text-align:right;"><span class="total-price">Rp {{ number_format($sale->total_price, 0, ',', '.') }}</span></td>
+                        <td>
+                            @if($sale->source == 'Online')
+                                <span class="badge-online">Online</span>
+                            @else
+                                <span class="badge-offline">Offline</span>
+                            @endif
+                        </td>
+                        <td style="text-align:center;"><span class="qty-badge">{{ $sale->quantity }}</span></td>
+                        <td style="text-align:right;"><span class="total-price">Rp {{ number_format($sale->total, 0, ',', '.') }}</span></td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="empty-state"><i class="fas fa-folder-open"></i><p>Tidak ada data penjualan</p></td></tr>
+                    <tr><td colspan="7" class="empty-state"><i class="fas fa-folder-open"></i><p>Tidak ada data penjualan</p></td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -285,6 +293,8 @@
     .text-orange { color: #f97316; }
     .text-red { color: #ef4444; }
     .text-green { color: #22c55e; }
+    .badge-online { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+    .badge-offline { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
 
     .empty-state { text-align: center; padding: 3rem 1rem !important; color: #cbd5e1; }
     .empty-state i { font-size: 2rem; margin-bottom: .5rem; display: block; }

@@ -274,7 +274,7 @@
         align-items: center;
         gap: .4rem;
         padding: .5rem 1rem;
-        background: linear-gradient(135deg,#f97316,#ea580c);
+        background: var(--color-primary,#ea580c);
         color: #fff;
         border: none;
         border-radius: .5rem;
@@ -459,7 +459,7 @@
     .modal-icon {
         width:32px; height:32px;
         border-radius:8px;
-        background: linear-gradient(135deg,#f97316,#ea580c);
+        background: var(--color-primary,#ea580c);
         display:flex; align-items:center; justify-content:center;
         color:#fff; font-size:.8rem; flex-shrink:0;
     }
@@ -567,7 +567,7 @@
     .btn-submit {
         display: inline-flex; align-items:center; gap:.375rem;
         padding: .5rem 1.375rem;
-        background: linear-gradient(135deg,#f97316,#ea580c);
+        background: var(--color-primary,#ea580c);
         color: #fff; border:none; border-radius:.5rem;
         font-size:.825rem; font-weight:600; cursor:pointer;
         box-shadow: 0 3px 10px rgba(249,115,22,.35);
@@ -575,7 +575,7 @@
     }
     .btn-submit:hover { box-shadow:0 5px 16px rgba(249,115,22,.45); transform:translateY(-1px); }
     .btn-submit.update-mode {
-        background: linear-gradient(135deg,#22c55e,#16a34a);
+        background: #16a34a;
         box-shadow: 0 3px 10px rgba(34,197,94,.35);
     }
     .btn-submit.update-mode:hover { box-shadow:0 5px 16px rgba(34,197,94,.45); }

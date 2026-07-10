@@ -8,7 +8,7 @@
     body { font-family: 'Poppins', sans-serif; background-color: var(--light); color: var(--slate); }
     .faq-section { padding: 140px 0 80px 0; }
     .section-tag { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
-    .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(28px, 4vw, 38px); color: var(--dark); margin-bottom: 12px; }
+    .section-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: clamp(28px, 4vw, 38px); color: var(--dark); margin-bottom: 12px; }
     .section-title span { color: var(--primary); position: relative; }
     .custom-faq-container { max-width: 820px; margin: 0 auto; }
     .accordion-flush { background: transparent; }

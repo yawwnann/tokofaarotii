@@ -155,7 +155,7 @@
         {{-- Deskripsi --}}
         <div class="detail-card">
             <div class="section-title">
-                <div class="section-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);">
+                <div class="section-icon" style="background:var(--color-primary,#ea580c);">
                     <i class="fas fa-align-left"></i>
                 </div>
                 Deskripsi Produk
@@ -169,7 +169,7 @@
         <div class="detail-card" style="padding:0;overflow:hidden;">
             <div class="log-header">
                 <div class="section-title" style="margin:0;">
-                    <div class="section-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">
+                    <div class="section-icon" style="background:#4f46e5;">
                         <i class="fas fa-history"></i>
                     </div>
                     Log Aktivitas Stok

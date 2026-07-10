@@ -206,7 +206,7 @@
     .cat-card-title p  { font-size:.75rem;color:#94a3b8;margin:2px 0 0; }
 
     /* ─ Button Primary ─ */
-    .btn-primary { display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;text-decoration:none;transition:box-shadow .2s,transform .15s;box-shadow:0 3px 10px rgba(249,115,22,.35);white-space:nowrap; }
+    .btn-primary { display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;background:var(--color-primary,#ea580c);color:#fff;border:none;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;text-decoration:none;transition:box-shadow .2s,transform .15s;box-shadow:0 3px 10px rgba(249,115,22,.35);white-space:nowrap; }
     .btn-primary:hover { box-shadow:0 5px 16px rgba(249,115,22,.45);transform:translateY(-1px); }
 
     /* ─ Toolbar ─ */
@@ -233,7 +233,7 @@
 
     .row-num { display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#fff7ed;color:#f97316;font-size:.7rem;font-weight:700; }
 
-    .cat-icon-dot { width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);flex-shrink:0; }
+    .cat-icon-dot { width:8px;height:8px;border-radius:50%;background:var(--color-primary,#ea580c);flex-shrink:0; }
     .cat-name { font-weight:600;color:#1e293b; }
     .prod-count-badge { display:inline-block;padding:.2rem .625rem;background:#f1f5f9;color:#475569;border-radius:9px;font-size:.72rem;font-weight:600; }
 
@@ -259,7 +259,7 @@
 
     .modal-header { display:flex;align-items:center;justify-content:space-between;padding:1.125rem 1.5rem;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:5;border-radius:.875rem .875rem 0 0; }
     .modal-header-left { display:flex;align-items:center;gap:.625rem; }
-    .modal-icon { width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f97316,#ea580c);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;flex-shrink:0; }
+    .modal-icon { width:32px;height:32px;border-radius:8px;background:var(--color-primary,#ea580c);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;flex-shrink:0; }
     .modal-header h3 { font-size:.95rem;font-weight:700;color:#1e293b;margin:0; }
     .modal-close-btn { width:30px;height:30px;border-radius:50%;border:1px solid #e2e8f0;background:#f8fafc;color:#64748b;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;transition:background .15s,color .15s; }
     .modal-close-btn:hover { background:#fee2e2;color:#ef4444;border-color:#fca5a5; }
@@ -277,10 +277,10 @@
     .btn-cancel { display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.125rem;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s; }
     .btn-cancel:hover { background:#f8fafc;border-color:#cbd5e1;color:#374151; }
 
-    .btn-submit { display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.375rem;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(249,115,22,.35);transition:box-shadow .2s,transform .15s; }
+    .btn-submit { display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.375rem;background:var(--color-primary,#ea580c);color:#fff;border:none;border-radius:.5rem;font-size:.825rem;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(249,115,22,.35);transition:box-shadow .2s,transform .15s; }
     .btn-submit:hover { box-shadow:0 5px 16px rgba(249,115,22,.45);transform:translateY(-1px); }
 
-    .btn-submit.update-mode { background:linear-gradient(135deg,#f97316,#ea580c);box-shadow:0 3px 10px rgba(249,115,22,.35); }
+    .btn-submit.update-mode { background:var(--color-primary,#ea580c);box-shadow:0 3px 10px rgba(249,115,22,.35); }
     .btn-submit.update-mode:hover { box-shadow:0 5px 16px rgba(249,115,22,.45); }
 
     @media(max-width:640px) {

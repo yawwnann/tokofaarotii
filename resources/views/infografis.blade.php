@@ -8,9 +8,9 @@
     body { font-family: 'Poppins', sans-serif; background-color: var(--light); color: var(--slate); }
     .info-hero { position: relative; height: 380px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0 0 32px 32px; }
     .hero-bg { position: absolute; inset: 0; background: url('{{ asset('template-sarab/img/banner-toko-faa.png') }}') no-repeat center center / cover; will-change: transform; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.7) 100%); }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.75); }
     .hero-content { position: relative; z-index: 10; text-align: center; padding: 0 24px; }
-    .info-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 54px); font-weight: 700; color: var(--white); margin-bottom: 12px; }
+    .info-hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(36px, 6vw, 54px); font-weight: 700; color: var(--white); margin-bottom: 12px; }
     .info-hero p { font-size: 14px; max-width: 600px; margin: 0 auto 20px auto; color: rgba(255, 255, 255, 0.9) !important; line-height: 1.6; }
     .hero-breadcrumb { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; }
     .hero-breadcrumb a { color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.2s; }
@@ -19,7 +19,7 @@
     .hero-breadcrumb .sep { color: rgba(255, 255, 255, 0.3); }
     .info-section { padding: 60px 0; }
     .section-tag { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
-    .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(26px, 4vw, 36px); color: var(--dark); margin-bottom: 8px; }
+    .section-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: clamp(26px, 4vw, 36px); color: var(--dark); margin-bottom: 8px; }
     .info-card-wrapper { height: 100%; }
     .info-card { background: var(--white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; border: 1px solid var(--border); height: 100%; display: flex; flex-direction: column; text-decoration: none; }
     .info-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: var(--primary); }

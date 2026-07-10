@@ -53,13 +53,13 @@
 
 <div class="faa-chatbot-wrapper">
 
-    <button id="chatbot-trigger" onclick="toggleChatbot()" style="width: 60px !important; height: 60px !important; background: linear-gradient(135deg, var(--faa-primary), var(--faa-primary-dark)) !important; border: none !important; border-radius: 50% !important; color: white !important; font-size: 1.5rem !important; cursor: pointer !important; box-shadow: 0 4px 15px rgba(0, 74, 173, 0.4) !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all 0.3s ease !important;">
+    <button id="chatbot-trigger" onclick="toggleChatbot()" style="width: 60px !important; height: 60px !important; background: var(--faa-primary) !important; border: none !important; border-radius: 50% !important; color: white !important; font-size: 1.5rem !important; cursor: pointer !important; box-shadow: 0 4px 15px rgba(0, 74, 173, 0.4) !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all 0.3s ease !important;">
         <i class="bi bi-chat-dots-fill" id="chat-icon"></i>
     </button>
 
     <div id="chatbot-window" style="width: 380px !important; max-width: 90vw !important; height: 500px !important; background: #fff !important; border-radius: 20px !important; box-shadow: 0 10px 35px rgba(0,0,0,0.2) !important; display: none; flex-direction: column !important; overflow: hidden !important; border: 1px solid #eee !important; transition: all 0.3s ease !important; animation: popUpIn 0.25s ease-out !important;">
 
-        <div class="chat-header" style="padding: 15px 20px; background: linear-gradient(135deg, var(--faa-primary), var(--faa-primary-dark)); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-shrink: 0;">
+        <div class="chat-header" style="padding: 15px 20px; background: var(--faa-primary); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-shrink: 0;">
             <div class="chat-header-left" style="display: flex; align-items: center; gap: 12px;">
                 <div class="chat-avatar rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: #fff; color: var(--faa-primary); font-size: 1.1rem; flex-shrink: 0;">
                     <i class="bi bi-robot"></i>

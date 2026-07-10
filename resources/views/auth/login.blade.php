@@ -52,7 +52,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(160deg, rgba(10,30,90,0.55) 0%, rgba(30,60,180,0.45) 100%);
+            background: rgba(15, 23, 42, 0.7);
             z-index: 1;
         }
 
@@ -269,7 +269,7 @@
         .btn-submit {
             width: 100%;
             padding: 0.82rem;
-            background: linear-gradient(135deg, #004aad, #1d4ed8);
+            background: #004aad;
             color: #fff;
             font-size: 0.96rem;
             font-weight: 700;

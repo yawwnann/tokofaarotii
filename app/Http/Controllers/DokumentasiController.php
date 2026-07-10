@@ -129,9 +129,14 @@ class DokumentasiController extends Controller
     {
         $data = $request->validate([
             'judul' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
             'url' => 'required|url',
             'deskripsi' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('video', 'public');
+        }
 
         Video::create($data);
 
@@ -142,9 +147,17 @@ class DokumentasiController extends Controller
     {
         $data = $request->validate([
             'judul' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
             'url' => 'required|url',
             'deskripsi' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('gambar')) {
+            if ($video->gambar) {
+                Storage::disk('public')->delete($video->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('video', 'public');
+        }
 
         $video->update($data);
 
@@ -153,6 +166,9 @@ class DokumentasiController extends Controller
 
     public function destroyVideo(Video $video)
     {
+        if ($video->gambar) {
+            Storage::disk('public')->delete($video->gambar);
+        }
         $video->delete();
         return back()->with('success', 'Video berhasil dihapus!');
     }

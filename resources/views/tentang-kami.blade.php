@@ -19,9 +19,9 @@
 
     .about-hero { position: relative; height: 380px; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: #000; }
     .hero-bg { position: absolute; inset: 0; background: url('{{ asset('template-sarab/img/banner-toko-faa.png') }}') no-repeat center center / cover; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 74, 173, 0.85) 0%, rgba(15, 15, 15, 0.8) 70%); }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.75); }
     .hero-content { position: relative; z-index: 10; text-align: center; padding: 0 24px; }
-    .about-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: #ffffff; margin-bottom: 15px; letter-spacing: -1px; }
+    .about-hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: #ffffff; margin-bottom: 15px; letter-spacing: -1px; }
     .about-hero p { font-size: 1.1rem; max-width: 650px; margin: 0 auto 20px auto; color: rgba(255, 255, 255, 0.9) !important; }
     .hero-breadcrumb { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
     .hero-breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.2s; }
@@ -30,7 +30,7 @@
     .hero-breadcrumb .sep { color: rgba(255,255,255,0.3); }
     .hero-wave { position: absolute; bottom: -1px; left: 0; right: 0; width: 100%; height: 30px; }
     section { padding: 80px 0; }
-    .section-title { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 2.25rem; color: var(--text-dark); margin-bottom: 20px; }
+    .section-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 2.25rem; color: var(--text-dark); margin-bottom: 20px; }
     .history-img { border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 74, 173, 0.08); width: 100%; transition: transform 0.4s ease; }
     .history-img:hover { transform: scale(1.015); }
     .vm-card { background: #ffffff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: 100%; border: 1px solid #e2e8f0; transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); }

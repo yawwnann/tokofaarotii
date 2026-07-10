@@ -109,7 +109,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+        background: rgba(15, 23, 42, 0.7);
         z-index: 1;
     }
 
@@ -465,7 +465,7 @@
        <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="100">
           <div class="card border-0 rounded-4 overflow-hidden position-relative text-white shadow-sm hover-lift" style="height: 280px; cursor: pointer;">
              <img class="w-100 h-100" src="{{ asset('template-sarab/img/menu/roti unyil.jpeg') }}" alt="Frozen Food" style="object-fit: cover;">
-             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background: linear-gradient(to top, rgba(0, 74, 173, 0.85), rgba(0, 74, 173, 0.1));">
+             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background: rgba(15, 23, 42, 0.7);">
                 <span class="badge bg-white bg-opacity-25 blur-effect text-white rounded-pill px-3 py-2 mb-2 align-self-start small">
                    <i class="bi bi-snowflake me-1"></i> 20+ produk
                 </span>
@@ -478,7 +478,7 @@
        <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="200">
           <div class="card border-0 rounded-4 overflow-hidden position-relative text-white shadow-sm hover-lift" style="height: 280px; cursor: pointer;">
              <img class="w-100 h-100" src="{{ asset('template-sarab/img/menu/roti all varian.jpeg') }}" alt="Bakery" style="object-fit: cover;">
-             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background: linear-gradient(to top, rgba(194,65,12,0.85), rgba(194,65,12,0.1));">
+             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background: rgba(15, 23, 42, 0.7);">
                 <span class="badge bg-white bg-opacity-25 blur-effect text-white rounded-pill px-3 py-2 mb-2 align-self-start small">
                    <i class="bi bi-egg-fried me-1"></i> 15+ produk
                 </span>
@@ -560,7 +560,7 @@
 
        <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="100">
           <div class="card border-0 rounded-4 p-4 position-relative overflow-hidden text-white h-100 shadow-sm hover-lift"
-               style="background: linear-gradient(135deg, #004aad 0%, #003580 100%); min-height: 240px;">
+               style="background: #004aad; min-height: 240px;">
 
              <div class="position-absolute end-0 top-50 translate-middle-y opacity-10"
                   style="width: 180px; height: 180px; border-radius: 50%; background: #ffffff; background-image: url('{{ asset("template-sarab/img/icons/vrShowroomnew.jpg") }}'); background-size: contain; background-repeat: no-repeat; border: 20px solid #ffffff; margin-right: -40px;"></div>
@@ -619,10 +619,10 @@
  <div class="container">
 
     <div class="text-center mb-5" data-aos="fade-up">
-       <span class="d-block text-primary fw-semibold text-capitalize mb-2" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem;">Berita & Pembaruan</span>
+       <span class="d-block text-primary fw-semibold text-capitalize mb-2" style="font-family: 'Poppins', sans-serif; font-style: italic; font-size: 1.15rem;">Berita & Pembaruan</span>
        <h2 class="fw-bold position-relative d-inline-block pb-3" style="color: #0f172a; font-size: 2.25rem;">
           Berita <span class="text-primary">Terbaru</span> Dari FAA
-          <span class="position-absolute start-50 translate-middle-x bottom-0 rounded" style="width: 50px; height: 4px; background: linear-gradient(to right, #004aad, #f97316);"></span>
+          <span class="position-absolute start-50 translate-middle-x bottom-0 rounded" style="width: 50px; height: 4px; background: #004aad;"></span>
        </h2>
     </div>
 

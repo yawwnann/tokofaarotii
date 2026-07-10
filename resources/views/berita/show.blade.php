@@ -17,7 +17,7 @@
         body { font-family: 'Poppins', sans-serif; background-color: #faf6f0; padding-top: 100px; }
         .berita-container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
         .berita-img { width: 100%; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .berita-judul { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.5rem; color: #0f172a; line-height: 1.2; margin-bottom: 20px; }
+        .berita-judul { font-family: 'Poppins', sans-serif; font-weight: 900; font-size: 2.5rem; color: #0f172a; line-height: 1.2; margin-bottom: 20px; }
         .berita-meta { display: flex; gap: 20px; color: #64748b; font-size: 0.9rem; margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; }
         .berita-isi { line-height: 1.8; color: #334155; font-size: 1.1rem; }
         .btn-back { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #dc3545; font-weight: 700; margin-bottom: 30px; transition: transform 0.3s; }

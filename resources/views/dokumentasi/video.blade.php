@@ -36,7 +36,14 @@
         @foreach($videos as $video)
         <div class="video-card">
             <div class="video-embed-wrap">
-                @if(str_contains($video->url, 'instagram.com') || str_contains($video->url, 'tiktok.com'))
+                @if($video->gambar)
+                    <a href="{{ $video->url }}" target="_blank" class="social-cover-link">
+                        <div class="social-overlay-badge">
+                            <i class="fas fa-play" style="color: var(--primary); font-size: 16px;"></i> <span>Tonton Video</span>
+                        </div>
+                        <img src="{{ Storage::url($video->gambar) }}" class="social-cover-img" alt="Cover Video">
+                    </a>
+                @elseif(str_contains($video->url, 'instagram.com') || str_contains($video->url, 'tiktok.com'))
                     <!-- Tampilan khusus Instagram & TikTok agar tidak memicu error "Refused to Connect" -->
                     <a href="{{ $video->url }}" target="_blank" class="social-cover-link">
                         <div class="social-overlay-badge">
@@ -94,11 +101,15 @@
             <h3 class="modal-title">Tambah Video</h3>
             <button onclick="toggleModal('modal-tambah')" class="btn-close-modal"><i class="fas fa-times"></i></button>
         </div>
-        <form action="{{ route('dokumentasi.video.store') }}" method="POST" class="modal-form">
+        <form action="{{ route('dokumentasi.video.store') }}" method="POST" class="modal-form" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label>Judul Video</label>
                 <input type="text" name="judul" required placeholder="Contoh: Info Promo Produk Toko FAA">
+            </div>
+            <div class="form-group">
+                <label>Gambar Cover (Opsional)</label>
+                <input type="file" name="gambar" accept="image/*">
             </div>
             <div class="form-group">
                 <label>URL Video / Postingan (YouTube / Instagram / TikTok)</label>
@@ -123,11 +134,15 @@
             <h3 class="modal-title">Edit Video</h3>
             <button onclick="toggleModal('modal-edit')" class="btn-close-modal"><i class="fas fa-times"></i></button>
         </div>
-        <form id="form-edit" method="POST" class="modal-form">
+        <form id="form-edit" method="POST" class="modal-form" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="form-group">
                 <label>Judul Video</label>
                 <input type="text" name="judul" id="edit-judul" required>
+            </div>
+            <div class="form-group">
+                <label>Gambar Cover (Biarkan kosong jika tidak ingin mengubah)</label>
+                <input type="file" name="gambar" accept="image/*">
             </div>
             <div class="form-group">
                 <label>URL Video / Postingan</label>

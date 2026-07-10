@@ -261,7 +261,7 @@
 
     .btn-primary {
         display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
-        background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; border: none; border-radius: 0.5rem;
+        background: var(--color-primary, #ea580c); color: #fff; border: none; border-radius: 0.5rem;
         font-size: 0.825rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: box-shadow 0.2s, transform 0.15s;
         box-shadow: 0 3px 10px rgba(249,115,22,.35); white-space: nowrap;
     }
@@ -328,7 +328,7 @@
 
     .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.125rem 1.5rem; border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; background: #fff; z-index: 5; border-radius: 0.875rem 0.875rem 0 0; }
     .modal-header-left { display: flex; align-items: center; gap: 0.625rem; }
-    .modal-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.8rem; flex-shrink: 0; }
+    .modal-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--color-primary, #ea580c); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.8rem; flex-shrink: 0; }
     .modal-header h3 { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin: 0; }
     .modal-close-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: background 0.15s, color 0.15s; }
     .modal-close-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
@@ -347,9 +347,9 @@
     .btn-cancel { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1.125rem; border: 1.5px solid #e2e8f0; background: #fff; color: #64748b; border-radius: 0.5rem; font-size: 0.825rem; font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
     .btn-cancel:hover { background: #f8fafc; border-color: #cbd5e1; color: #374151; }
     
-    .btn-submit { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1.375rem; background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; border: none; border-radius: 0.5rem; font-size: 0.825rem; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(249,115,22,.35); transition: box-shadow 0.2s, transform 0.15s; }
+    .btn-submit { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1.375rem; background: var(--color-primary, #ea580c); color: #fff; border: none; border-radius: 0.5rem; font-size: 0.825rem; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(249,115,22,.35); transition: box-shadow 0.2s, transform 0.15s; }
     .btn-submit:hover { box-shadow: 0 5px 16px rgba(249,115,22,.45); transform: translateY(-1px); }
-    .btn-submit.update-mode { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 3px 10px rgba(34,197,94,.35); }
+    .btn-submit.update-mode { background: #16a34a; box-shadow: 0 3px 10px rgba(34,197,94,.35); }
     .btn-submit.update-mode:hover { box-shadow: 0 5px 16px rgba(34,197,94,.45); }
 
     @media (max-width: 640px) {

@@ -15,10 +15,10 @@
     body { font-family: 'Poppins', sans-serif; background-color: var(--light); color: var(--slate); padding-top: 90px; overflow-x: hidden; }
     .hero { position: relative; height: 380px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0 0 32px 32px; }
     .hero-bg { position: absolute; inset: 0; background-image: url('{{ asset('template-sarab/img/banner-toko-faa.png') }}'); background-size: cover; background-position: center; will-change: transform; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.6)); }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.7); }
     .hero-content { position: relative; z-index: 10; text-align: center; padding: 0 20px; }
     .hero-tag { display: inline-block; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3); color: var(--white); font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 6px 18px; border-radius: 50px; margin-bottom: 16px; }
-    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 54px); font-weight: 700; color: var(--white); margin-bottom: 16px; }
+    .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(32px, 5vw, 54px); font-weight: 700; color: var(--white); margin-bottom: 16px; }
     .hero h1 em { font-style: italic; color: var(--primary); }
     .hero-breadcrumb { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; }
     .hero-breadcrumb a { color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.2s; }
@@ -28,7 +28,7 @@
     .main-content { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
     .section-header { margin-bottom: 36px; }
     .section-tag { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
-    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--dark); }
+    .section-title { font-family: 'Poppins', sans-serif; font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--dark); }
     .section-title span { color: var(--primary); }
     .section-desc { font-size: 14px; color: var(--slate); margin-top: 6px; }
     .featured-grid { display: grid; grid-template-columns: 1fr 380px; gap: 30px; margin-bottom: 60px; }
@@ -57,7 +57,7 @@
     .card-side p { font-size: 13px; color: var(--slate); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
     .side-link { font-size: 12px; font-weight: 500; color: var(--primary); text-decoration: none; }
     .side-link:hover { color: var(--primary-dark); }
-    .card-side-promo { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: var(--radius-md); padding: 24px; color: var(--white); text-align: center; }
+    .card-side-promo { background: var(--primary); border-radius: var(--radius-md); padding: 24px; color: var(--white); text-align: center; }
     .card-side-promo i { font-size: 24px; margin-bottom: 8px; }
     .card-side-promo h4 { color: var(--white); font-size: 14px; margin-bottom: 4px; }
     .card-side-promo p { font-size: 12px; opacity: 0.9; margin-bottom: 0; }

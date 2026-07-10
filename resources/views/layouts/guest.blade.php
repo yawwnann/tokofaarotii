@@ -46,7 +46,7 @@
 
             /* ── Visual Side ── */
             .auth-visual {
-                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                background: var(--primary);
                 position: relative;
                 display: flex;
                 flex-direction: column;

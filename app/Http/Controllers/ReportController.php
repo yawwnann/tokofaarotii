@@ -27,18 +27,45 @@ class ReportController extends Controller
         $categoryId = $request->get("category_id");
 
         // 1. Overview Stats (Filtered by Date & Category)
-        $salesQuery = Sale::whereBetween("sale_date", [
-            $startDate->format("Y-m-d"),
-            $endDate->format("Y-m-d"),
-        ]);
-        if ($categoryId) {
-            $salesQuery->whereHas("product", function ($q) use ($categoryId) {
-                $q->where("category_id", $categoryId);
+        $offlineSales = Sale::with('product.category')
+            ->where('status', 'completed')
+            ->whereBetween('sale_date', [$startDate->format("Y-m-d"), $endDate->format("Y-m-d")]);
+
+        $onlineOrders = \App\Models\OrderItem::with('product.category', 'order')
+            ->whereHas('order', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween(DB::raw('DATE(created_at)'), [$startDate->format("Y-m-d"), $endDate->format("Y-m-d")])
+                  ->whereNotIn('order_status', ['dibatalkan', 'menunggu_pembayaran']);
             });
+
+        if ($categoryId) {
+            $offlineSales->whereHas('product', fn($q) => $q->where('category_id', $categoryId));
+            $onlineOrders->whereHas('product', fn($q) => $q->where('category_id', $categoryId));
         }
 
-        $totalSales = $salesQuery->sum("total_price");
-        $totalItemsSold = $salesQuery->sum("quantity_sold");
+        $offlineItems = $offlineSales->get()->map(function ($sale) {
+            return (object) [
+                'date' => \Carbon\Carbon::parse($sale->sale_date),
+                'product' => $sale->product,
+                'quantity' => $sale->quantity_sold,
+                'total' => $sale->total_price,
+                'source' => 'Offline'
+            ];
+        });
+
+        $onlineItems = $onlineOrders->get()->map(function ($item) {
+            return (object) [
+                'date' => $item->order->created_at,
+                'product' => $item->product,
+                'quantity' => $item->quantity,
+                'total' => $item->subtotal,
+                'source' => 'Online'
+            ];
+        });
+
+        $salesData = $offlineItems->merge($onlineItems)->sortByDesc(fn($item) => $item->date->timestamp)->values();
+
+        $totalSales = $salesData->sum('total');
+        $totalItemsSold = $salesData->sum('quantity');
 
         // 🌟 PERBAIKAN: Hanya hitung riwayat stock_entries yang bertipe 'in' sebagai Stok Masuk
         $stockQuery = StockEntry::where("type", "in")->whereBetween(
@@ -54,16 +81,7 @@ class ReportController extends Controller
         $totalStockIn = $stockQuery->sum("quantity");
 
         // 2. Sales Data for Chart & Table
-        $salesData = $salesQuery
-            ->with(["product.category"])
-            ->latest("sale_date")
-            ->get();
-        $chartData = $this->getChartData(
-            $startDate,
-            $endDate,
-            $groupBy,
-            $categoryId,
-        );
+        $chartData = $this->getChartData($salesData, $groupBy);
 
         // 3. Stock Data
         // Hitung agregat stok sekali di database. Jangan panggil accessor total_stok
@@ -150,56 +168,36 @@ class ReportController extends Controller
         );
     }
 
-    private function getChartData($startDate, $endDate, $groupBy, $categoryId)
+    private function getChartData($salesData, $groupBy)
     {
-        $query = Sale::select(
-            DB::raw("SUM(total_price) as total_revenue"),
-            DB::raw("SUM(quantity_sold) as total_qty"),
-        )->whereBetween("sale_date", [
-            $startDate->format("Y-m-d"),
-            $endDate->format("Y-m-d"),
-        ]);
+        $labels = [];
+        $revenue = [];
+        $qty = [];
 
-        if ($categoryId) {
-            $query->whereHas("product", function ($q) use ($categoryId) {
-                $q->where("category_id", $categoryId);
-            });
+        $grouped = $salesData->groupBy(function ($item) use ($groupBy) {
+            $date = $item->date;
+            if ($groupBy == 'day') return $date->format('d M Y');
+            if ($groupBy == 'week') return 'Minggu ' . $date->weekOfYear . ', ' . $date->year;
+            if ($groupBy == 'month') return $date->format('M Y');
+            if ($groupBy == 'year') return $date->format('Y');
+            return $date->format('d M Y');
+        });
+
+        // Urutkan berdasarkan waktu paling awal (ascending)
+        $grouped = $grouped->sortBy(function ($items) {
+            return $items->first()->date->timestamp;
+        });
+
+        foreach ($grouped as $label => $items) {
+            $labels[] = $label;
+            $revenue[] = $items->sum('total');
+            $qty[] = $items->sum('quantity');
         }
-
-        if ($groupBy == "day") {
-            $query
-                ->addSelect(
-                    DB::raw("DATE_FORMAT(sale_date, '%d %b %Y') as label"),
-                )
-                ->groupBy(DB::raw("DATE(sale_date)"), "label")
-                ->orderBy(DB::raw("DATE(sale_date)"), "ASC");
-        } elseif ($groupBy == "week") {
-            $query
-                ->addSelect(
-                    DB::raw(
-                        "CONCAT('Minggu ', WEEK(sale_date), ', ', YEAR(sale_date)) as label",
-                    ),
-                )
-                ->groupBy(DB::raw("YEARWEEK(sale_date)"), "label")
-                ->orderBy(DB::raw("YEARWEEK(sale_date)"), "ASC");
-        } elseif ($groupBy == "month") {
-            $query
-                ->addSelect(DB::raw("DATE_FORMAT(sale_date, '%b %Y') as label"))
-                ->groupBy(DB::raw("DATE_FORMAT(sale_date, '%Y-%m')"), "label")
-                ->orderBy(DB::raw("DATE_FORMAT(sale_date, '%Y-%m')"), "ASC");
-        } elseif ($groupBy == "year") {
-            $query
-                ->addSelect(DB::raw("YEAR(sale_date) as label"))
-                ->groupBy("label")
-                ->orderBy("label", "ASC");
-        }
-
-        $results = $query->get();
 
         return [
-            "labels" => $results->pluck("label"),
-            "revenue" => $results->pluck("total_revenue"),
-            "qty" => $results->pluck("total_qty"),
+            'labels' => $labels,
+            'revenue' => $revenue,
+            'qty' => $qty,
         ];
     }
 
