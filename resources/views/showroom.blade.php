@@ -3,27 +3,93 @@
 @section('title', 'VR 3D Showroom - FAA Frozen Food & Bakery')
 
 @section('content')
+
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
 <style>
-    body { background: #000; padding-top: 85px; height: 100vh; overflow: hidden; }
-    .showroom-container { height: calc(100vh - 85px); width: 100%; position: relative; }
-    .showroom-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; z-index: 10; padding: 20px; transition: opacity 0.5s; }
-    .showroom-overlay.hidden { opacity: 0; pointer-events: none; }
-    .btn-enter { background: #e50914; color: #fff; border: none; padding: 15px 40px; border-radius: 50px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; }
-    .btn-enter:hover { background: #fff; color: #e50914; transform: scale(1.1); }
-    #showroomFrame { width: 100%; height: 100%; border: none; }
+.showroom{
+    width:100%;
+    height:100vh;
+}
+
+body{
+    overflow:hidden;
+}
 </style>
 
-<div class="showroom-container">
-    <div class="showroom-overlay" id="overlay">
-        <div class="mb-4"><i class="bi bi-unity" style="font-size: 4rem; color: #e50914;"></i></div>
-        <h1 class="fw-bold mb-3">Selamat Datang di VR 3D Showroom</h1>
-        <p class="lead mb-4">Jelajahi toko kami secara virtual dan lihat produk-produk pilihan kami dalam tampilan 3D yang interaktif.</p>
-        <button class="btn-enter" onclick="enterShowroom()">Masuk ke Showroom</button>
-    </div>
-    <iframe id="showroomFrame" src="https://www.google.com/maps/embed?pb=!4v1717424400000!6m8!1m7!1sCAoSLEFGMVFpcE5mYlZqWG9vYjdfZl9OaU9uTV9vYjdfZl9OaU9uTV9vYjdfZl9OaU9u!2m2!1d-1.8504601!2d106.1104212!3f0!4f0!5f0.7820865974627469" allowfullscreen></iframe>
+<div class="showroom">
+
+<a-scene>
+
+    <!-- Langit -->
+    <a-sky color="#87CEEB"></a-sky>
+
+    <!-- Cahaya -->
+    <a-light type="ambient" intensity="1.2"></a-light>
+
+    <a-light
+        type="directional"
+        intensity="1"
+        position="2 4 2">
+    </a-light>
+
+    <!-- Lantai -->
+    <a-plane
+        rotation="-90 0 0"
+        width="100"
+        height="100"
+        color="#cfcfcf">
+    </a-plane>
+
+    <!-- Bangunan Toko -->
+    <a-entity
+        gltf-model="{{ asset('models/showroom/maptokoroti.glb') }}"
+        position="0 0 0"
+        rotation="0 0 0"
+        scale="1 1 1">
+    </a-entity>
+
+    <!-- Produk Kue -->
+    <a-entity
+        id="kue"
+        gltf-model="{{ asset('models/produk/kue.glb') }}"
+        position="-2 1 -3"
+        scale="0.5 0.5 0.5">
+    </a-entity>
+
+    <!-- Produk Frozen -->
+    <a-entity
+        id="frozen"
+        gltf-model="{{ asset('models/produk/frozen.glb') }}"
+        position="2 1 -3"
+        scale="0.5 0.5 0.5">
+    </a-entity>
+
+    <!-- Kamera -->
+    <a-entity position="0 1.6 8">
+
+        <a-camera
+            wasd-controls
+            look-controls>
+
+            <a-cursor></a-cursor>
+
+        </a-camera>
+
+    </a-entity>
+
+</a-scene>
+
 </div>
 
 <script>
-    function enterShowroom() { document.getElementById('overlay').classList.add('hidden'); }
+document.querySelector("#kue").addEventListener("click", function () {
+    alert("Kue FAA Frozen Food");
+});
+
+document.querySelector("#frozen").addEventListener("click", function () {
+    alert("Produk Frozen FAA");
+});
 </script>
+
 @endsection
