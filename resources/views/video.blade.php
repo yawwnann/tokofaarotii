@@ -68,7 +68,12 @@
                 $isSocialMedia = str_contains($video->url, 'instagram.com') || str_contains($video->url, 'tiktok.com');
                 $videoID = '';
                 if (!$isSocialMedia && preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^\"&?/ ]{11})%i', $video->url, $match)) { $videoID = $match[1]; }
-                $thumbUrl = (!$isSocialMedia && $videoID) ? "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg" : asset('template-sarab/img/frozen-banner.jpg');
+                
+                if ($video->gambar) {
+                    $thumbUrl = Storage::url($video->gambar);
+                } else {
+                    $thumbUrl = (!$isSocialMedia && $videoID) ? "https://img.youtube.com/vi/{$videoID}/hqdefault.jpg" : asset('template-sarab/img/frozen-banner.jpg');
+                }
             @endphp
             <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 50 }}">
                 <div class="video-card-wrapper">

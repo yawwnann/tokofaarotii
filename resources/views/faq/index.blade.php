@@ -665,6 +665,7 @@ function openModal(data = null) {
         // ── EDIT MODE ──
         modalTitle.textContent  = 'Edit Data FAQ';
         form.action             = `{{ url('faq') }}/${data.id}`;
+        methodField.disabled    = false;
         methodField.value       = 'PUT';
         pertanyaan.value        = data.pertanyaan;
         jawaban.value           = data.jawaban;
@@ -677,6 +678,7 @@ function openModal(data = null) {
         // ── TAMBAH MODE ──
         modalTitle.textContent  = 'Tambah Data FAQ';
         form.action             = `{{ route('faq.store') }}`;
+        methodField.disabled    = true;
         methodField.value       = '';
         pertanyaan.value        = '';
         jawaban.value           = '';
