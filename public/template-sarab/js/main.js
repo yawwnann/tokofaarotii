@@ -258,16 +258,26 @@ document.querySelectorAll('.mhrt').forEach(function(btn) {
     });
 });
 
-// Close popup
-document.getElementById('mpClose').addEventListener('click', closeMenuPop);
-menuPop.addEventListener('click', function(e) {
-    if (e.target === this) closeMenuPop();
-});
+// Close popup edit: tambah guard untuk menghindari error jika elemen tidak ada
+var mpCloseBtn = document.getElementById('mpClose');
+    if (mpCloseBtn) {
+        mpCloseBtn.addEventListener('click', closeMenuPop);
+    }
 
-function closeMenuPop() {
-    menuPop.classList.remove('open');
-    document.body.style.overflow = '';
-}
+    if (menuPop) {
+        menuPop.addEventListener('click', function(e) {
+            if (e.target === this) closeMenuPop();
+        });
+    }
+// document.getElementById('mpClose').addEventListener('click', closeMenuPop);
+// menuPop.addEventListener('click', function(e) {
+//     if (e.target === this) closeMenuPop();
+// });
+
+// function closeMenuPop() {
+//     menuPop.classList.remove('open');
+//     document.body.style.overflow = '';
+// }
 
 // Qty +/-
 document.getElementById('mpPlus').addEventListener('click', function() {

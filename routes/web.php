@@ -160,14 +160,9 @@ Route::middleware('auth')->group(function () {
         }
     })->name('chatbot.proxy'); // Nama ini WAJIB sama dengan yang dipanggil di JavaScript fetch
 
-    // Route::get('/showroom-3d', function () {
-    //     return view('showroom');
-    // })->name('showroom.3d');
-
-    //showroom 3d vr
     Route::get('/showroom', function () {
     return view('showroom');
-    });
+    })->name('showroom.3d');
 });
 
 // Rute status chatbot — publik (tanpa auth) agar fetch AJAX dari widget chatbot
