@@ -10,12 +10,12 @@
             <div class="fnm">FAA <span>Frozen Food & Bakery</span></div>
             <p class="fdesc">FAA Frozen Food & Bakery menyediakan berbagai produk makanan beku dan Roti berkualitas tinggi dengan rasa yang lezat dan konsisten.</p>
             <div class="fsoc">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.facebook.com/share/p/1TeWW4rYQU/"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/fatimbread?igsh=MWg4dHo1ZDEyemRmNg=="><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@homemadebread24?_r=1&_t=ZS-981Pt9Fwvep"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.tiktok.com/@yadi.cahyadi893?_r=1&_t=ZS-981PxrTiMJ6"><i class="fab fa-tiktok"></i></a>
             </div>
-        </div>
+        </div>  
 
         <!-- Kolom 2: Link Cepat-->
         <div class="col-sm-6 col-lg-2">
@@ -38,21 +38,21 @@
             </div>
             <div class="fci">
                 <div class="fciico"><i class="fas fa-phone-alt"></i></div>
-                <div class="fciinfo"><strong>Telepon</strong>+62 0853-6878-7893</div>
+                <div class="fciinfo"><strong>Telepon</strong><a href="https://wa.me/qr/KXSQYYUQSSG4P1">+62 0853-6878-7893</a></div>
             </div>
             <div class="fci">
                 <div class="fciico"><i class="fas fa-envelope"></i></div>
-                <div class="fciinfo"><strong>Email</strong>hello@sarabfood.com</div>
+                <div class="fciinfo"><strong>Email</strong><a href="mailto:yadicahyadi777@gmail.com">yadicahyadi777@gmail.com</a></div>
             </div>
             <div class="fci">
                 <div class="fciico"><i class="fas fa-clock"></i></div>
-                <div class="fciinfo"><strong>Jam Operasional</strong>Setiap Hari: 06.00 - 18.00</div>
+                <div class="fciinfo"><strong>Jam Operasional</strong>Setiap Hari: 08.00 - 18.00</div>
             </div>
         </div>
 
         <!-- Kolom 4: Lokasi / Google Maps Toko FAA Frozen Food & Bakery -->
         <div class="col-sm-6 col-lg-3">
-            <div class="ftit">Lokasi</div>
+            <div class="ftit">Lokasi Toko Utama</div>
             <div class="fmap" style="border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
                 <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3985.449717171717!2d106.1104212!3d-1.8504601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e22f3e7784d51ad%3A0xf0b32b5d14082039!2sFAA+FROZEN+FOOD!5e0!3m2!1sid!2sid!4v1717424400000!5m2!1sid!2sid"

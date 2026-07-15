@@ -162,12 +162,12 @@
                 <div class="section-tag">Arsip Lengkap</div>
                 <h2 class="section-title">Semua <span>Berita</span></h2>
             </div>
-            <div class="filter-tabs">
+            <!-- <div class="filter-tabs">
                 <button class="filter-tab active" data-cat="all">Semua</button>
                 <button class="filter-tab" data-cat="bakery">Bakery</button>
                 <button class="filter-tab" data-cat="frozen">Frozen Food</button>
                 <button class="filter-tab" data-cat="promo">Promo</button>
-            </div>
+            </div> -->
         </div>
         <div class="news-grid" id="newsGrid">
             @forelse($beritas as $item)

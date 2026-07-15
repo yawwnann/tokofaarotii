@@ -300,7 +300,7 @@
                            <a href="{{ route('produk.makanan') }}" class="btn btn-warning text-uppercase rounded-pill px-4 py-2 text-white fw-bold" style="background-color: #f97316; border: none;">
                            Pesan Sekarang
                            </a>
-                           <a href="#contact-section" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
+                           <a href="https://wa.me/qr/KXSQYYUQSSG4P1" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
                            Hubungi Kami
                            </a>
                         </div>
@@ -337,7 +337,7 @@
                            <a href="{{ route('produk.makanan') }}" class="btn btn-warning text-uppercase rounded-pill px-4 py-2 text-white fw-bold" style="background-color: #f97316; border: none;">
                            Lihat Menu
                            </a>
-                           <a href="#contact-section" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
+                           <a href="https://wa.me/qr/KXSQYYUQSSG4P1" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
                            Hubungi Kami
                            </a>
                         </div>
@@ -374,7 +374,7 @@
                            <a href="{{ route('produk.makanan') }}" class="btn btn-warning text-uppercase rounded-pill px-4 py-2 text-white fw-bold" style="background-color: #f97316; border: none;">
                            Belanja Sekarang
                            </a>
-                           <a href="#contact-section" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
+                           <a href="https://wa.me/qr/KXSQYYUQSSG4P1" class="btn btn-outline-light text-uppercase rounded-pill px-4 py-2 fw-bold">
                            Hubungi Kami
                            </a>
                         </div>
@@ -425,7 +425,7 @@
          </div>
          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
             <div class="keunggulan-card p-4 h-100">
-               <div class="mb-3 fs-1" style="color: #f97316;">
+               <div class="mb-3 fs-1" style="color: #004aad;">
                   <i class="fas fa-certificate"></i>
                </div>
                <h4 class="fw-bold h5" style="color: #004aad;">100% Halal & Higienis</h4>
@@ -454,7 +454,7 @@
           <h2 class="fw-bold m-0" style="color: #0f172a;">Temukan Semua yang Anda Butuhkan</h2>
        </div>
        <div>
-          <a href="#" class="text-decoration-none fw-semibold d-flex align-items-center" style="color: #f97316;">
+          <a href="{{ route('produk.makanan') }}" class="{{ request()->routeIs('produk.makanan') ? 'active' : '' }}" class="text-decoration-none fw-semibold d-flex align-items-center" style="color: #f97316;">
              Lihat Semua Produk <i class="bi bi-arrow-right ms-2"></i>
           </a>
        </div>
@@ -496,7 +496,7 @@
           <div class="card border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-between shadow-sm hover-lift" style="background-color: #f0f9ff; min-height: 160px; cursor: pointer;">
              <div>
                 <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 40px; height: 40px; background-color: #e0f2fe; color: #004aad;">
-                   <i class="bi bi-cake2"></i>
+                   <i class="bi bi-basket2-fill"></i>
                 </div>
                 <h5 class="fw-bold mb-1" style="color: #0c4a6e;">Roti All Varian</h5>
                 <p class="text-muted small m-0">Roti manis, roti tawar, dan varian lainnya</p>
@@ -509,7 +509,7 @@
           <div class="card border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-between shadow-sm hover-lift" style="background-color: #f0fdf4; min-height: 160px; cursor: pointer;">
              <div>
                 <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 40px; height: 40px; background-color: #dcfce7; color: #15803d;">
-                   <i class="bi bi-bowl-straw"></i>
+                   <i class="bi bi-snow"></i>
                 </div>
                 <h5 class="fw-bold mb-1" style="color: #14532d;">Bakso All Varian</h5>
                 <p class="text-muted small m-0">Bakso sapi, bakso ayam, dan varian lainnya</p>
@@ -522,7 +522,7 @@
           <div class="card border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-between shadow-sm hover-lift" style="background-color: #f0f9ff; min-height: 160px; cursor: pointer;">
              <div>
                 <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 40px; height: 40px; background-color: #e0f2fe; color: #004aad;">
-                   <i class="bi bi-cone-striped"></i>
+                   <i class="bi bi-snow"></i>
                 </div>
                 <h5 class="fw-bold mb-1" style="color: #0c4a6e;">Nugget All Varian</h5>
                 <p class="text-muted small m-0">Nugget ikan, nugget ayam, dan varian lainnya</p>
@@ -535,7 +535,7 @@
           <div class="card border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-between shadow-sm hover-lift" style="background-color: #fffaf0; min-height: 160px; cursor: pointer;">
              <div>
                 <div class="rounded-3 d-flex align-items-center justify-content-center mb-3" style="width: 40px; height: 40px; background-color: #fff4e0; color: #f97316;">
-                   <i class="bi bi-sandwich"></i>
+                   <i class="bi bi-snow"></i>
                 </div>
                 <h5 class="fw-bold mb-1" style="color: #7c2d12;">Sempol All Varian</h5>
                 <p class="text-muted small m-0">Sempol ikan, sempol ayam, dan varian lainnya</p>
@@ -574,7 +574,7 @@
                    <h3 class="fw-bold mb-2 fs-4" style="color: #ffffff;">VR 3D Showroom</h3>
                    <p class="text-white-50 small mb-4" style="max-width: 85%;">Jelajahi toko kami secara virtual. Lihat produk dari segala sudut sebelum membeli.</p>
                 </div>
-                <a href="#" class="btn rounded-pill px-4 py-2 align-self-start btn-sm fw-semibold d-flex align-items-center text-white"
+                <a href="{{ route('showroom.3d') }}" class="btn rounded-pill px-4 py-2 align-self-start btn-sm fw-semibold d-flex align-items-center text-white"
                    style="background-color: #f97316; border: none;">
                    Masuk Showroom <i class="bi bi-arrow-right ms-2"></i>
                 </a>

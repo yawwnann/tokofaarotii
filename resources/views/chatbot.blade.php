@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
         appendMessage('user', text);
         userInput.value = '';
 
-        // Tampilkan indikator mengetik AI
+        // Tampilkan indikator mengetik AI (sperti titik-titik)
         const typingDiv = document.createElement('div');
         typingDiv.className = 'msg msg-ai typing-dots';
         typingDiv.style.alignSelf = 'flex-start';
@@ -214,11 +214,11 @@ document.addEventListener('DOMContentLoaded', function () {
             
             let teksLower = text.toLowerCase();
             if (teksLower.includes("rekomendasi")) {
-                appendMessage('ai', "Produk rekomendasi utama kami adalah **Bakso Sapi** dan **Roti o Coklat** untuk kategori Bakery. Sedangkan untuk Frozen Food, kami sangat merekomendasikan **Premium Nugget** dan **Dimsum Ayam**.");
+                appendMessage('ai', "Produk rekomendasi utama kami adalah **Bakso Sapi** dan **Roti O Coklat** untuk kategori Bakery. Sedangkan untuk Frozen Food, kami sangat merekomendasikan **Nugget Ayam** dan **Sempol Ayam**.");
             } else if (teksLower.includes("promo")) {
-                appendMessage('ai', "Ada dong! Minggu ini kami sedang mengadakan **Promo Bundling Mantap**: Setiap pembelian 2 produk Frozen Food varian apa saja, Anda berhak mendapatkan GRATIS 1 Roti Manis!");
+                appendMessage('ai', "Ada dong! Setiap Jumat ini kami sedang mengadakan **Promo Bundling Mantap**: Setiap pembelian 2 produk Frozen Food varian apa saja, Anda berhak mendapatkan GRATIS 1 Roti Unyil!");
             } else if (teksLower.includes("jam") || teksLower.includes("buka")) {
-                appendMessage('ai', "Toko FAA Frozen Food & Bakery siap melayani Anda setiap hari mulai pukul **07.00 s/d 21.00 WIB**.");
+                appendMessage('ai', "Toko FAA Frozen Food & Bakery siap melayani Anda setiap hari mulai pukul **08.00 s/d 21.00 WIB**. pada toko outline kami yang berada di BTN sungailiat, sedangkan untuk rumah produksi buka setiap hari pukul **08.00 s/d 18.00 WIB**");
             } else if (teksLower.includes("lokasi") || teksLower.includes("alamat")) {
                 appendMessage('ai', "Toko fisik FAA berlokasi strategis di **Sungailiat, Bangka Belitung**. Untuk peta digital dan rute lengkapnya, Anda bisa mengecek halaman 'Tentang Kami'.");
             } else {
