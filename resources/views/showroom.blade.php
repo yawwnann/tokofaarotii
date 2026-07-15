@@ -243,18 +243,6 @@
         instructions.style.display = 'flex';
     }
 
-    tokoEl.addEventListener('model-loaded', function () {
-        console.log('✅ Model toko berhasil dimuat');
-        progressText.textContent = 'Model berhasil dimuat!';
-        hideLoading();
-    });
-
-    tokoEl.addEventListener('model-error', function (e) {
-        console.error('❌ Gagal load model toko:', e.detail);
-        errorLog.style.display = 'block';
-        errorLog.innerHTML = '❌ Model toko gagal dimuat. Cek console (F12) untuk detail.';
-        loadingScreen.style.display = 'none';
-    });
 
     // Event untuk model produk roti
     abonEl.addEventListener('model-loaded', function () {
