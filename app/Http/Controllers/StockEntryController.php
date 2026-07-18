@@ -15,7 +15,11 @@ class StockEntryController extends Controller
         // setiap produk yang dimuat, tanpa query per baris.
         $query = StockEntry::with([
             "product" => fn($q) => $q->withStockData(),
-        ])->where("type", "in");
+        ]);
+
+        if (request("type")) {
+            $query->where("type", request("type"));
+        }
 
         // Filter by store for kasir
         $user = Auth::user();
@@ -54,18 +58,20 @@ class StockEntryController extends Controller
             })
             ->get();
 
-        // Satu query agregat menggantikan 4 query duplikat sebelumnya
-        $stockStats = StockEntry::where("type", "in")
-            ->selectRaw(
-                "SUM(quantity) as total_in, COUNT(*) as total_transactions",
+        // Satu query agregat
+        $stockStats = StockEntry::selectRaw(
+                "SUM(CASE WHEN type = 'in' THEN quantity ELSE 0 END) as total_in, " .
+                "SUM(CASE WHEN type = 'out' THEN quantity ELSE 0 END) as total_out, " .
+                "COUNT(*) as total_transactions"
             )
             ->first();
         $totalIn = (int) ($stockStats->total_in ?? 0);
+        $totalOut = (int) ($stockStats->total_out ?? 0);
         $totalTransactions = (int) ($stockStats->total_transactions ?? 0);
 
         return view(
             "stock-entries.index",
-            compact("stockEntries", "products", "totalIn", "totalTransactions"),
+            compact("stockEntries", "products", "totalIn", "totalOut", "totalTransactions"),
         );
     }
 
@@ -88,11 +94,11 @@ class StockEntryController extends Controller
             "product_id" => "required|exists:products,id",
             "quantity" => "required|integer|min:1",
             "entry_date" => "required|date",
+            "type" => "required|in:in,out",
+            "notes" => "nullable|string",
         ]);
 
-        // Simpan riwayat stok masuk (selalu tipe 'in')
         $data = $request->all();
-        $data["type"] = "in";
 
         StockEntry::create($data);
 
@@ -126,12 +132,12 @@ class StockEntryController extends Controller
             "product_id" => "required|exists:products,id",
             "quantity" => "required|integer|min:1",
             "entry_date" => "required|date",
+            "type" => "required|in:in,out",
             "supplier" => "nullable|string|max:255",
             "notes" => "nullable|string",
         ]);
 
         $data = $request->all();
-        $data["type"] = "in"; // Tetap paksa tipe 'in'
 
         $stockEntry->update($data);
 

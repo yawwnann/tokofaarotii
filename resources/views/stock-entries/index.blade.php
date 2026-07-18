@@ -37,6 +37,15 @@
         </div>
     </div>
     <div class="stat-card">
+        <div class="stat-icon" style="background:#fee2e2;">
+            <i class="fas fa-arrow-up" style="color:#ef4444;"></i>
+        </div>
+        <div>
+            <p class="stat-label">Total Stok Keluar</p>
+            <p class="stat-value" style="color:#ef4444;">{{ number_format($totalOut) }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
         <div class="stat-icon" style="background:#eff6ff;">
             <i class="fas fa-exchange-alt" style="color:#3b82f6;"></i>
         </div>
@@ -77,6 +86,16 @@
                             {{ $product->name }}
                         </option>
                     @endforeach
+                </select>
+            </div>
+
+            {{-- Filter Tipe --}}
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-exchange-alt"></i> Tipe</label>
+                <select name="type" class="filter-select" onchange="this.form.submit()">
+                    <option value="">Semua Tipe</option>
+                    <option value="in" {{ request('type') == 'in' ? 'selected' : '' }}>Stok Masuk</option>
+                    <option value="out" {{ request('type') == 'out' ? 'selected' : '' }}>Stok Keluar</option>
                 </select>
             </div>
 
@@ -137,9 +156,15 @@
 
                     {{-- KUANTITAS --}}
                     <td style="text-align:center;">
+                        @if($entry->type == 'in')
                         <div class="qty-num qty-in">
                             +{{ number_format($entry->quantity) }}
                         </div>
+                        @else
+                        <div class="qty-num qty-out">
+                            -{{ number_format($entry->quantity) }}
+                        </div>
+                        @endif
                         <div class="qty-stock">Stok Saat Ini: {{ number_format($entry->product->total_stok ?? 0) }}</div>
                     </td>
 
@@ -238,7 +263,25 @@
                 @error('product_id')<p class="field-error">{{ $message }}</p>@enderror
             </div>
 
-            <input type="hidden" name="type" value="in">
+            {{-- Tipe (Masuk / Keluar) --}}
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-exchange-alt"></i> Tipe Entri <span class="required">*</span></label>
+                <div class="type-toggle-wrap">
+                    <label class="type-toggle-opt">
+                        <input type="radio" name="type" value="in" required {{ old('type', 'in') == 'in' ? 'checked' : '' }}>
+                        <div class="toggle-label toggle-in">
+                            <i class="fas fa-arrow-down"></i> Stok Masuk
+                        </div>
+                    </label>
+                    <label class="type-toggle-opt">
+                        <input type="radio" name="type" value="out" required {{ old('type') == 'out' ? 'checked' : '' }}>
+                        <div class="toggle-label toggle-out">
+                            <i class="fas fa-arrow-up"></i> Stok Keluar
+                        </div>
+                    </label>
+                </div>
+                @error('type')<p class="field-error">{{ $message }}</p>@enderror
+            </div>
 
             {{-- Grid: Jumlah & Tanggal --}}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">

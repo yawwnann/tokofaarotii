@@ -64,6 +64,15 @@ class Product extends Model
             )
             ->withSum(
                 [
+                    "stockEntries as stock_out_total" => fn($q) => $q->where(
+                        "type",
+                        "out",
+                    ),
+                ],
+                "quantity",
+            )
+            ->withSum(
+                [
                     "sales as offline_sold_total" => fn($q) => $q->where(
                         "status",
                         "completed",
@@ -118,12 +127,14 @@ class Product extends Model
         // Path cepat: atribut pre-computed sudah ada di model
         if (array_key_exists("stock_in_total", $this->attributes)) {
             return (int) ($this->attributes["stock_in_total"] ?? 0) -
+                (int) ($this->attributes["stock_out_total"] ?? 0) -
                 (int) ($this->attributes["offline_sold_total"] ?? 0) -
                 (int) ($this->attributes["online_sold_total"] ?? 0);
         }
 
         // Path lambat: single-product — jalankan query langsung
         $masuk = $this->stockEntries()->where("type", "in")->sum("quantity");
+        $keluarManual = $this->stockEntries()->where("type", "out")->sum("quantity");
         $keluarOffline = $this->sales()
             ->where("status", "completed")
             ->sum("quantity_sold");
@@ -134,6 +145,6 @@ class Product extends Model
             )
             ->sum("quantity");
 
-        return $masuk - $keluarOffline - $keluarOnline;
+        return $masuk - $keluarManual - $keluarOffline - $keluarOnline;
     }
 }
