@@ -32,11 +32,20 @@
         <div class="detail-card img-card">
             @if($product->image)
                 <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}"
-                     style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:.625rem;border:1px solid #f1f5f9;">
+                     style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.625rem;border:1px solid #f1f5f9;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="img-placeholder-lg" style="display:none;">
+                    <div class="img-placeholder-lg-inner">
+                        <i class="fas fa-image"></i>
+                        <p>Gambar tidak ditemukan</p>
+                    </div>
+                </div>
             @else
                 <div class="img-placeholder-lg">
-                    <i class="fas fa-box"></i>
-                    <p>Belum ada gambar</p>
+                    <div class="img-placeholder-lg-inner">
+                        <i class="fas fa-image"></i>
+                        <p>Belum ada gambar</p>
+                    </div>
                 </div>
             @endif
         </div>
@@ -258,9 +267,10 @@
 
     /* ─ Image Card ─ */
     .img-card { padding:.75rem; }
-    .img-placeholder-lg { width:100%;aspect-ratio:1/1;background:#f8fafc;border-radius:.625rem;border:1px solid #e2e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cbd5e1; }
-    .img-placeholder-lg i { font-size:3rem;margin-bottom:.5rem; }
-    .img-placeholder-lg p { font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8; }
+    .img-placeholder-lg { position:relative; width:100%; height:300px; background:linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%); border-radius:.625rem; border:1px solid #fed7aa; overflow:hidden; flex-shrink:0; }
+    .img-placeholder-lg-inner { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#f97316; }
+    .img-placeholder-lg-inner i { font-size:3rem; margin-bottom:.5rem; opacity:.5; }
+    .img-placeholder-lg-inner p { font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:#ea580c; opacity:.5; margin:0; }
 
     /* ─ Stock Dark Card ─ */
     .stock-dark-card { background:#0f172a;border-radius:.875rem;padding:1.5rem;color:#fff;position:relative;overflow:hidden; }

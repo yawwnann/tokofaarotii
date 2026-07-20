@@ -114,10 +114,14 @@
                         @if($product->image)
                             <img src="{{ asset('storage/'.$product->image) }}"
                                  alt="{{ $product->name }}"
-                                 style="width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;">
+                                 style="width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="img-placeholder" style="display:none;">
+                                <i class="fas fa-image"></i>
+                            </div>
                         @else
                             <div class="img-placeholder">
-                                <i class="fas fa-box"></i>
+                                <i class="fas fa-image"></i>
                             </div>
                         @endif
                     </td>
@@ -435,7 +439,7 @@
 
     /* ─ Row Elements ─ */
     .row-num { display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#fff7ed;color:#f97316;font-size:.7rem;font-weight:700; }
-    .img-placeholder { width:56px;height:56px;background:#f1f5f9;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#cbd5e1;font-size:1.1rem;border:1px solid #e2e8f0; }
+    .img-placeholder { width:56px;height:56px;background:linear-gradient(135deg, #fff7ed, #ffedd5);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#f97316;font-size:1.1rem;border:1px solid #fed7aa; }
     .prod-name  { font-weight:600; color:#1e293b; line-height:1.4; }
     .prod-desc  { font-size:.75rem; color:#64748b; margin-top:2px; line-height:1.4; }
     .prod-sku   { font-size:.7rem; color:#94a3b8; margin-top:2px; }

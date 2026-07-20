@@ -118,11 +118,13 @@
     }
     .product-img-wrapper {
         position: relative;
-        aspect-ratio: 1/1;
+        height: 200px;
+        width: 100%;
         overflow: hidden;
         background: var(--light);
+        flex-shrink: 0;
     }
-    .product-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .product-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .product-card:hover .product-img { transform: scale(1.04); }
     .product-badge {
         position: absolute; top: 12px; left: 12px;
@@ -131,11 +133,11 @@
         font-size: 11px; font-weight: 600; z-index: 2;
     }
     .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-    .product-info h5 { font-weight: 600; color: var(--dark); margin-bottom: 8px; font-size: 16px; line-height: 1.4; transition: color 0.2s; }
+    .product-info h5 { font-weight: 600; color: var(--dark); margin-bottom: 8px; font-size: 18px; line-height: 1.4; transition: color 0.2s; }
     .product-card:hover .product-info h5 { color: var(--primary); }
     .product-desc { color: var(--slate); font-size: 13px; line-height: 1.5; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .product-footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border); }
-    .product-price { font-weight: 700; color: var(--primary); font-size: 18px; margin-bottom: 0; }
+    .product-price { font-weight: 700; color: var(--primary); font-size: 20px; margin-bottom: 0; }
     .btn-action-round { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease; font-size: 14px; }
     .btn-view-detail { background: var(--light); color: var(--slate); border: 1px solid var(--border); }
     .btn-view-detail:hover { background: var(--slate); color: var(--white); }
@@ -145,6 +147,9 @@
     .modal-header-custom { border-bottom: none; padding: 16px 20px 0 20px; }
     .modal-product-img { border-radius: var(--radius-md); width: 100%; aspect-ratio: 4/3; object-fit: cover; margin-bottom: 16px; background: var(--light); }
     .empty-state { padding: 60px 20px; text-align: center; background: var(--white); border-radius: var(--radius-lg); border: 2px dashed var(--border); }
+    .product-img-placeholder { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%); color:var(--primary); text-align:center; padding:10px; }
+    .product-img-placeholder i { font-size:3rem; opacity:.4; }
+    .product-img-placeholder span { font-size:13px; font-weight:600; color:var(--primary-dark); opacity:.5; line-height:1.2; }
 </style>
 
 <section class="product-hero">
@@ -176,9 +181,11 @@
                                     <div class="product-card">
                                         <div class="product-img-wrapper">
                                             @if($product->image)
-                                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="product-img">
+                                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="product-img"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="product-img-placeholder" style="display:none;"><i class="fas fa-image"></i><span>{{ Str::limit($product->name, 20) }}</span></div>
                                             @else
-                                                <img src="{{ asset('template-sarab/img/logo-toko-faa.png') }}" alt="Default" class="product-img">
+                                                <div class="product-img-placeholder"><i class="fas fa-image"></i><span>{{ Str::limit($product->name, 20) }}</span></div>
                                             @endif
                                             <span class="product-badge">{{ $category->name }}</span>
                                         </div>
